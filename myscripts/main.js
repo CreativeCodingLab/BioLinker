@@ -78,10 +78,7 @@ var tip = d3.tip()
     
     return str;
 })
-// debugger
-// .each(function(d) {
-//     console.log(this)
-// })
+
 svg2.call(tip);  
 
 var nodes = [];
@@ -95,10 +92,19 @@ var nameToNode2={};
 
 var data3;
 
+// Mongo
+var mongodb = require('mongodb');
+var cheerio = require('cheerio');
+var data = require('./data/outputTuan12.json');
+var jsonfile = require('jsonfile');
+var MongoClient = mongodb.MongoClient;
+var dbName = 'index_cards';
+var url = "mongodb://localhost:27017/" + dbName;
+
 drawColorLegend();
 //d3.json("data/cards-for-time-arcs.json", function(error, data_) {
-d3.json("data/outputTuan.json", function(error, data_) {
-      data3 = data_;
+d3.json("data/outputTuan1.json", function(error, data_) {
+    data3 = data_;
     data3.forEach(function(d, index){ 
         //var a = d.card.extracted_information.participant_a;
         //var b = d.card.extracted_information.participant_b;
