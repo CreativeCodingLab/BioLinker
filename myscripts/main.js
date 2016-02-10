@@ -96,22 +96,23 @@ var nameToNode2={};
 var data3;
 
 drawColorLegend();
-d3.json("data/cards-for-time-arcs.json", function(error, data_) {
-    data3 = data_;
+//d3.json("data/cards-for-time-arcs.json", function(error, data_) {
+d3.json("data/outputTuan.json", function(error, data_) {
+      data3 = data_;
     data3.forEach(function(d, index){ 
-        var a = d.card.extracted_information.participant_a;
-        var b = d.card.extracted_information.participant_b;
+        //var a = d.card.extracted_information.participant_a;
+        //var b = d.card.extracted_information.participant_b;
+        var a = d.extracted_information.participant_a;
+        var b = d.extracted_information.participant_b;
         var e = "";
-        if (d.card.evidence){
+        if (d.evidence){
             for (var i=0;i<1;i++){
-                e+= " "+d.card.evidence[i];
+                e+= " "+d.evidence[i];
             }   
         }
-        if (d.card._participant_b_ids.length>1){
-          //  console.log("**** index="+index);
-        }
-        var type = d.card.extracted_information.interaction_type;
-        var year = d.metadata.articleFront["article-meta"][0]["pub-date"][0].year;
+        
+        var type = d.extracted_information.interaction_type;
+    /*    var year = d.metadata.articleFront["article-meta"][0]["pub-date"][0].year;
         var title = d.metadata.articleFront["article-meta"][0]["title-group"][0]["article-title"][0];
             
         if (a.entity_text!=undefined && b.entity_text!=undefined){   
@@ -120,7 +121,7 @@ d3.json("data/cards-for-time-arcs.json", function(error, data_) {
                 title2 = title["_"];
             }
             title = (title2+"").replace(/(\r\n|\n|\r)/gm,"");
-        }
+        }*/
 
         var node1 = processNode(a);
         var node2 = processNode(b);
@@ -234,6 +235,7 @@ d3.json("data/cards-for-time-arcs.json", function(error, data_) {
     }    
     
     function update() {
+      console.log("update *******");
         node2 = svg2.selectAll(".node")
         link2 = svg2.selectAll(".link")
         
