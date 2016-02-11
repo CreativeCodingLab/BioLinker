@@ -52,7 +52,6 @@ var tip = d3.tip()
     str+= "<br>Meta data, includes TimeArcs  for "+ curNode.fields.entity_text+"<br>"
     str+= "<br>Context data (graph)<br>"
     str+= "<br>Potential conflicts (statistics)<br>"
-    
     return str;
 })
 
@@ -206,92 +205,96 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
               // .on('mouseover', tip.show)
               .on("click", click)
               .on('mouseover', function(d) {
-                tip.show(d);
-
-
-                var curNode = d;
-                if (curNode.ref!=undefined){
-                    curNode = curNode.ref;
-                }
-                
-                // Compute direct links
-                if (curNode.directLinks==undefined){
-                    curNode.directLinks = [];
-                    for (var i=0; i<links.length;i++){
-                        var l = links[i];
-                        if (curNode==l.source || curNode==l.target){
-                            curNode.directLinks.push(l);
-                        }
-                    }
-                }
-
-                // Compute statistics for neighbors
-                var types = new Object();
-                for (var i=0; i<curNode.directLinks.length;i++){
-                    var l = curNode.directLinks[i];
-                    if (types[l.type]==undefined){
-                        types[l.type] = new Object();
-                        types[l.type].count = 1;
-                    }
-                    else{
-                        types[l.type].count++;   
-                    }
-                }
-                var dataTip = [];
-                for (key in types) {
-                  var e= new Object;
-                  e.type = key;
-                  e.count= types[key].count;
-                  dataTip.push(e);
-                  console.log(key + "  "+types[key].count);
-                  //  str+= "-"+key+": <span style='color:"+getColor(key)+ "'>" + types[key] + "</span> <br>"
-                }
-        
-                var tip_element = d3.select('.d3-tip');
-                var tip_svg = tip_element.append('svg');
-                   
-                tip_svg.selectAll(".tipTypeText").data(dataTip)
-                  .enter().append('text')
-                    .attr("class", "tipTypeText")
-                    .attr("font-family", "sans-serif")
-                    .attr("font-size", "11px")
-                    .attr("x", 90)
-                    .attr("y", function(d2, index){
-                      types[d2.type].y = 12+index*12;  
-                      return types[d2.type].y;
-                    })
-                    .attr("dy", ".25em")
-                    .style("text-anchor", "end")
-                    .text(function(d2){
-                      return d2.type;
-                    })
-                    .style("fill", function(d2){
-                       return getColor(d2.type);
-                    });
-
-                var dotRadius =5;    
-                tip_svg.selectAll(".tipType").data(curNode.directLinks)
-                  .enter().append('circle')
-                  .attr("class", "tipType")
-                    .attr('r',dotRadius)
-                    .attr('cx',function(l, index){
-                      if (types[l.type].currentIndex==undefined){
-                        types[l.type].currentIndex=0;
-                      }
-                      else{
-                        types[l.type].currentIndex++;
-                      }
-                      return 100+types[l.type].currentIndex*2*dotRadius;
-                    })
-                    .attr('cy',function(l){
-                      return types[l.type].y;
-                    })
-                    .style("fill", function(d2){
-                       return getColor(d2.type);
-                    });
+                showTip(d); 
+               
               })
               .on('mouseout', tip.hide); 
     }    
+    function showTip(d) {
+      tip.show(d);
+      addDotplots(d);
+    }     
+    function addDotplots(d){
+       var curNode = d;
+    if (curNode.ref!=undefined){
+        curNode = curNode.ref;
+    }
+        // Compute direct links
+        if (curNode.directLinks==undefined){
+            curNode.directLinks = [];
+            for (var i=0; i<links.length;i++){
+                var l = links[i];
+                if (curNode==l.source || curNode==l.target){
+                    curNode.directLinks.push(l);
+                }
+            }
+        }
+
+        // Compute statistics for neighbors
+        var types = new Object();
+        for (var i=0; i<curNode.directLinks.length;i++){
+            var l = curNode.directLinks[i];
+            if (types[l.type]==undefined){
+                types[l.type] = new Object();
+                types[l.type].count = 1;
+            }
+            else{
+                types[l.type].count++;   
+            }
+        }
+        var dataTip = [];
+        for (key in types) {
+          var e= new Object;
+          e.type = key;
+          e.count= types[key].count;
+          dataTip.push(e);
+          console.log(key + "  "+types[key].count);
+          //  str+= "-"+key+": <span style='color:"+getColor(key)+ "'>" + types[key] + "</span> <br>"
+        }
+        
+        var tip_element = d3.select('.d3-tip');
+        var tip_svg = tip_element.append('svg');
+           
+        tip_svg.selectAll(".tipTypeText").data(dataTip)
+          .enter().append('text')
+            .attr("class", "tipTypeText")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "11px")
+            .attr("x", 90)
+            .attr("y", function(d2, index){
+              types[d2.type].y = 12+index*12;  
+              return types[d2.type].y;
+            })
+            .attr("dy", ".25em")
+            .style("text-anchor", "end")
+            .text(function(d2){
+              return d2.type;
+            })
+            .style("fill", function(d2){
+               return getColor(d2.type);
+            });
+
+        var dotRadius =5;    
+        tip_svg.selectAll(".tipType").data(curNode.directLinks)
+          .enter().append('circle')
+          .attr("class", "tipType")
+            .attr('r',dotRadius)
+            .attr('cx',function(l, index){
+              if (types[l.type].currentIndex==undefined){
+                types[l.type].currentIndex=0;
+              }
+              else{
+                types[l.type].currentIndex++;
+              }
+              return 100+types[l.type].currentIndex*2*dotRadius;
+            })
+            .attr('cy',function(l){
+              return types[l.type].y;
+            })
+            .style("fill", function(d2){
+               return getColor(d2.type);
+            });
+    }
     
     function update() {
       console.log("update *******");
