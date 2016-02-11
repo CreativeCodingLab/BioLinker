@@ -59,7 +59,7 @@ function drawColorLegend() {
         .attr("cx", xx)
         .attr("cy", y3)
         .attr("r", rr)
-        .style("fill", "#0000cc");  
+        .style("fill", "#cc0");  
 
       svg.append("text")
         .attr("class", "nodeLegend")
@@ -72,7 +72,7 @@ function drawColorLegend() {
         .attr("font-family", "sans-serif")
         .attr("font-size", "12px")
         .style("text-anchor", "left")
-        .style("fill", "#0000cc");  
+        .style("fill", "#cc0");  
 
 
        svg.append("circle")
@@ -80,7 +80,7 @@ function drawColorLegend() {
         .attr("cx", xx)
         .attr("cy", y4)
         .attr("r", rr)
-        .style("fill", "#ca0");  
+        .style("fill", "#00f");  
 
       svg.append("text")
         .attr("class", "nodeLegend")
@@ -93,7 +93,7 @@ function drawColorLegend() {
         .attr("font-family", "sans-serif")
         .attr("font-size", "12px")
         .style("text-anchor", "left")
-        .style("fill", "#ca0");  
+        .style("fill", "#00f");  
 
      svg.append("circle")
         .attr("class", "nodeLegend")
@@ -154,9 +154,9 @@ function getColor(category) {
   else if (category=="VAST" || category=="Action" || category=="removes_modification" || category=="decreases_activity")
     return "rgb("+200+", "+sat+", "+sat+")" ; // leaf node
   else if (category=="SciVis" || category=="Drama"|| category=="translocation")
-    return "rgb("+sat+", "+sat+", "+200+")" ; // leaf node
+    return "rgb("+200+", "+200+", "+sat+")" ; // leaf node
   else if (category=="binds")
-    return "rgb("+200+", "+150+", "+0+")" ; // leaf node
+    return "rgb("+sat+", "+sat+", "+255+")" ; // leaf node
   else if (category=="increases")
     return "rgb("+255+", "+0+", "+255+")" ; // leaf node
   else{

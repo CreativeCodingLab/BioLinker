@@ -1,7 +1,7 @@
 //Constants for the SVG
 var margin = {top: 0, right: 0, bottom: 5, left: 15};
 var width = document.body.clientWidth - margin.left - margin.right;
-var height = 1000 - margin.top - margin.bottom;
+var height = 500 - margin.top - margin.bottom;
 
 //---End Insert------
 
@@ -17,7 +17,7 @@ var svg2 = d3.select("body").append("svg")
 
 //Set up the force layout
 var force = d3.layout.force()
-    .charge(-5)
+    .charge(-20)
     .linkDistance(20)
     .gravity(0.05)
     //.friction(0.5)
@@ -25,7 +25,7 @@ var force = d3.layout.force()
     .size([width, height]);
 
 var force2 = d3.layout.force()
-    .charge(-40)
+    .charge(-100)
     .linkDistance(60)
     .gravity(0.1)
     //.friction(0.5)
@@ -34,7 +34,7 @@ var force2 = d3.layout.force()
 
 var tip = d3.tip()
   .attr('class', 'd3-tip')
-  .offset([-10, 0])
+  .offset([-170,0])
   .html(function(d) {
     var curNode = d;
     if (curNode.ref!=undefined){
@@ -44,34 +44,11 @@ var tip = d3.tip()
     for (key in curNode.fields) {
         str+= key+": <span style='color:#7ef'>" + curNode.fields[key] + "</span> <br>"
     }
-
-    if (curNode.directLinks==undefined){
-        curNode.directLinks = [];
-        for (var i=0; i<links.length;i++){
-            var l = links[i];
-            if (curNode==l.source || curNode==l.target){
-                curNode.directLinks.push(l);
-            }
-        }
-    }
-
-    // Compute statistics for neighbors
-    var types = new Object();
-    for (var i=0; i<curNode.directLinks.length;i++){
-        var l = curNode.directLinks[i];
-        if (types[l.type]==undefined){
-            types[l.type] =1;
-        }
-        else{
-            types[l.type]++;   
-        }
-    }
     
-    str+= "<br>Number of directLinks: <span style='color:#ff8'>" + curNode.directLinks.length + "</span> <br>"
-    for (key in types) {
-        str+= "-"+key+": <span style='color:"+getColor(key)+ "'>" + types[key] + "</span> <br>"
-    }
-
+    //str+= "<br>Number of directLinks: <span style='color:#ff8'>" + curNode.directLinks.length + "</span> <br>"
+    //for (key in types) {
+    //    str+= "-"+key+": <span style='color:"+getColor(key)+ "'>" + types[key] + "</span> <br>"
+    //}
     str+= "<br>Meta data, includes TimeArcs  for "+ curNode.fields.entity_text+"<br>"
     str+= "<br>Context data (graph)<br>"
     str+= "<br>Potential conflicts (statistics)<br>"
@@ -92,20 +69,14 @@ var nameToNode2={};
 
 var data3;
 
-// Mongo
-var mongodb = require('mongodb');
-var cheerio = require('cheerio');
-var data = require('./data/outputTuan12.json');
-var jsonfile = require('jsonfile');
-var MongoClient = mongodb.MongoClient;
-var dbName = 'index_cards';
-var url = "mongodb://localhost:27017/" + dbName;
 
 drawColorLegend();
 //d3.json("data/cards-for-time-arcs.json", function(error, data_) {
-d3.json("data/outputTuan1.json", function(error, data_) {
+d3.json("data/cardsWithContextData.json", function(error, data_) {
     data3 = data_;
     data3.forEach(function(d, index){ 
+      if (index<1000) {  // Limit to 1000 first index cards ********************************************
+
         //var a = d.card.extracted_information.participant_a;
         //var b = d.card.extracted_information.participant_b;
         var a = d.extracted_information.participant_a;
@@ -135,8 +106,9 @@ d3.json("data/outputTuan1.json", function(error, data_) {
         l.source = node1;
         l.target = node2;
         l.type = type;
+        l.id = d._id;
         links.push(l);
-           
+      }     
     });
     function processNode(fields){
         if (nameToNode[fields.entity_text]==undefined){
@@ -196,7 +168,7 @@ d3.json("data/outputTuan1.json", function(error, data_) {
     // Second layout *************************************************************************
    
     var newNode = new Object();
-    newNode.ref = nodes[0];
+    newNode.ref = nodes[8];
     nodes2.push(newNode);
     addNodes();
     update();
@@ -232,12 +204,93 @@ d3.json("data/outputTuan1.json", function(error, data_) {
               .style("stroke-width", 0.3)
               .call(force2.drag)
               // .on('mouseover', tip.show)
+              .on("click", click)
               .on('mouseover', function(d) {
                 tip.show(d);
+
+
+                var curNode = d;
+                if (curNode.ref!=undefined){
+                    curNode = curNode.ref;
+                }
+                
+                // Compute direct links
+                if (curNode.directLinks==undefined){
+                    curNode.directLinks = [];
+                    for (var i=0; i<links.length;i++){
+                        var l = links[i];
+                        if (curNode==l.source || curNode==l.target){
+                            curNode.directLinks.push(l);
+                        }
+                    }
+                }
+
+                // Compute statistics for neighbors
+                var types = new Object();
+                for (var i=0; i<curNode.directLinks.length;i++){
+                    var l = curNode.directLinks[i];
+                    if (types[l.type]==undefined){
+                        types[l.type] = new Object();
+                        types[l.type].count = 1;
+                    }
+                    else{
+                        types[l.type].count++;   
+                    }
+                }
+                var dataTip = [];
+                for (key in types) {
+                  var e= new Object;
+                  e.type = key;
+                  e.count= types[key].count;
+                  dataTip.push(e);
+                  console.log(key + "  "+types[key].count);
+                  //  str+= "-"+key+": <span style='color:"+getColor(key)+ "'>" + types[key] + "</span> <br>"
+                }
+        
                 var tip_element = d3.select('.d3-tip');
+                var tip_svg = tip_element.append('svg');
+                   
+                tip_svg.selectAll(".tipTypeText").data(dataTip)
+                  .enter().append('text')
+                    .attr("class", "tipTypeText")
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "11px")
+                    .attr("x", 90)
+                    .attr("y", function(d2, index){
+                      types[d2.type].y = 12+index*12;  
+                      return types[d2.type].y;
+                    })
+                    .attr("dy", ".25em")
+                    .style("text-anchor", "end")
+                    .text(function(d2){
+                      return d2.type;
+                    })
+                    .style("fill", function(d2){
+                       return getColor(d2.type);
+                    });
+
+                var dotRadius =5;    
+                tip_svg.selectAll(".tipType").data(curNode.directLinks)
+                  .enter().append('circle')
+                  .attr("class", "tipType")
+                    .attr('r',dotRadius)
+                    .attr('cx',function(l, index){
+                      if (types[l.type].currentIndex==undefined){
+                        types[l.type].currentIndex=0;
+                      }
+                      else{
+                        types[l.type].currentIndex++;
+                      }
+                      return 100+types[l.type].currentIndex*2*dotRadius;
+                    })
+                    .attr('cy',function(l){
+                      return types[l.type].y;
+                    })
+                    .style("fill", function(d2){
+                       return getColor(d2.type);
+                    });
               })
-              .on('mouseout', tip.hide)
-              .on("click", click); 
+              .on('mouseout', tip.hide); 
     }    
     
     function update() {
@@ -259,14 +312,15 @@ d3.json("data/outputTuan1.json", function(error, data_) {
       
     // Toggle children on click.
     function click(d) {
-      if (!d3.event.defaultPrevented) {
+      //if (!d3.event.defaultPrevented) {
         var curNode = d;
         if (curNode.ref!=undefined){
             curNode = curNode.ref;
         }
     
         for (var i=0;i<curNode.directLinks.length;i++){
-            var l = curNode.directLinks[i];
+          var l = curNode.directLinks[i];
+          if (links2[l.id]==undefined){
             var neighbor;
             if (curNode==l.source){
                 neighbor = l.target;
@@ -283,11 +337,13 @@ d3.json("data/outputTuan1.json", function(error, data_) {
             newLink.target = newNode;
             newLink.type = l.type;
             links2.push(newLink);
+            links2[l.id] = newLink;
+          }  
         }
          
         addNodes();   
         update();
-      }
+
     }  
 });
 
