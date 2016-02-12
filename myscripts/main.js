@@ -32,28 +32,7 @@ var force2 = d3.layout.force()
   //  .alpha(0.1)
     .size([width, height]);
 
-var tip = d3.tip()
-  .attr('class', 'd3-tip')
-  .offset([-170,0])
-  .html(function(d) {
-    var curNode = d;
-    if (curNode.ref!=undefined){
-        curNode = curNode.ref;
-    }
-    var str = "";
-    for (key in curNode.fields) {
-        str+= key+": <span style='color:#7ef'>" + curNode.fields[key] + "</span> <br>"
-    }
-    
-    //str+= "<br>Number of directLinks: <span style='color:#ff8'>" + curNode.directLinks.length + "</span> <br>"
-    //for (key in types) {
-    //    str+= "-"+key+": <span style='color:"+getColor(key)+ "'>" + types[key] + "</span> <br>"
-    //}
-    str+= "<br>Meta data, includes TimeArcs  for "+ curNode.fields.entity_text+"<br>"
-    str+= "<br>Context data (graph)<br>"
-    str+= "<br>Potential conflicts (statistics)<br>"
-    return str;
-})
+
 
 svg2.call(tip);  
 
@@ -113,6 +92,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
         if (nameToNode[fields.entity_text]==undefined){
             var newNode = {};
             newNode.fields = fields;
+            newNode.id = nodes.length;
             nodes.push(newNode);
             nameToNode[fields.entity_text] = newNode;
             return newNode;
@@ -148,7 +128,29 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
       .style("stroke", "#eee")
       .style("stroke-opacity", 0.5)
       .style("stroke-width", 0.3)
-      .call(force.drag);
+      .call(force.drag)
+      .on("click", click1)
+      .on('mouseover', function(d) {
+        svg.selectAll(".node")
+          .style("stroke" , function(d2){
+            if (d.id==d2.id){
+              return "#000";
+            }
+          })
+          .style("stroke-width" , function(d2){
+            if (d.id==d2.id){
+              return 5;
+            }
+          });   
+      })
+      .on('mouseout', function(){
+         svg.selectAll(".node")
+          .style("stroke-width" ,0);  
+      }); 
+      
+  function click1(d){
+    secondLayout(d.id);
+  }   
 
   node.append("title")
       .text(function(d) { return d.fields.entity_text; });
@@ -161,13 +163,25 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
 
     node.attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
+
   });
+
+  secondLayout(100);
+
+});
 
 
     // Second layout *************************************************************************
-   
+
+function secondLayout(selected){ 
+  svg2.selectAll(".link").remove();
+  svg2.selectAll(".node").remove();
+  links2 = [];
+  nodes2 = [];    
     var newNode = new Object();
-    newNode.ref = nodes[8];
+    newNode.ref = nodes[selected];
+    newNode.x = nodes[selected].x;;
+    newNode.y = -10;
     nodes2.push(newNode);
     addNodes();
     update();
@@ -210,94 +224,9 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
               })
               .on('mouseout', tip.hide); 
     }    
-    function showTip(d) {
-      tip.show(d);
-      addDotplots(d);
-    }     
-    function addDotplots(d){
-       var curNode = d;
-    if (curNode.ref!=undefined){
-        curNode = curNode.ref;
-    }
-        // Compute direct links
-        if (curNode.directLinks==undefined){
-            curNode.directLinks = [];
-            for (var i=0; i<links.length;i++){
-                var l = links[i];
-                if (curNode==l.source || curNode==l.target){
-                    curNode.directLinks.push(l);
-                }
-            }
-        }
-
-        // Compute statistics for neighbors
-        var types = new Object();
-        for (var i=0; i<curNode.directLinks.length;i++){
-            var l = curNode.directLinks[i];
-            if (types[l.type]==undefined){
-                types[l.type] = new Object();
-                types[l.type].count = 1;
-            }
-            else{
-                types[l.type].count++;   
-            }
-        }
-        var dataTip = [];
-        for (key in types) {
-          var e= new Object;
-          e.type = key;
-          e.count= types[key].count;
-          dataTip.push(e);
-          console.log(key + "  "+types[key].count);
-          //  str+= "-"+key+": <span style='color:"+getColor(key)+ "'>" + types[key] + "</span> <br>"
-        }
-        
-        var tip_element = d3.select('.d3-tip');
-        var tip_svg = tip_element.append('svg');
-           
-        tip_svg.selectAll(".tipTypeText").data(dataTip)
-          .enter().append('text')
-            .attr("class", "tipTypeText")
-            .attr("font-family", "sans-serif")
-            .attr("font-size", "11px")
-            .attr("x", 90)
-            .attr("y", function(d2, index){
-              types[d2.type].y = 12+index*12;  
-              return types[d2.type].y;
-            })
-            .attr("dy", ".25em")
-            .style("text-anchor", "end")
-            .text(function(d2){
-              return d2.type;
-            })
-            .style("fill", function(d2){
-               return getColor(d2.type);
-            });
-
-        var dotRadius =5;    
-        tip_svg.selectAll(".tipType").data(curNode.directLinks)
-          .enter().append('circle')
-          .attr("class", "tipType")
-            .attr('r',dotRadius)
-            .attr('cx',function(l, index){
-              if (types[l.type].currentIndex==undefined){
-                types[l.type].currentIndex=0;
-              }
-              else{
-                types[l.type].currentIndex++;
-              }
-              return 100+types[l.type].currentIndex*2*dotRadius;
-            })
-            .attr('cy',function(l){
-              return types[l.type].y;
-            })
-            .style("fill", function(d2){
-               return getColor(d2.type);
-            });
-    }
+    
     
     function update() {
-      console.log("update *******");
         node2 = svg2.selectAll(".node")
         link2 = svg2.selectAll(".link")
         
@@ -346,8 +275,8 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
          
         addNodes();   
         update();
-
     }  
-});
+  }  
+
 
 
