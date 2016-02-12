@@ -30,11 +30,11 @@ var tip = d3.tip()
 
 
 function addDotplots(d){
-   var curNode = d;
-if (curNode.ref!=undefined){
-    curNode = curNode.ref;
-}
-    // Compute direct links
+  var curNode = d;
+  if (curNode.ref!=undefined){
+      curNode = curNode.ref;
+  }
+    /*// Compute direct links
     if (curNode.directLinks==undefined){
         curNode.directLinks = [];
         for (var i=0; i<links.length;i++){
@@ -43,7 +43,7 @@ if (curNode.ref!=undefined){
                 curNode.directLinks.push(l);
             }
         }
-    }
+    }*/
 
     // Compute statistics for neighbors
     var types = new Object();
@@ -63,7 +63,6 @@ if (curNode.ref!=undefined){
       e.type = key;
       e.count= types[key].count;
       dataTip.push(e);
-      console.log(key + "  "+types[key].count);
       //  str+= "-"+key+": <span style='color:"+getColor(key)+ "'>" + types[key] + "</span> <br>"
     }
     
@@ -88,6 +87,18 @@ if (curNode.ref!=undefined){
           return "#333";
         else
           return "#222";
+      })
+      .on('mouseover', function(d) {
+        svg.selectAll(".tipTypeRect")
+          .style("stroke" , function(d2){
+            if (d==d2){
+              return "#000";
+            }
+          });   
+      })
+      .on('mouseout', function(){
+         svg.selectAll(".tipTypeRect")
+          .style("fill" ,"#f00");  
       });
     
      

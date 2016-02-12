@@ -1,3 +1,9 @@
+
+// Same protein for source and target
+// Change stoke for expanded nodes
+// Display all index cards for a link
+// Context data
+
 //Constants for the SVG
 var margin = {top: 0, right: 0, bottom: 5, left: 15};
 var width = document.body.clientWidth - margin.left - margin.right;
@@ -18,7 +24,7 @@ var svg2 = d3.select("body").append("svg")
 //Set up the force layout
 var force = d3.layout.force()
     .charge(-20)
-    .linkDistance(20)
+    .linkDistance(15)
     .gravity(0.05)
     //.friction(0.5)
   //  .alpha(0.1)
@@ -26,11 +32,13 @@ var force = d3.layout.force()
 
 var force2 = d3.layout.force()
     .charge(-100)
-    .linkDistance(60)
+    .linkDistance(50)
     .gravity(0.1)
     //.friction(0.5)
   //  .alpha(0.1)
     .size([width, height]);
+
+
 
 
 
@@ -41,20 +49,16 @@ var links = [];
 var nodes2 = [];
 var links2 = [];
 
-
 var nameToNode={};
-var nameToNode2={};
-
+var nameToNode2;
 var data3;
-
 
 drawColorLegend();
 //d3.json("data/cards-for-time-arcs.json", function(error, data_) {
 d3.json("data/cardsWithContextData.json", function(error, data_) {
     data3 = data_;
     data3.forEach(function(d, index){ 
-      if (index<1000) {  // Limit to 1000 first index cards ********************************************
-
+      if (index<2000) {  // Limit to 1000 first index cards ********************************************
         //var a = d.card.extracted_information.participant_a;
         //var b = d.card.extracted_information.participant_b;
         var a = d.extracted_information.participant_a;
@@ -84,7 +88,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
         l.source = node1;
         l.target = node2;
         l.type = type;
-        l.id = d._id;
+        l.name = node1.fields.entity_text+"__"+node2.fields.entity_text;
         links.push(l);
       }     
     });
@@ -166,25 +170,52 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
 
   });
 
-  secondLayout(100);
+  secondLayout(17);
 
 });
 
+// Update the overview graph when we change the second layout
+function update1(d) {  
+  svg.selectAll(".link")
+    .style("stroke-opacity", function(l){
+      var lName = l.source.fields.entity_text+"__"+l.target.fields.entity_text;
+      if (links2[lName]!=undefined)
+        return 0.8;
+      else
+        return 0.1;
+    });
+  svg.selectAll(".node")
+    .style("fill-opacity", function(d){
+      if (nameToNode2[d.fields.entity_text]!=undefined)
+        return 1;
+      else
+        return 0.1;
+    });  
+}
 
-    // Second layout *************************************************************************
 
+// Second layout *************************************************************************
 function secondLayout(selected){ 
   svg2.selectAll(".link").remove();
   svg2.selectAll(".node").remove();
   links2 = [];
-  nodes2 = [];    
+  nodes2 = [];   
+  nameToNode2={}; 
+    
+    
+    // Add one example node when initialized
     var newNode = new Object();
     newNode.ref = nodes[selected];
     newNode.x = nodes[selected].x;;
     newNode.y = -10;
     nodes2.push(newNode);
+    nameToNode2[nodes[selected].fields.entity_text] = newNode; 
+
     addNodes();
-    update();
+    update1(); // Update the overview graph 
+    
+    update2();
+    
     function addNodes() {
         force2
             .nodes(nodes2)
@@ -196,17 +227,34 @@ function secondLayout(selected){
             .enter().append("line")
             .attr("class", "link")
               .style("stroke", function(l){
-                //console.log("l.type="+l.type);
                  return getColor(l.type);
               })
               .style("stroke-opacity", 0.5)
-              .style("stroke-width", 1);
+              .style("stroke-width",function(l){
+                 return l.count;
+              })
 
         svg2.selectAll(".node")
             .data(nodes2)
             .enter().append("circle")
               .attr("class", "node")
-              .attr("r", 4)
+              .attr("r", function(d) {
+                var curNode = d;
+                if (curNode.ref!=undefined){
+                    curNode = curNode.ref;
+                }
+                // Compute direct links ********************************
+                if (curNode.directLinks==undefined){
+                    curNode.directLinks = [];
+                    for (var i=0; i<links.length;i++){
+                        var l = links[i];
+                        if (curNode==l.source || curNode==l.target){
+                            curNode.directLinks.push(l);
+                        }
+                    }
+                }
+                return 2+Math.pow(curNode.directLinks.length, 0.4);    
+              })
               .style("fill", "#444")
               .style("stroke", "#eee")
               //.style("stroke", function(d){
@@ -226,7 +274,7 @@ function secondLayout(selected){
     }    
     
     
-    function update() {
+    function update2() {
         node2 = svg2.selectAll(".node")
         link2 = svg2.selectAll(".link")
         
@@ -250,9 +298,10 @@ function secondLayout(selected){
             curNode = curNode.ref;
         }
     
+        var count=0;
         for (var i=0;i<curNode.directLinks.length;i++){
           var l = curNode.directLinks[i];
-          if (links2[l.id]==undefined){
+          if (links2[l.name]==undefined){
             var neighbor;
             if (curNode==l.source){
                 neighbor = l.target;
@@ -260,21 +309,40 @@ function secondLayout(selected){
             else if (curNode==l.target){
                 neighbor = l.source;
             }   
-            var newNode = new Object();
-            newNode.ref = neighbor;
-            nodes2.push(newNode);
+            var neighborNode;
+            if (nameToNode2[neighbor.fields.entity_text]==undefined){
+              var neighborNode = new Object();
+              neighborNode.ref = neighbor;
+              nodes2.push(neighborNode);
+              nameToNode2[neighbor.fields.entity_text] = neighborNode;
+            }
+            else{
+              neighborNode = nameToNode2[neighbor.fields.entity_text];
+            }
 
             var newLink = new Object();
             newLink.source = d;
-            newLink.target = newNode;
+            newLink.target = neighborNode;
             newLink.type = l.type;
+            newLink.count = 1;
             links2.push(newLink);
-            links2[l.id] = newLink;
-          }  
+            links2[l.name] = newLink;
+            count++;
+          } 
+          else{
+            console.log(i+" already link="+l.name);
+        
+            links2[l.name].count++;
+          } 
         }
+        
+        console.log("curNode.directLinks.length="+curNode.directLinks.length);
+        console.log("count="+count);
          
         addNodes();   
-        update();
+        update2();
+        update1(); // Update the overview graph
+        
     }  
   }  
 
