@@ -39,7 +39,33 @@ var force2 = d3.layout.force()
     .size([width, height]);
 
 
+/*
+var myPromise = new Promise(function(resolve) {
+    d3.tsv("data/imdb1.tsv", function(error, data_) {
+        data_.map(function(d){
+            console.log(d);
+        });
+        resolve(data_);
+    })
+})
 
+myPromise.then(function(data) {
+    console.log("This is tuan**************");
+    console.log(data.length)
+})
+
+var myPromise = new Promise(function(resolve) {
+        func1;
+       resolve(data_);
+    })
+})
+  
+myPromise.then(function(data) {
+    func2()
+    return 123123
+}).then(function(dat) {
+    func3()
+})*/
 
 
 svg2.call(tip);  
@@ -52,6 +78,8 @@ var links2 = [];
 var nameToNode={};
 var nameToNode2;
 var data3;
+var isDisplayingPopup;
+
 
 drawColorLegend();
 //d3.json("data/cards-for-time-arcs.json", function(error, data_) {
@@ -201,7 +229,7 @@ function secondLayout(selected){
   links2 = [];
   nodes2 = [];   
   nameToNode2={}; 
-    
+  isDisplayingPopup = false;  
     
     // Add one example node when initialized
     var newNode = new Object();
@@ -265,12 +293,12 @@ function secondLayout(selected){
               .style("stroke-width", 0.3)
               .call(force2.drag)
               // .on('mouseover', tip.show)
-              .on("click", click)
+              .on("click", click2)
               .on('mouseover', function(d) {
                 showTip(d); 
-               
-              })
-              .on('mouseout', tip.hide); 
+              });
+              
+              //.on('mouseout', tip.hide); 
     }    
     
     
@@ -289,9 +317,19 @@ function secondLayout(selected){
         });    
 
     };    
-      
+     
+     function click2(d) {
+        isDisplayingPopup = !isDisplayingPopup;
+        if (isDisplayingPopup){
+
+        }
+        else{
+          tip.hide(d);
+          expand2(d);
+        }
+     } 
     // Toggle children on click.
-    function click(d) {
+    function expand2(d) {
       //if (!d3.event.defaultPrevented) {
         var curNode = d;
         if (curNode.ref!=undefined){
@@ -330,19 +368,13 @@ function secondLayout(selected){
             count++;
           } 
           else{
-            console.log(i+" already link="+l.name);
-        
             links2[l.name].count++;
           } 
         }
-        
-        console.log("curNode.directLinks.length="+curNode.directLinks.length);
-        console.log("count="+count);
-         
+      
         addNodes();   
         update2();
-        update1(); // Update the overview graph
-        
+        update1(); // Update the overview graph  
     }  
   }  
 

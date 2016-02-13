@@ -63,7 +63,6 @@ function addDotplots(d){
       e.type = key;
       e.count= types[key].count;
       dataTip.push(e);
-      //  str+= "-"+key+": <span style='color:"+getColor(key)+ "'>" + types[key] + "</span> <br>"
     }
     
     var tip_svg = d3.select('.d3-tip').append('svg')
@@ -74,6 +73,8 @@ function addDotplots(d){
     tip_svg.selectAll(".tipTypeRect").data(dataTip)
       .enter().append('rect')
       .attr("class", "tipTypeRect")
+      .attr("rx", 5)
+      .attr("ry", 5)
       .attr("x", 0)
       .attr("y", function(d2, index){
         types[d2.type].y = 10+index*15;  
@@ -83,25 +84,20 @@ function addDotplots(d){
       .attr("height", 15)
       .style("text-anchor", "end")
       .style("fill", function(d,index){
-        if (index%2==0)
-          return "#333";
-        else
-          return "#222";
+        d.isEnable = true;
+        d.backgroundColor = "#000";
+        d.backgroundColorDisable = "#000";
+        return d.backgroundColor;
       })
-      .on('mouseover', function(d) {
-        svg.selectAll(".tipTypeRect")
-          .style("stroke" , function(d2){
-            if (d==d2){
-              return "#000";
-            }
-          });   
+      .style("stroke", function(d2){
+        d2.stroke= "#888";
+        return d2.stroke;
       })
-      .on('mouseout', function(){
-         svg.selectAll(".tipTypeRect")
-          .style("fill" ,"#f00");  
-      });
-    
+      .on('mouseover', mouseoverType)
+      .on('mouseout', mouseoutType)
+      .on('click', clickType);
      
+
 
     tip_svg.selectAll(".tipTypeText").data(dataTip)
       .enter().append('text')
@@ -117,15 +113,67 @@ function addDotplots(d){
       })
       .style("fill", function(d2){
          return getColor(d2.type);
-      });
+      })
+      .on('mouseover', mouseoverType)
+      .on('mouseout', mouseoutType)
+      .on('click', clickType);
 
-    
+    function mouseoverType(d){
+      tip_svg.selectAll(".tipTypeRect")
+          .style("fill" , function(d2){
+            if (d.type==d2.type){
+              return "#ffc";
+            }
+      });  
+    } 
 
+    function mouseoutType(d){
+      setTypeColor(d);
+    } 
+    function clickType(d){
+      d.isEnable = !d.isEnable;
+      setTypeColor(d);
+    } 
+
+    function setTypeColor(d){
+      tip_svg.selectAll(".tipTypeRect")
+        .style("fill" , function(d2){
+          if (d2.isEnable==true)
+            return d.backgroundColor;
+          else 
+            return d.backgroundColorDisable;
+        })
+        .style("stroke" , function(d2){
+         if (d2.isEnable==true)
+            return d2.stroke;
+            
+        });   
+      tip_svg.selectAll(".tipTypeText")
+        .style("fill" , function(d2){
+          if (d2.isEnable==true)
+            return getColor(d2.type);
+          else 
+            return "#555";
+        }); 
+
+      tip_svg.selectAll(".tipTypeDot")
+        .style("fill" , function(d2){
+          var tipdata;
+          for (var i=0;i<dataTip.length;i++){
+             if (dataTip[i].type==d2.type) 
+                tipdata = dataTip[i];
+          }
+          if (tipdata.isEnable==true)
+            return getColor(d2.type);
+          else 
+            return "#555";
+        })   
+    }
 
     var dotRadius =5;    
-    tip_svg.selectAll(".tipType").data(curNode.directLinks)
+    tip_svg.selectAll(".tipTypeDot").data(curNode.directLinks)
       .enter().append('circle')
-      .attr("class", "tipType")
+      .attr("class", "tipTypeDot")
         .attr('r',dotRadius)
         .attr('cx',function(l, index){
           if (types[l.type].currentIndex==undefined){
