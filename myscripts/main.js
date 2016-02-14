@@ -320,13 +320,9 @@ function secondLayout(selected){
      
      function click2(d) {
         isDisplayingPopup = !isDisplayingPopup;
-        if (isDisplayingPopup){
-
-        }
-        else{
           tip.hide(d);
           expand2(d);
-        }
+        
      } 
     // Toggle children on click.
     function expand2(d) {
@@ -339,37 +335,39 @@ function secondLayout(selected){
         var count=0;
         for (var i=0;i<curNode.directLinks.length;i++){
           var l = curNode.directLinks[i];
-          if (links2[l.name]==undefined){
-            var neighbor;
-            if (curNode==l.source){
-                neighbor = l.target;
-            }
-            else if (curNode==l.target){
-                neighbor = l.source;
-            }   
-            var neighborNode;
-            if (nameToNode2[neighbor.fields.entity_text]==undefined){
-              var neighborNode = new Object();
-              neighborNode.ref = neighbor;
-              nodes2.push(neighborNode);
-              nameToNode2[neighbor.fields.entity_text] = neighborNode;
-            }
-            else{
-              neighborNode = nameToNode2[neighbor.fields.entity_text];
-            }
+          if (d.dataTip[l.type].isEnable){  // If this type is enable
+            if (links2[l.name]==undefined){
+              var neighbor;
+              if (curNode==l.source){
+                  neighbor = l.target;
+              }
+              else if (curNode==l.target){
+                  neighbor = l.source;
+              }   
+              var neighborNode;
+              if (nameToNode2[neighbor.fields.entity_text]==undefined){
+                var neighborNode = new Object();
+                neighborNode.ref = neighbor;
+                nodes2.push(neighborNode);
+                nameToNode2[neighbor.fields.entity_text] = neighborNode;
+              }
+              else{
+                neighborNode = nameToNode2[neighbor.fields.entity_text];
+              }
 
-            var newLink = new Object();
-            newLink.source = d;
-            newLink.target = neighborNode;
-            newLink.type = l.type;
-            newLink.count = 1;
-            links2.push(newLink);
-            links2[l.name] = newLink;
-            count++;
-          } 
-          else{
-            links2[l.name].count++;
-          } 
+              var newLink = new Object();
+              newLink.source = d;
+              newLink.target = neighborNode;
+              newLink.type = l.type;
+              newLink.count = 1;
+              links2.push(newLink);
+              links2[l.name] = newLink;
+              count++;
+            } 
+            else{
+              links2[l.name].count++;
+            } 
+          }
         }
       
         addNodes();   

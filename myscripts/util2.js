@@ -57,20 +57,25 @@ function addDotplots(d){
             types[l.type].count++;   
         }
     }
-    var dataTip = [];
-    for (key in types) {
-      var e= new Object;
-      e.type = key;
-      e.count= types[key].count;
-      dataTip.push(e);
+    if (d.dataTip==undefined){
+      d.dataTip = [];
+      for (key in types) {
+        var e= new Object;
+        e.type = key;
+        e.count= types[key].count;
+        e.isEnable = true;
+        e.backgroundColor = "#000";
+        d.dataTip.push(e);
+        d.dataTip[e.type] =e; // hash from type to the actual element
+      }
     }
-    
+
     var tip_svg = d3.select('.d3-tip').append('svg')
       .attr("width", tipWidth)
       .attr("height", 60);
 
     // background rows  
-    tip_svg.selectAll(".tipTypeRect").data(dataTip)
+    tip_svg.selectAll(".tipTypeRect").data(d.dataTip)
       .enter().append('rect')
       .attr("class", "tipTypeRect")
       .attr("rx", 5)
@@ -83,11 +88,8 @@ function addDotplots(d){
       .attr("width", tipWidth)
       .attr("height", 15)
       .style("text-anchor", "end")
-      .style("fill", function(d,index){
-        d.isEnable = true;
-        d.backgroundColor = "#000";
-        d.backgroundColorDisable = "#000";
-        return d.backgroundColor;
+      .style("fill", function(d2,index){
+        return d2.backgroundColor;
       })
       .style("stroke", function(d2){
         d2.stroke= "#888";
@@ -99,7 +101,7 @@ function addDotplots(d){
      
 
 
-    tip_svg.selectAll(".tipTypeText").data(dataTip)
+    tip_svg.selectAll(".tipTypeText").data(d.dataTip)
       .enter().append('text')
       .attr("class", "tipTypeText")
       .attr("font-family", "sans-serif")
@@ -127,44 +129,42 @@ function addDotplots(d){
       });  
     } 
 
-    function mouseoutType(d){
-      setTypeColor(d);
+    function mouseoutType(d2){
+      setTypeColor(d2);
     } 
-    function clickType(d){
-      d.isEnable = !d.isEnable;
-      setTypeColor(d);
+    function clickType(d2){
+      d2.isEnable = !d2.isEnable;
+      setTypeColor(d2);
     } 
 
-    function setTypeColor(d){
+    function setTypeColor(d2){
       tip_svg.selectAll(".tipTypeRect")
-        .style("fill" , function(d2){
-          if (d2.isEnable==true)
-            return d.backgroundColor;
-          else 
-            return d.backgroundColorDisable;
+        .style("fill" , function(d4){
+            return d4.backgroundColor;
         })
-        .style("stroke" , function(d2){
-         if (d2.isEnable==true)
-            return d2.stroke;
+        .style("stroke" , function(d4){
+         if (d4.isEnable==true)
+            return d4.stroke;
             
         });   
       tip_svg.selectAll(".tipTypeText")
-        .style("fill" , function(d2){
-          if (d2.isEnable==true)
-            return getColor(d2.type);
+        .style("fill" , function(d4){
+          if (d4.isEnable==true)
+            return getColor(d4.type);
           else 
             return "#555";
         }); 
 
       tip_svg.selectAll(".tipTypeDot")
-        .style("fill" , function(d2){
+        .style("fill" , function(d4){
           var tipdata;
-          for (var i=0;i<dataTip.length;i++){
-             if (dataTip[i].type==d2.type) 
-                tipdata = dataTip[i];
+          for (var i=0;i<d.dataTip.length;i++){
+             if (d.dataTip[i].type==d4.type) 
+                tipdata = d.dataTip[i];
           }
+         // debugger;
           if (tipdata.isEnable==true)
-            return getColor(d2.type);
+            return getColor(d4.type);
           else 
             return "#555";
         })   
@@ -190,4 +190,23 @@ function addDotplots(d){
         .style("fill", function(d2){
            return getColor(d2.type);
         });
+
+    d.dataTip.forEach(function(d2){   // make sure disable types are greyout on the second mouse over
+      mouseoutType(d2);
+    });   
+
+    // Add control buttons
+  if (d.dataTip==undefined){
+      d.dataTip = [];
+      for (key in types) {
+        var e= new Object;
+        e.type = key;
+        e.count= types[key].count;
+        e.isEnable = true;
+        e.backgroundColor = "#000";
+        d.dataTip.push(e);
+        d.dataTip[e.type] =e; // hash from type to the actual element
+      }
+  }
+
 }
