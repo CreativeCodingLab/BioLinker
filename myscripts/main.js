@@ -7,7 +7,7 @@
 //Constants for the SVG
 var margin = {top: 0, right: 0, bottom: 5, left: 15};
 var width = document.body.clientWidth - margin.left - margin.right;
-var height = 500 - margin.top - margin.bottom;
+var height = 600 - margin.top - margin.bottom;
 
 //---End Insert------
 
@@ -116,6 +116,10 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
         l.source = node1;
         l.target = node2;
         l.type = type;
+        l["Context_Species"] = d.extracted_information.context.Species;
+        l["Context_Organ"] = d.extracted_information.context.Organ;
+        l["Context_CellType"] = d.extracted_information.context.CellType;
+        
         l.name = node1.fields.entity_text+"__"+node2.fields.entity_text;
         links.push(l);
       }     
