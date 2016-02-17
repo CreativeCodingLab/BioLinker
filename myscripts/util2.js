@@ -1,22 +1,25 @@
 var tipWidth = 300;
-var tipSVGheight = 300;
+var tipSVGheight = 400;
 var tip_svg;
+var y_svg;
 
 function showTip(d) {
   tip.show(d);
   tip_svg = d3.select('.d3-tip').append('svg')
       .attr("width", tipWidth)
       .attr("height", tipSVGheight);
+  y_svg = 10; // inital y position     
+
   addDotplots(d,"type");
 
-//  addDotplots(d,"Context_Species");
-//  addDotplots(d,"Context_Organ");
-//  addDotplots(d,"Context_CellType");
+  addDotplots(d,"Context_Species");
+  addDotplots(d,"Context_Organ");
+  addDotplots(d,"Context_CellType");
 }     
 
 var tip = d3.tip()
   .attr('class', 'd3-tip')
-  .offset([-400,0])
+  .offset([-(tipSVGheight+10),0])
   .html(function(d) {
     var curNode = d;
     if (curNode.ref!=undefined){
@@ -38,6 +41,8 @@ var tip = d3.tip()
 
 
 function addDotplots(d,fieldName){
+  y_svg += 20; // inital y position     
+
   var curNode = d;
   if (curNode.ref!=undefined){
       curNode = curNode.ref;
@@ -62,6 +67,9 @@ function addDotplots(d,fieldName){
         e.count= types[key].count;
         e.isEnable = true;
         e.backgroundColor = "#000";
+        e.stroke= "#888";
+        e.y = y_svg;  
+        y_svg+=14;  // the next y position
         d["tip_"+fieldName].push(e);
         d["tip_"+fieldName][e[fieldName]] =e; // hash from type to the actual element
       }
@@ -76,18 +84,16 @@ function addDotplots(d,fieldName){
       .attr("ry", 4)
       .attr("x", 0)
       .attr("y", function(d2, index){
-        types[d2[fieldName]].y = 10+index*15;  
-        return types[d2[fieldName]].y;
+        return d2.y;
       })
       .attr("width", tipWidth)
-      .attr("height", 15)
+      .attr("height", 14)
       .style("text-anchor", "end")
       .style("fill", function(d2,index){
         return d2.backgroundColor;
       })
       .style("stroke-width", 0.5)
       .style("stroke", function(d2){
-        d2.stroke= "#888";
         return d2.stroke;
       })
       .on('mouseover', mouseoverType)
@@ -96,13 +102,13 @@ function addDotplots(d,fieldName){
      
 
 
-    tip_svg.selectAll(".tipTypeText").data(d["tip_"+fieldName])
+    tip_svg.selectAll(".tipTypeText_"+fieldName).data(d["tip_"+fieldName])
       .enter().append('text')
-      .attr("class", "tipTypeText")
+      .attr("class", "tipTypeText_"+fieldName)
       .attr("font-family", "sans-serif")
       .attr("font-size", "12px")
       .attr("x", 110)
-      .attr("y", function(d2){return types[d2[fieldName]].y;})
+      .attr("y", function(d2){return d2.y;})
       .attr("dy", "0.90em")
       .style("text-anchor", "end")
       .text(function(d2){
@@ -116,7 +122,7 @@ function addDotplots(d,fieldName){
       .on('click', clickType);
 
     function mouseoverType(d){
-      tip_svg.selectAll(".tipTypeRect")
+      tip_svg.selectAll(".tipTypeRect_"+fieldName)
           .style("fill" , function(d2){
             if (d[fieldName]==d2[fieldName]){
               return "#ffc";
@@ -133,7 +139,7 @@ function addDotplots(d,fieldName){
     } 
 
     function setTypeColor(d2){
-      tip_svg.selectAll(".tipTypeRect")
+      tip_svg.selectAll(".tipTypeRect_"+fieldName)
         .style("fill" , function(d4){
             return d4.backgroundColor;
         })
@@ -142,7 +148,7 @@ function addDotplots(d,fieldName){
             return d4.stroke;
             
         });   
-      tip_svg.selectAll(".tipTypeText")
+      tip_svg.selectAll(".tipTypeText_"+fieldName)
         .style("fill" , function(d4){
           if (d4.isEnable==true)
             return getColor(d4[fieldName]);
@@ -150,7 +156,7 @@ function addDotplots(d,fieldName){
             return "#333";
         }); 
 
-      tip_svg.selectAll(".tipTypeDot")
+      tip_svg.selectAll(".tipTypeDot_"+fieldName)
         .style("fill" , function(d4){
           var tipdata;
           for (var i=0;i<d["tip_"+fieldName].length;i++){
@@ -159,16 +165,16 @@ function addDotplots(d,fieldName){
           }
          // debugger;
           if (tipdata.isEnable==true)
-            return getColor(d4[fieldName]);
+            return getColor(d4.type);
           else 
-            return "#555";
+            return "#222";
         })   
     }
 
-    var dotRadius =4.5;    
-    tip_svg.selectAll(".tipTypeDot").data(curNode.directLinks)
+    var dotRadius =4;    
+    tip_svg.selectAll(".tipTypeDot_"+fieldName).data(curNode.directLinks)
       .enter().append('circle')
-      .attr("class", "tipTypeDot")
+      .attr("class", "tipTypeDot_"+fieldName)
         .attr('r',dotRadius)
         .attr('cx',function(l, index){
           if (types[l[fieldName]].currentIndex==undefined){
@@ -180,10 +186,10 @@ function addDotplots(d,fieldName){
           return 120+types[l[fieldName]].currentIndex*2*dotRadius;
         })
         .attr('cy',function(l){
-          return types[l[fieldName]].y+7;
+          return  d["tip_"+fieldName][l[fieldName]].y+7;  // Get the y position of a type
         })
         .style("fill", function(d2){
-           return getColor(d2[fieldName]);
+           return getColor(d2.type);
         });
 
     d["tip_"+fieldName].forEach(function(d2){   // make sure disable types are greyout on the second mouse over
