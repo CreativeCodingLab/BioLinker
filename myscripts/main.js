@@ -339,7 +339,7 @@ function secondLayout(selected){
         var count=0;
         for (var i=0;i<curNode.directLinks.length;i++){
           var l = curNode.directLinks[i];
-          if (d.dataTip[l.type].isEnable){  // If this type is enable
+          if (d["tip_type"][i].isEnable){  // If this type is enable
             if (links2[l.name]==undefined){
               var neighbor;
               if (curNode==l.source){

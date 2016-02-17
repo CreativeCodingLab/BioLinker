@@ -1,16 +1,22 @@
-var tipWidth = 150;
+var tipWidth = 300;
+var tipSVGheight = 300;
+var tip_svg;
 
 function showTip(d) {
   tip.show(d);
+  tip_svg = d3.select('.d3-tip').append('svg')
+      .attr("width", tipWidth)
+      .attr("height", tipSVGheight);
   addDotplots(d,"type");
-  addDotplots(d,"Context_Species");
-  addDotplots(d,"Context_Organ");
-  addDotplots(d,"Context_CellType");
+
+//  addDotplots(d,"Context_Species");
+//  addDotplots(d,"Context_Organ");
+//  addDotplots(d,"Context_CellType");
 }     
 
 var tip = d3.tip()
   .attr('class', 'd3-tip')
-  .offset([-170,0])
+  .offset([-400,0])
   .html(function(d) {
     var curNode = d;
     if (curNode.ref!=undefined){
@@ -60,15 +66,12 @@ function addDotplots(d,fieldName){
         d["tip_"+fieldName][e[fieldName]] =e; // hash from type to the actual element
       }
     }
-
-    var tip_svg = d3.select('.d3-tip').append('svg')
-      .attr("width", tipWidth)
-      .attr("height", 160);
-
+  
     // background rows  
-    tip_svg.selectAll(".tipTypeRect").data(d["tip_"+fieldName])
+
+    tip_svg.selectAll(".tipTypeRect_"+fieldName).data(d["tip_"+fieldName])
       .enter().append('rect')
-      .attr("class", "tipTypeRect")
+      .attr("class", "tipTypeRect_"+fieldName)
       .attr("rx", 4)
       .attr("ry", 4)
       .attr("x", 0)
