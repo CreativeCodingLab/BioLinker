@@ -235,18 +235,17 @@ function secondLayout(selected){
   nameToNode2={}; 
   isDisplayingPopup = false;  
     
-    // Add one example node when initialized
-    var newNode = new Object();
-    newNode.ref = nodes[selected];
-    newNode.x = nodes[selected].x;;
-    newNode.y = -10;
-    nodes2.push(newNode);
-    nameToNode2[nodes[selected].fields.entity_text] = newNode; 
+  // Add one example node when initialized
+  var newNode = new Object();
+  newNode.ref = nodes[selected];
+  newNode.x = nodes[selected].x;;
+  newNode.y = -10;
+  nodes2.push(newNode);
+  nameToNode2[nodes[selected].fields.entity_text] = newNode; 
 
-    addNodes();
-    update1(); // Update the overview graph 
-    
-    update2();
+  addNodes();
+  update1(); // Update the overview graph 
+  update2();
     
     function addNodes() {
         force2

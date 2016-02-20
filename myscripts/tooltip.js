@@ -31,6 +31,9 @@ function showTip(d) {
       .attr("height", tipSVGheight);
   y_svg = 10; // inital y position     
 
+
+   
+
   addDotplots(d,"type");
   addDotplots(d,"Context_Species");
   addDotplots(d,"Context_Organ");
@@ -46,6 +49,16 @@ function addDotplots(d,fieldName){
   if (curNode.ref!=undefined){
       curNode = curNode.ref;
   }
+  curNode.directLinks.sort(function (a, b) {
+      if (a.type > b.type) {
+          return 1;
+      }
+      if (a.type < b.type) {
+          return -1;
+      }
+      return 0;
+  }); 
+
      // Compute statistics for neighbors ***************************************
     var types = new Object();
     for (var i=0; i<curNode.directLinks.length;i++){
