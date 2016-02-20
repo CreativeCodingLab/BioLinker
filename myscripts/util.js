@@ -160,7 +160,7 @@ function getColor(category) {
   else if (category=="increases")
     return "rgb("+255+", "+0+", "+255+")" ; // leaf node
   else{
-    return "#aaa";    
+    return "#000";    
   }
 }
 

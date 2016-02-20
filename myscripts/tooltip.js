@@ -1,7 +1,28 @@
 var tipWidth = 300;
-var tipSVGheight = 400;
+var tipSVGheight = 500;
 var tip_svg;
 var y_svg;
+
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-(tipSVGheight+20),0])
+  .html(function(d) {
+    var curNode = d;
+    
+    if (curNode.ref!=undefined){
+        curNode = curNode.ref;
+    }
+    
+    var str = "";
+    for (key in curNode.fields) {
+        str+= "<span style='color:#666'>"+key+":</span> <span style='color:#000'>" + curNode.fields[key] + "</span> <br>"
+    }
+
+    str+= "<span style='color:#aaa'>Publication data, includes TimeArcs</span> <br>"
+    str+= "<span style='color:#aaa'>Potential conflicts (statistics)</span> <br>"
+    return str;
+  })
+
 
 function showTip(d) {
   tip.show(d);
@@ -11,33 +32,11 @@ function showTip(d) {
   y_svg = 10; // inital y position     
 
   addDotplots(d,"type");
-
   addDotplots(d,"Context_Species");
   addDotplots(d,"Context_Organ");
   addDotplots(d,"Context_CellType");
 }     
 
-var tip = d3.tip()
-  .attr('class', 'd3-tip')
-  .offset([-(tipSVGheight+10),0])
-  .html(function(d) {
-    var curNode = d;
-    if (curNode.ref!=undefined){
-        curNode = curNode.ref;
-    }
-    var str = "";
-    for (key in curNode.fields) {
-        str+= key+": <span style='color:#7ef'>" + curNode.fields[key] + "</span> <br>"
-    }
-    
-    //str+= "<br>Number of directLinks: <span style='color:#ff8'>" + curNode.directLinks.length + "</span> <br>"
-    //for (key in types) {
-    //    str+= "-"+key+": <span style='color:"+getColor(key)+ "'>" + types[key] + "</span> <br>"
-    //}
-    str+= "<span style='color:#444'>Publication data, includes TimeArcs</span> <br>"
-    str+= "<span style='color:#444'>Potential conflicts (statistics)</span> <br>"
-    return str;
-})
 
 
 function addDotplots(d,fieldName){
@@ -47,17 +46,20 @@ function addDotplots(d,fieldName){
   if (curNode.ref!=undefined){
       curNode = curNode.ref;
   }
-     // Compute statistics for neighbors
+     // Compute statistics for neighbors ***************************************
     var types = new Object();
     for (var i=0; i<curNode.directLinks.length;i++){
-        var l = curNode.directLinks[i];
-        if (types[l[fieldName]]==undefined){
-            types[l[fieldName]] = new Object();
-            types[l[fieldName]].count = 1;
-        }
-        else{
-            types[l[fieldName]].count++;   
-        }
+      var l = curNode.directLinks[i];
+      if (types[l[fieldName]]==undefined){
+          types[l[fieldName]] = new Object();
+          types[l[fieldName]].count = 1;
+      }
+      else{
+          types[l[fieldName]].count++;   
+      }
+      if (types[l[fieldName]].list==undefined)
+        types[l[fieldName]].list = [];
+      types[l[fieldName]].list.push(l); 
     }
     if (d["tip_"+fieldName]==undefined){
       d["tip_"+fieldName] = [];
@@ -65,9 +67,10 @@ function addDotplots(d,fieldName){
         var e= new Object;
         e[fieldName] = key;
         e.count= types[key].count;
+        e.list= types[key].list;        
         e.isEnable = true;
-        e.backgroundColor = "#000";
-        e.stroke= "#888";
+        e.backgroundColor = "#fff";
+        e.stroke= "#000";
         e.y = y_svg;  
         y_svg+=14;  // the next y position
         d["tip_"+fieldName].push(e);
@@ -75,8 +78,7 @@ function addDotplots(d,fieldName){
       }
     }
   
-    // background rows  
-
+    // background rows ********************************************************
     tip_svg.selectAll(".tipTypeRect_"+fieldName).data(d["tip_"+fieldName])
       .enter().append('rect')
       .attr("class", "tipTypeRect_"+fieldName)
@@ -92,7 +94,7 @@ function addDotplots(d,fieldName){
       .style("fill", function(d2,index){
         return d2.backgroundColor;
       })
-      .style("stroke-width", 0.5)
+      .style("stroke-width", 0.1)
       .style("stroke", function(d2){
         return d2.stroke;
       })
@@ -125,8 +127,10 @@ function addDotplots(d,fieldName){
       tip_svg.selectAll(".tipTypeRect_"+fieldName)
           .style("fill" , function(d2){
             if (d[fieldName]==d2[fieldName]){
-              return "#ffc";
+              return "#fca";
             }
+            else
+              return d2.backgroundColor;
       });  
     } 
 
@@ -149,25 +153,24 @@ function addDotplots(d,fieldName){
             
         });   
       tip_svg.selectAll(".tipTypeText_"+fieldName)
-        .style("fill" , function(d4){
+        .style("fill-opacity" , function(d4){
           if (d4.isEnable==true)
-            return getColor(d4[fieldName]);
+            return 1;
           else 
-            return "#333";
+            return 0.15;
         }); 
 
       tip_svg.selectAll(".tipTypeDot_"+fieldName)
-        .style("fill" , function(d4){
+        .style("fill-opacity" , function(d4){
           var tipdata;
           for (var i=0;i<d["tip_"+fieldName].length;i++){
              if (d["tip_"+fieldName][i][fieldName]==d4[fieldName]) 
                 tipdata = d["tip_"+fieldName][i];
           }
-         // debugger;
           if (tipdata.isEnable==true)
-            return getColor(d4.type);
+            return 1;
           else 
-            return "#222";
+            return 0.1;
         })   
     }
 
@@ -196,7 +199,7 @@ function addDotplots(d,fieldName){
       mouseoutType(d2);
     });   
 
-    // Add control buttons
+  /*  // Add control buttons
   if (d["tip_"+fieldName]==undefined){
       d["tip_"+fieldName] = [];
       for (key in types) {
@@ -208,6 +211,6 @@ function addDotplots(d,fieldName){
         d["tip_"+fieldName].push(e);
         d["tip_"+fieldName][e[fieldName]] =e; // hash from type to the actual element
       }
-  }
+  }*/
 
 }

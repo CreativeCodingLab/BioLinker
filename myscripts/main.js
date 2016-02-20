@@ -296,7 +296,6 @@ function secondLayout(selected){
               .style("stroke-opacity", 0.5)
               .style("stroke-width", 0.3)
               .call(force2.drag)
-              // .on('mouseover', tip.show)
               .on("click", click2)
               .on('mouseover', function(d) {
                 showTip(d); 
