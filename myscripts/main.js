@@ -295,7 +295,7 @@ function secondLayout(selected){
               .style("stroke-opacity", 0.5)
               .style("stroke-width", 0.3)
               .call(force2.drag)
-              .on("click", click2)
+              //.on("click", click2)
               .on('mouseover', function(d) {
                 showTip(d); 
               });
@@ -306,25 +306,8 @@ function secondLayout(selected){
               //    tip.hide(d);
               //}); 
     }    
-    
-    
-    function update2() {
-        node2 = svg2.selectAll(".node")
-        link2 = svg2.selectAll(".link")
-        
-        force2.on("tick", function() {
-            link2.attr("x1", function(d) { return d.source.x; })
-                .attr("y1", function(d) { return d.source.y; })
-                .attr("x2", function(d) { return d.target.x; })
-                .attr("y2", function(d) { return d.target.y; });
-
-            node2.attr("cx", function(d) { return d.x; })
-                .attr("cy", function(d) { return d.y; });
-        });    
-
-    };    
-     
-     function click2(d) {
+  }  
+  function click2(d) {
         isDisplayingPopup = !isDisplayingPopup;
           tip.hide(d);
           expand2(d);
@@ -380,7 +363,20 @@ function secondLayout(selected){
         update2();
         update1(); // Update the overview graph  
     }  
-  }  
+    function update2() {
+        node2 = svg2.selectAll(".node")
+        link2 = svg2.selectAll(".link")
+        
+        force2.on("tick", function() {
+            link2.attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
 
+            node2.attr("cx", function(d) { return d.x; })
+                .attr("cy", function(d) { return d.y; });
+        });    
+
+    };    
 
 

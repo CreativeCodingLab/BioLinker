@@ -1,11 +1,17 @@
-var tipWidth = 250;
-var tipSVGheight = 500;
+var tipWidth = 300;
+var tipSVGheight = 600;
 var tip_svg;
 var y_svg;
 
+var colorHighlight = "#fc8";
+var buttonColor = "#ddd";
+var cellHeight = 15;
+
+
 var tip = d3.tip()
   .attr('class', 'd3-tip')
-  .offset([-(tipSVGheight),-tipWidth/2]);
+  .offset([-(tipSVGheight),-tipWidth/2])
+  .style('border', '0.5px solid #bbb');;
 
 function checkMouseOut(d, tipItem){
   var isOut=false;
@@ -24,9 +30,6 @@ function showTip(d) {
       .attr("width", tipWidth)
       .attr("height", tipSVGheight)
       ;
-
-
-
   d3.select('.d3-tip')
   .on("mouseout", function(){
     if (checkMouseOut(d, this))
@@ -40,12 +43,12 @@ function showTip(d) {
     }*/
      
   })
-  y_svg = 0; // inital y position     
+  y_svg = -5; // inital y position     
   addText(d);
-  addDotplots(d,"type");
-  addDotplots(d,"Context_Species");
-  addDotplots(d,"Context_Organ");
-  addDotplots(d,"Context_CellType");
+  addDotplots(d,"type", "Interaction types");
+  addDotplots(d,"Context_Species", "Context-Species");
+  addDotplots(d,"Context_Organ", "Context-Organ");
+  addDotplots(d,"Context_CellType", "Context-CellType");
 }     
 
 function addText(d){
@@ -67,10 +70,9 @@ function addText(d){
       .attr("class", "tipText")
       .attr("font-family", "sans-serif")
       .attr("font-size", "12px")
-      .attr("x", 10)
+      .attr("x", 0)
       .attr("y", function(d2){ 
-        y_svg+=15; 
-        return y_svg;
+        return y_svg+=cellHeight;
       })
       .style("text-anchor", "start")
       .text(function(d2){
@@ -80,13 +82,13 @@ function addText(d){
   //}
 }
 
-function addDotplots(d,fieldName){
+function addDotplots(d,fieldName,label){
   y_svg += 20; // inital y position     
   var curNode = d;
   if (curNode.ref!=undefined){
       curNode = curNode.ref;
   }
-
+  
 
 
   curNode.directLinks.sort(function (a, b) {
@@ -116,6 +118,7 @@ function addDotplots(d,fieldName){
     }
     if (d["tip_"+fieldName]==undefined){
       d["tip_"+fieldName] = [];
+      d["ylabel_"+fieldName] = y_svg-4;
       for (key in types) {
         var e= new Object;
         e[fieldName] = key;
@@ -125,24 +128,37 @@ function addDotplots(d,fieldName){
         e.backgroundColor = "#fff";
         e.stroke= "#000";
         e.y = y_svg;  
-        y_svg+=14;  // the next y position
+        y_svg+=cellHeight;  // the next y position
         d["tip_"+fieldName].push(e);
         d["tip_"+fieldName][e[fieldName]] =e; // hash from type to the actual element
       }
     }
+    // Label ********************************************************
+  tip_svg.append('text')
+    .attr("class", "tiplabel_"+fieldName)
+    .attr("x", 0)
+    .attr("y", d["ylabel_"+fieldName])
+    .style("font-family", "sans-serif")
+    .style("font-size", "12px")
+    .style("font-weight", "bold")
+    .style("text-anchor", "start")
+    .text(label)
+    .style("fill", "#000");
   
+    
+
     // background rows ********************************************************
     tip_svg.selectAll(".tipTypeRect_"+fieldName).data(d["tip_"+fieldName])
       .enter().append('rect')
       .attr("class", "tipTypeRect_"+fieldName)
       .attr("rx", 4)
       .attr("ry", 4)
-      .attr("x", 0)
+      .attr("x", 10)
       .attr("y", function(d2, index){
         return d2.y;
       })
-      .attr("width", tipWidth)
-      .attr("height", 14)
+      .attr("width", tipWidth-10)
+      .attr("height", cellHeight)
       .style("text-anchor", "end")
       .style("fill", function(d2,index){
         return d2.backgroundColor;
@@ -162,7 +178,7 @@ function addDotplots(d,fieldName){
       .attr("class", "tipTypeText_"+fieldName)
       .attr("font-family", "sans-serif")
       .attr("font-size", "12px")
-      .attr("x", 110)
+      .attr("x", 125)
       .attr("y", function(d2){return d2.y;})
       .attr("dy", "0.90em")
       .style("text-anchor", "end")
@@ -239,7 +255,7 @@ function addDotplots(d,fieldName){
           else{
             types[l[fieldName]].currentIndex++;
           }
-          return 120+types[l[fieldName]].currentIndex*2*dotRadius;
+          return 135+types[l[fieldName]].currentIndex*2*dotRadius;
         })
         .attr('cy',function(l){
           return  d["tip_"+fieldName][l[fieldName]].y+7;  // Get the y position of a type
@@ -252,18 +268,95 @@ function addDotplots(d,fieldName){
       mouseoutType(d2);
     });   
 
-  /*  // Add control buttons
-  if (d["tip_"+fieldName]==undefined){
-      d["tip_"+fieldName] = [];
-      for (key in types) {
-        var e= new Object;
-        e[fieldName] = key;
-        e.count= types[key].count;
-        e.isEnable = true;
-        e.backgroundColor = "#000";
-        d["tip_"+fieldName].push(e);
-        d["tip_"+fieldName][e[fieldName]] =e; // hash from type to the actual element
-      }
-  }*/
+  // Close button ***************************************************************  
+    var buttonCloseWidth = 60;
+    var buttonheight = 17;
+    var roundConner = 3;
+
+    tip_svg.append('rect')
+      .attr("class", "tipCloseRect")
+      .attr("x", tipWidth-buttonCloseWidth-1)
+      .attr("y", tipSVGheight-buttonheight-1)
+      .attr("rx", roundConner)
+      .attr("ry", roundConner)
+      .attr("width", buttonCloseWidth)
+      .attr("height", buttonheight)
+      .style("stroke", "#000")
+      .style("stroke-width", 0.1)
+      .style("fill", buttonColor)
+      .on('mouseover', function(d2){
+        tip_svg.selectAll(".tipCloseRect")
+            .style("fill", colorHighlight);
+      })
+      .on('mouseout', function(d2){
+        tip_svg.selectAll(".tipCloseRect")
+            .style("fill", buttonColor);
+      })
+      .on('click', tip.hide);         
+    tip_svg.append('text')
+        .attr("class", "tipCloseText")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "11px")
+        .attr("x", tipWidth-buttonCloseWidth/2)
+        .attr("y", tipSVGheight-5)
+        .text("Close")
+        .style("text-anchor", "middle")
+        .style("fill", "#000")
+        .on('mouseover', function(d2){
+            tip_svg.selectAll(".tipCloseRect")
+              .style("fill", colorHighlight);
+        })
+        .on('mouseout', function(d2){
+            tip_svg.selectAll(".tipCloseRect")
+              .style("fill", buttonColor);
+        })
+        .on('click', tip.hide);
+
+    // Expand button ***************************************************************  
+    var buttonExpandWidth = 60;
+   
+    tip_svg.append('rect')
+        .attr("class", "tipExpandRect")
+        .attr("x", tipWidth-buttonCloseWidth-buttonExpandWidth-5)
+        .attr("y", tipSVGheight-buttonheight-1)
+        .attr("rx", roundConner)
+        .attr("ry", roundConner)
+        .attr("width", buttonExpandWidth)
+        .attr("height", buttonheight)
+        .style("stroke", "#000")
+        .style("stroke-width", 0.1)
+        .style("fill", buttonColor)
+        .on('mouseover', function(d2){
+            tip_svg.selectAll(".tipExpandRect")
+              .style("fill", colorHighlight);
+        })
+        .on('mouseout', function(d2){
+            tip_svg.selectAll(".tipExpandRect")
+              .style("fill", buttonColor);
+        })
+        .on('click', function(d2){
+           getNeighbors(d, d3.event);
+        });         
+    tip_svg.append('text')
+        .attr("class", "tipExpandText")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "11px")
+        .attr("x", tipWidth-buttonCloseWidth-buttonExpandWidth/2-3)
+        .attr("y", tipSVGheight-5)
+        .text("Expand")
+        .style("text-anchor", "middle")
+        .style("fill", "#000")
+        .on('mouseover', function(d2){
+            tip_svg.selectAll(".tipExpandRect")
+              .style("fill", colorHighlight);
+        })
+        .on('mouseout', function(d2){
+            tip_svg.selectAll(".tipExpandRect")
+              .style("fill", buttonColor);
+        })
+        .on('click', function(d2){
+          click2(d);
+        });     
+  
 
 }
