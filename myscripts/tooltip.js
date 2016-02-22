@@ -1,54 +1,94 @@
-var tipWidth = 300;
+var tipWidth = 250;
 var tipSVGheight = 500;
 var tip_svg;
 var y_svg;
 
 var tip = d3.tip()
   .attr('class', 'd3-tip')
-  .offset([-(tipSVGheight+20),0])
-  .html(function(d) {
-    var curNode = d;
-    
-    if (curNode.ref!=undefined){
-        curNode = curNode.ref;
-    }
-    
-    var str = "";
-    for (key in curNode.fields) {
-        str+= "<span style='color:#666'>"+key+":</span> <span style='color:#000'>" + curNode.fields[key] + "</span> <br>"
-    }
+  .offset([-(tipSVGheight),-tipWidth/2]);
 
-    str+= "<span style='color:#aaa'>Publication data, includes TimeArcs</span> <br>"
-    str+= "<span style='color:#aaa'>Potential conflicts (statistics)</span> <br>"
-    return str;
-  })
-
+function checkMouseOut(d, tipItem){
+  var isOut=false;
+   var coordinate = d3.mouse(tipItem);
+  //console.log ("  mouseout"+d3.mouse(this));
+  if (coordinate[0]<0 || coordinate[0]>=tipWidth+20 || coordinate[1]<=0 || coordinate[1]>=tipSVGheight+15){
+    console.log ("******"+coordinate);
+    isOut = true;
+  }
+  return isOut;
+}
 
 function showTip(d) {
   tip.show(d);
   tip_svg = d3.select('.d3-tip').append('svg')
       .attr("width", tipWidth)
-      .attr("height", tipSVGheight);
-  y_svg = 10; // inital y position     
+      .attr("height", tipSVGheight)
+      ;
 
 
-   
 
+  d3.select('.d3-tip')
+  .on("mouseout", function(){
+    if (checkMouseOut(d, this))
+      tip.hide(d);
+    /*
+    var coordinate = d3.mouse(this);
+    console.log ("  mouseout"+d3.mouse(this));
+    if (coordinate[0]<0 || coordinate[0]>=tipWidth+20 || coordinate[1]<=0 || coordinate[1]>=tipSVGheight+20){
+      console.log ("******");
+      tip.hide(d);
+    }*/
+     
+  })
+  y_svg = 0; // inital y position     
+  addText(d);
   addDotplots(d,"type");
   addDotplots(d,"Context_Species");
   addDotplots(d,"Context_Organ");
   addDotplots(d,"Context_CellType");
 }     
 
+function addText(d){
+   var curNode = d;
+  if (curNode.ref!=undefined){
+      curNode = curNode.ref;
+  }
 
+  var list =[];
+  for (key in curNode.fields) {
+    var e = new Object;
+    e.key = key;
+    e.value = curNode.fields[key];
+    list.push(e);
+  }  
+
+    tip_svg.selectAll(".tipText").data(list)
+      .enter().append('text')
+      .attr("class", "tipText")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "12px")
+      .attr("x", 10)
+      .attr("y", function(d2){ 
+        y_svg+=15; 
+        return y_svg;
+      })
+      .style("text-anchor", "start")
+      .text(function(d2){
+        return d2.key+": "+d2.value;
+      })
+      .style("fill", "#444");
+  //}
+}
 
 function addDotplots(d,fieldName){
   y_svg += 20; // inital y position     
-
   var curNode = d;
   if (curNode.ref!=undefined){
       curNode = curNode.ref;
   }
+
+
+
   curNode.directLinks.sort(function (a, b) {
       if (a.type > b.type) {
           return 1;
