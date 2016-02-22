@@ -11,7 +11,7 @@ function checkMouseOut(d, tipItem){
   var isOut=false;
    var coordinate = d3.mouse(tipItem);
   //console.log ("  mouseout"+d3.mouse(this));
-  if (coordinate[0]<0 || coordinate[0]>=tipWidth+20 || coordinate[1]<=0 || coordinate[1]>=tipSVGheight+15){
+  if (coordinate[0]<0 || coordinate[0]>=tipWidth+20 || coordinate[1]<=0 || coordinate[1]>=tipSVGheight+11){
     console.log ("******"+coordinate);
     isOut = true;
   }

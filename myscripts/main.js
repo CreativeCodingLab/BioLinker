@@ -298,13 +298,13 @@ function secondLayout(selected){
               .on("click", click2)
               .on('mouseover', function(d) {
                 showTip(d); 
-              })
-              .on('mouseout', function(d){
-                var isOut = checkMouseOut(d, d3.select('.d3-tip')[0][0]);
-                console.log("check="+isOut);
+              });
+              //.on('mouseout', function(d){
+              //  var isOut = checkMouseOut(d, d3.select('.d3-tip')[0][0]);
+              //  console.log("check="+isOut);
               //  if (isOut)
               //    tip.hide(d);
-              }); 
+              //}); 
     }    
     
     
