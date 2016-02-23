@@ -1,11 +1,11 @@
 var tipWidth = 300;
-var tipSVGheight = 600;
+var tipSVGheight = 400;
 var tip_svg;
 var y_svg;
 
 var colorHighlight = "#fc8";
 var buttonColor = "#ddd";
-var cellHeight = 15;
+var cellHeight = 14;
 
 
 var tip = d3.tip()
@@ -18,7 +18,6 @@ function checkMouseOut(d, tipItem){
    var coordinate = d3.mouse(tipItem);
   //console.log ("  mouseout"+d3.mouse(this));
   if (coordinate[0]<0 || coordinate[0]>=tipWidth+20 || coordinate[1]<=0 || coordinate[1]>=tipSVGheight+11){
-    console.log ("******"+coordinate);
     isOut = true;
   }
   return isOut;
@@ -208,6 +207,10 @@ function addDotplots(d,fieldName,label){
     } 
     function clickType(d2){
       d2.isEnable = !d2.isEnable;
+      for (var i=0; i<curNode.directLinks.length;i++){
+        var l = curNode.directLinks[i];
+        item.isEnable = d2.isEnable;
+      }
       setTypeColor(d2);
     } 
 
@@ -335,7 +338,9 @@ function addDotplots(d,fieldName,label){
               .style("fill", buttonColor);
         })
         .on('click', function(d2){
-           getNeighbors(d, d3.event);
+          isDisplayingPopup = !isDisplayingPopup;
+          tip.hide(d);
+          expand2(d);
         });         
     tip_svg.append('text')
         .attr("class", "tipExpandText")

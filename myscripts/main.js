@@ -7,7 +7,7 @@
 //Constants for the SVG
 var margin = {top: 0, right: 0, bottom: 5, left: 15};
 var width = document.body.clientWidth - margin.left - margin.right;
-var height = 600 - margin.top - margin.bottom;
+var height = 700 - margin.top - margin.bottom;
 
 //---End Insert------
 
@@ -247,7 +247,9 @@ function secondLayout(selected){
   update1(); // Update the overview graph 
   update2();
     
-    function addNodes() {
+        
+  }
+  function addNodes() {
         force2
             .nodes(nodes2)
             .links(links2)
@@ -305,8 +307,8 @@ function secondLayout(selected){
               //  if (isOut)
               //    tip.hide(d);
               //}); 
-    }    
-  }  
+    }
+
   function click2(d) {
         isDisplayingPopup = !isDisplayingPopup;
           tip.hide(d);
@@ -324,7 +326,35 @@ function secondLayout(selected){
         var count=0;
         for (var i=0;i<curNode.directLinks.length;i++){
           var l = curNode.directLinks[i];
-          if (d["tip_type"][i].isEnable){  // If this type is enable
+          var index;
+          for (var j=0;j<d["tip_type"].length;j++){
+              if (d["tip_type"][l.type]!=undefined)
+                index = j; 
+          }
+            
+          //debugger;
+
+
+          var tipdata;
+          var fieldName="type";
+          for (var i2=0;i2<d["tip_"+fieldName].length;i2++){
+            console.log("****"+d["tip_"+fieldName][i2][fieldName]);  
+          
+             if (d["tip_"+fieldName][i2][fieldName]==l[fieldName]) 
+                tipdata = d["tip_"+fieldName][i2];
+          }
+          
+          var isOK ;
+          if (tipdata.isEnable==true)
+             isOK=true;
+          else 
+             isOK=false;
+
+          console.log(l.type+" "+d["tip_type"][index].isEnable);  
+          console.log(" tipdata.isEnable"+tipdata.isEnable +" isOK "+isOK);  
+          
+          //if (d["tip_type"][index].isEnable){  // If this type is enable
+          if (isOK){  // If this type is enable
             if (links2[l.name]==undefined){
               var neighbor;
               if (curNode==l.source){
