@@ -250,64 +250,69 @@ function secondLayout(selected){
         
   }
   function addNodes() {
-        force2
-            .nodes(nodes2)
-            .links(links2)
-            .start();
+    force2
+        .nodes(nodes2)
+        .links(links2)
+        .start();
 
-        svg2.selectAll(".link")
-            .data(links2)
-            .enter().append("line")
-            .attr("class", "link")
-              .style("stroke", function(l){
-                 return getColor(l.type);
-              })
-              .style("stroke-opacity", 0.5)
-              .style("stroke-width",function(l){
-                 return l.count;
-              })
+    svg2.selectAll(".link")
+        .data(links2)
+        .enter().append("line")
+        .attr("class", "link")
+          .style("stroke", function(l){
+             return getColor(l.type);
+          })
+          .style("stroke-opacity", 0.5)
+          .style("stroke-width",function(l){
+             return l.count;
+          })
 
-        svg2.selectAll(".node")
-            .data(nodes2)
-            .enter().append("circle")
-              .attr("class", "node")
-              .attr("r", function(d) {
-                var curNode = d;
-                if (curNode.ref!=undefined){
-                    curNode = curNode.ref;
-                }
-                // Compute direct links ********************************
-                if (curNode.directLinks==undefined){
-                    curNode.directLinks = [];
-                    for (var i=0; i<links.length;i++){
-                        var l = links[i];
-                        if (curNode==l.source || curNode==l.target){
-                            curNode.directLinks.push(l);
-                        }
-                    }
-                }
-                return 2+Math.pow(curNode.directLinks.length, 0.4);    
-              })
-              .style("fill", "#444")
-              .style("stroke", "#eee")
-              //.style("stroke", function(d){
-              //   console.log("d.name="+d.ref.fields.entity_text);
-              //   return getColor(l.type);
-              //})
-              .style("stroke-opacity", 0.5)
-              .style("stroke-width", 0.3)
-              .call(force2.drag)
-              //.on("click", click2)
-              .on('mouseover', function(d) {
-                showTip(d); 
-              });
-              //.on('mouseout', function(d){
-              //  var isOut = checkMouseOut(d, d3.select('.d3-tip')[0][0]);
-              //  console.log("check="+isOut);
-              //  if (isOut)
-              //    tip.hide(d);
-              //}); 
-    }
+    svg2.selectAll(".node")
+      .data(nodes2)
+      .enter().append("circle")
+        .attr("class", "node")
+        .attr("r", function(d) {
+          var curNode = d;
+          if (curNode.ref!=undefined){
+              curNode = curNode.ref;
+          }
+          // Compute direct links ********************************
+          if (curNode.directLinks==undefined){
+              curNode.directLinks = [];
+              for (var i=0; i<links.length;i++){
+                  var l = links[i];
+                  if (curNode==l.source || curNode==l.target){
+                      curNode.directLinks.push(l);
+                  }
+              }
+          }
+          return 2+Math.pow(curNode.directLinks.length, 0.4);    
+        })
+        .style("fill", "#444")
+        .style("stroke", "#eee")
+        //.style("stroke", function(d){
+        //   console.log("d.name="+d.ref.fields.entity_text);
+        //   return getColor(l.type);
+        //})
+        .style("stroke-opacity", 0.5)
+        .style("stroke-width", 0.3)
+        .call(force2.drag)
+        //.on("click", click2)
+        .on('mouseover', function(d) {
+          showTip(d); 
+        });
+    
+    /*    
+    svg2.selectAll(".icon").data(nodes2)
+      .enter().append("svg:image")
+        .attr("class","icon")
+       .attr('x',119)
+       .attr('y',112)
+       .attr('width', 20)
+       .attr('height', 20)
+       .attr("xlink:href","styles/user_female.png")*/
+
+  }
 
   function click2(d) {
         isDisplayingPopup = !isDisplayingPopup;
@@ -398,6 +403,8 @@ function secondLayout(selected){
         link2 = svg2.selectAll(".link")
         
         force2.on("tick", function() {
+
+
             link2.attr("x1", function(d) { return d.source.x; })
                 .attr("y1", function(d) { return d.source.y; })
                 .attr("x2", function(d) { return d.target.x; })
@@ -405,6 +412,11 @@ function secondLayout(selected){
 
             node2.attr("cx", function(d) { return d.x; })
                 .attr("cy", function(d) { return d.y; });
+
+            /*    
+            svg2.selectAll(".icon")
+              .attr("x", function(d) { return d.x; })
+              .attr("y", function(d) { return d.y; });*/
         });    
 
     };    
