@@ -1,5 +1,5 @@
 var tipWidth = 300;
-var tipSVGheight = 400;
+var tipSVGheight = 500;
 var tip_svg;
 var y_svg;
 
@@ -49,6 +49,8 @@ function showTip(d) {
   addDotplots(d,"Context_Organ", "Context-Organ");
   addDotplots(d,"Context_CellType", "Context-CellType");
 }     
+
+
 
 function addText(d){
    var curNode = d;
