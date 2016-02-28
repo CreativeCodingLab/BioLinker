@@ -82,6 +82,44 @@ var isDisplayingPopup;
 
 
 drawColorLegend();
+
+
+
+var speciesMap = {};
+d3.tsv("data/Species_exhaustive.tsv", function(error, data_) {
+    if (error) throw error;
+    data_.forEach(function(d) {
+      speciesMap[d["id"]] = d["name"];
+    });    
+});   
+
+var organMap = {};
+d3.tsv("data/Organ.tsv", function(error, data_) {
+    if (error) throw error;
+    data_.forEach(function(d) {
+      organMap[d["id"]] = d["name"];
+    });    
+});
+
+var celltypeMap = {};
+d3.tsv("data/Cell_Type.tsv", function(error, data_) {
+    if (error) throw error;
+    data_.forEach(function(d) {
+      celltypeMap[d["id"]] = d["name"];
+    });    
+});
+
+var uniprotMap = {};
+d3.tsv("data/uniprot-proteins.tsv", function(error, data_) {
+    if (error) throw error;
+    data_.forEach(function(d) {
+      if (uniprotMap[d["id"]]==undefined || uniprotMap[d["id"]].length>=d["name"].length) // to get the readable name
+      uniprotMap[d["id"]] = d["name"];
+    });    
+
+});   
+
+
 //d3.json("data/cards-for-time-arcs.json", function(error, data_) {
 d3.json("data/cardsWithContextData.json", function(error, data_) {
     data3 = data_;

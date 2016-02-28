@@ -45,9 +45,9 @@ function showTip(d) {
   y_svg = -5; // inital y position     
   addText(d);
   addDotplots(d,"type", "Interaction types");
-  addDotplots(d,"Context_Species", "Context-Species");
-  addDotplots(d,"Context_Organ", "Context-Organ");
-  addDotplots(d,"Context_CellType", "Context-CellType");
+  addDotplots(d,"Context_Species", "Context-Species", speciesMap);
+  addDotplots(d,"Context_Organ", "Context-Organ", organMap);
+  addDotplots(d,"Context_CellType", "Context-CellType",celltypeMap);
 }     
 
 
@@ -83,7 +83,7 @@ function addText(d){
   //}
 }
 
-function addDotplots(d,fieldName,label){
+function addDotplots(d,fieldName,label, map){
   y_svg += 20; // inital y position     
   var curNode = d;
   if (curNode.ref!=undefined){
@@ -184,6 +184,22 @@ function addDotplots(d,fieldName,label){
       .attr("dy", "0.90em")
       .style("text-anchor", "end")
       .text(function(d2){
+        if (map!=undefined){
+
+          if (d2[fieldName].indexOf("uniprot:")>-1){
+            var id = d2[fieldName].replace("uniprot:","");
+            // console.log("d2[fieldName]"+d2[fieldName]+" id="+id+" name="+uniprotMap[id]);
+            return uniprotMap[id];
+          }
+          else if (d2[fieldName].indexOf("taxonomy:")>-1){
+            var id = d2[fieldName].replace("taxonomy:", "");
+            return map[id];
+          }
+          else if (d2[fieldName].indexOf("uazid:")>-1){
+            var id = d2[fieldName].replace("uazid:", "");
+            return map[id];
+          } 
+        }  
         return d2[fieldName];
       })
       .style("fill", function(d2){
