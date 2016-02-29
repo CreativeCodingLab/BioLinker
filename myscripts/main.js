@@ -362,10 +362,10 @@ function secondLayout(selected){
 
     svg2.selectAll(".anchorNode").data(labelAnchors).enter().append("text").attr("class", "anchorNode")
       .text(function(d, i) {
-        debugger;
-        return i % 2 == 0 ? "" : d.node.ref.fields.entity_text;
+       return i % 2 == 0 ? "" : d.node.ref.fields.entity_text;
       })
       .style("fill", "#000")
+      .style("text-shadow", "1px 1px 0 rgba(200, 200, 200, 0.6")                
       .attr("font-family", "sans-serif")
       .attr("font-size", "11px");
                 
@@ -507,9 +507,9 @@ function secondLayout(selected){
 
             var shiftX = b.width * (diffX - dist) / (dist * 2);
             d.shiftX = Math.max(-b.width, Math.min(0, shiftX));
+            if (d.shiftX==undefined)
+              d.shiftX = 0;
             d.shiftY = 5;
-            
-            //this.childNodes[1].setAttribute("transform", "translate(" + shiftX + "," + shiftY + ")");
           }
         });
 
