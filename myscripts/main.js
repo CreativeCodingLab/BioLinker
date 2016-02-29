@@ -270,7 +270,6 @@ function update1(d) {
     });  
 }
 
-
 // Second layout *************************************************************************
 function secondLayout(selected){ 
   svg2.selectAll(".link").remove();
@@ -434,6 +433,8 @@ function secondLayout(selected){
                 neighborNode.ref = neighbor;
                 nodes2.push(neighborNode);
                 
+                debugger;
+                console.log("Data="+neighborNode.ref);
                 // Labels **********************************************
                 labelAnchors.push({
                   node : neighborNode

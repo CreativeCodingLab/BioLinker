@@ -1,0 +1,72 @@
+<html>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
+<script>
+/* global d3 */
+var card = {
+  "submitter" : "Reach",
+  "model_relation" : "extension",
+  "extracted_information" : {
+          "interaction_type" : "binds",
+          "negative_information" : false,
+          "participant_b" : {
+                  "in_model" : true,
+                  "identifier" : "interpro:IPR030474",
+                  "entity_text" : "IL-6",
+                  "entity_type" : "family"
+          },
+          "participant_a" : {
+                  "in_model" : true,
+                  "identifier" : "interpro:IPR009318",
+                  "entity_text" : "GRP",
+                  "entity_type" : "family"
+          },
+          "hypothesis_information" : false
+  },
+  "reading_complete" : "2016-01-12T11:54:47Z",
+  "reader_type" : "machine",
+  "reading_started" : "2016-01-12T11:54:28Z",
+  "evidence" : [
+          "GRP, with SP, is closely associated with IL-6"
+  ],
+  "pmc_id" : "1174968",
+  "score" : 0,
+  "trigger" : "associated"
+};
+
+var postData = {
+  cardA: card,
+  cardB: card
+}
+
+d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/IndexCards/compare')
+  .header('Content-Type', 'application/json')
+  .post(JSON.stringify(postData))
+  .on('load', function(d) { console.log(d); });
+
+d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/IndexCards/findOne')
+  .header('Content-Type', 'application/json')
+  .get()
+  .on('load', function(d) { 
+    
+    console.log(d); 
+    d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/IndexCards/'+d.id+'/nxml')
+      .header('Content-Type', 'application/json')
+      .get()
+      .on('load', function(d) { 
+        debugger;
+        console.log(d); });
+      });
+
+d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/IndexCards/56cb6ca9fb34904d10525cd3/nxml')
+  .header('Content-Type', 'application/json')
+  .get()
+  .on('load', function(d) { console.log(d); });
+
+d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/NXML/PMC1174968')
+  .header('Content-Type', 'application/json')
+  .get()
+  .on('load', function(d) { console.log(d); });
+</script>
+</body>
+</html>
