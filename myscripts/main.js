@@ -41,7 +41,7 @@ var force2 = d3.layout.force()
 
 var forceLabel = d3.layout.force()
   .gravity(0).linkDistance(1)
-  .linkStrength(8).charge(-100)
+  .linkStrength(8).charge(-80)
   .size([width, height]);
 
 /*
@@ -275,6 +275,11 @@ function update1(d) {
 function secondLayout(selected){ 
   svg2.selectAll(".link").remove();
   svg2.selectAll(".node").remove();
+  svg2.selectAll(".anchorNode").remove();
+  svg2.selectAll(".anchorLink").remove();
+  labelAnchors = [];
+  labelAnchorLinks = [];
+  nodes2 = [];   
   links2 = [];
   nodes2 = [];   
   nameToNode2={}; 
@@ -354,6 +359,7 @@ function secondLayout(selected){
       .nodes(labelAnchors)
       .links(labelAnchorLinks)
       .start();    
+
     svg2.selectAll(".anchorNode").data(labelAnchors).enter().append("text").attr("class", "anchorNode")
       .text(function(d, i) {
         debugger;
