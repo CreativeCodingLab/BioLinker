@@ -39,6 +39,11 @@ var force2 = d3.layout.force()
     .size([width, height]);
 
 
+var forceLabel = d3.layout.force()
+  .gravity(0).linkDistance(1)
+  .linkStrength(8).charge(-100)
+  .size([width, height]);
+
 /*
 var myPromise = new Promise(function(resolve) {
     d3.tsv("data/imdb1.tsv", function(error, data_) {
@@ -74,6 +79,8 @@ var nodes = [];
 var links = [];
 var nodes2 = [];
 var links2 = [];
+var labelAnchors = [];
+var labelAnchorLinks = [];
 
 var nameToNode={};
 var nameToNode2;
@@ -293,6 +300,7 @@ function secondLayout(selected){
         .links(links2)
         .start();
 
+
     svg2.selectAll(".link")
         .data(links2)
         .enter().append("line")
@@ -340,17 +348,25 @@ function secondLayout(selected){
           showTip(d); 
         });
     
-    /*    
-    svg2.selectAll(".icon").data(nodes2)
-      .enter().append("svg:image")
-        .attr("class","icon")
-       .attr('x',119)
-       .attr('y',112)
-       .attr('width', 20)
-       .attr('height', 20)
-       .attr("xlink:href","styles/user_female.png")*/
 
-  }
+    // Labels **********************************************    
+    forceLabel
+      .nodes(labelAnchors)
+      .links(labelAnchorLinks)
+      .start();    
+    svg2.selectAll(".anchorNode").data(labelAnchors).enter().append("text").attr("class", "anchorNode")
+      .text(function(d, i) {
+        debugger;
+        return i % 2 == 0 ? "" : d.node.ref.fields.entity_text;
+      })
+      .style("fill", "#000")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "11px");
+                
+   // svg2.selectAll(".anchorLink").data(labelAnchorLinks).enter()
+    //  .append("svg:line").attr("class", "anchorLink").style("stroke", "#00f");
+
+    }
 
   function click2(d) {
         isDisplayingPopup = !isDisplayingPopup;
@@ -411,6 +427,22 @@ function secondLayout(selected){
                 var neighborNode = new Object();
                 neighborNode.ref = neighbor;
                 nodes2.push(neighborNode);
+                
+                // Labels **********************************************
+                labelAnchors.push({
+                  node : neighborNode
+                });
+                labelAnchors.push({
+                  node : neighborNode
+                });
+                var labelLink = {};
+                labelLink.source = labelAnchors[labelAnchors.length-2];
+                labelLink.target = labelAnchors[labelAnchors.length-1];
+                labelLink.weight = 1;
+                labelAnchorLinks.push(labelLink);
+                // Labels **********************************************
+                
+
                 nameToNode2[neighbor.fields.entity_text] = neighborNode;
               }
               else{
@@ -441,21 +473,49 @@ function secondLayout(selected){
         link2 = svg2.selectAll(".link")
         
         force2.on("tick", function() {
+          link2.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
 
-
-            link2.attr("x1", function(d) { return d.source.x; })
-                .attr("y1", function(d) { return d.source.y; })
-                .attr("x2", function(d) { return d.target.x; })
-                .attr("y2", function(d) { return d.target.y; });
-
-            node2.attr("cx", function(d) { return d.x; })
-                .attr("cy", function(d) { return d.y; });
-
-            /*    
-            svg2.selectAll(".icon")
-              .attr("x", function(d) { return d.x; })
-              .attr("y", function(d) { return d.y; });*/
+          node2.attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; });
         });    
+
+        node3 = svg2.selectAll(".anchorNode")
+        link3 = svg2.selectAll(".anchorLink")
+
+        forceLabel.on("tick", function() {
+          node3.each(function(d, i) {
+          if(i % 2 == 0) {
+            d.x = d.node.x;
+            d.y = d.node.y;
+          } else {
+            
+            var b = this.getBBox();
+           // debugger;
+            var diffX = d.x - d.node.x; 
+            var diffY = d.y - d.node.y;
+
+            var dist = Math.sqrt(diffX * diffX + diffY * diffY);
+
+            var shiftX = b.width * (diffX - dist) / (dist * 2);
+            d.shiftX = Math.max(-b.width, Math.min(0, shiftX));
+            d.shiftY = 5;
+            
+            //this.childNodes[1].setAttribute("transform", "translate(" + shiftX + "," + shiftY + ")");
+          }
+        });
+
+          link3.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+
+          node3.attr("x", function(d) { return d.x+d.shiftX; })
+            .attr("y", function(d) { return d.y+d.shiftY; });
+        });   
+
 
     };    
 
