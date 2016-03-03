@@ -320,8 +320,27 @@ function secondLayout(selected){
          return l.count;
       })
       .on('mouseover', function(d) {
-        showTipLink(d); 
+        showTip(d); 
       })
+      .on('mouseout', function(d) {
+        tip.hide(d); 
+      });
+
+    svg2.selectAll(".link2")
+      .data(links2)
+      .enter().append("line")
+      .attr("class", "link2")
+      .style("stroke", "#000")
+      .style("stroke-opacity", 0.1)
+      .style("stroke-width",function(l){
+         return l.count*5;
+      })
+      .on('mouseover', function(d) {
+        showTip(d); 
+      })
+      .on('mouseout', function(d) {
+        tip.hide(d); 
+      });  
 
 
     svg2.selectAll(".node")
@@ -483,41 +502,47 @@ function secondLayout(selected){
     function update2() {
         node2 = svg2.selectAll(".node")
         link2 = svg2.selectAll(".link")
-        
-        force2.on("tick", function() {
+        node3 = svg2.selectAll(".anchorNode")
+        link3 = svg2.selectAll(".anchorLink")
+
+        force2.on("tick", tickBoth);    
+        forceLabel.on("tick", tickBoth);
+        function tickBoth(){
           link2.attr("x1", function(d) { return d.source.x; })
             .attr("y1", function(d) { return d.source.y; })
             .attr("x2", function(d) { return d.target.x; })
             .attr("y2", function(d) { return d.target.y; });
 
+          svg2.selectAll(".link2").attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });  
+
           node2.attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; });
-        });    
 
-        node3 = svg2.selectAll(".anchorNode")
-        link3 = svg2.selectAll(".anchorLink")
-
-        forceLabel.on("tick", function() {
           node3.each(function(d, i) {
-          if(i % 2 == 0) {
-            d.x = d.node.x;
-            d.y = d.node.y;
-          } else {
-            
-            var b = this.getBBox();
-           // debugger;
-            var diffX = d.x - d.node.x; 
-            var diffY = d.y - d.node.y;
+            if(i % 2 == 0) {
+              d.x = d.node.x;
+              d.y = d.node.y;
+              d.shiftX=0;
+              d.shiftY=0;
+            } else {
+              
+              var b = this.getBBox();
+             // debugger;
+              var diffX = d.x - d.node.x; 
+              var diffY = d.y - d.node.y;
 
-            var dist = Math.sqrt(diffX * diffX + diffY * diffY);
+              var dist = Math.sqrt(diffX * diffX + diffY * diffY);
 
-            var shiftX = b.width * (diffX - dist) / (dist * 2);
-            d.shiftX = Math.max(-b.width, Math.min(0, shiftX));
-            if (d.shiftX==undefined)
-              d.shiftX = 0;
-            d.shiftY = 5;
-          }
-        });
+              var shiftX = b.width * (diffX - dist) / (dist * 2);
+              d.shiftX = Math.max(-b.width, Math.min(0, shiftX));
+              if (d.shiftX==undefined)
+                d.shiftX = 0;
+              d.shiftY = 5;
+            }
+          });    
 
           link3.attr("x1", function(d) { return d.source.x; })
             .attr("y1", function(d) { return d.source.y; })
@@ -526,8 +551,9 @@ function secondLayout(selected){
 
           node3.attr("x", function(d) { return d.x+d.shiftX; })
             .attr("y", function(d) { return d.y+d.shiftY; });
-        });   
+        }
 
+       
 
     };    
 
