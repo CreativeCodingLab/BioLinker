@@ -154,6 +154,8 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
             }
             title = (title2+"").replace(/(\r\n|\n|\r)/gm,"");
         }*/
+        //console.log("aaa:"+JSON.stringify(d));
+        //debugger;
 
         var node1 = processNode(a);
         var node2 = processNode(b);
@@ -161,6 +163,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
         l.source = node1;
         l.target = node2;
         l.type = type;
+        l.evidence = e;
         l["Context_Species"] = d.extracted_information.context.Species;
         l["Context_Organ"] = d.extracted_information.context.Organ;
         l["Context_CellType"] = d.extracted_information.context.CellType;
@@ -306,16 +309,20 @@ function secondLayout(selected){
 
 
     svg2.selectAll(".link")
-        .data(links2)
-        .enter().append("line")
-        .attr("class", "link")
-          .style("stroke", function(l){
-             return getColor(l.type);
-          })
-          .style("stroke-opacity", 0.5)
-          .style("stroke-width",function(l){
-             return l.count;
-          })
+      .data(links2)
+      .enter().append("line")
+      .attr("class", "link")
+      .style("stroke", function(l){
+         return getColor(l.type);
+      })
+      .style("stroke-opacity", 0.5)
+      .style("stroke-width",function(l){
+         return l.count;
+      })
+      .on('mouseover', function(d) {
+        showTipLink(d); 
+      })
+
 
     svg2.selectAll(".node")
       .data(nodes2)
@@ -433,8 +440,6 @@ function secondLayout(selected){
                 neighborNode.ref = neighbor;
                 nodes2.push(neighborNode);
                 
-                debugger;
-                console.log("Data="+neighborNode.ref);
                 // Labels **********************************************
                 labelAnchors.push({
                   node : neighborNode
