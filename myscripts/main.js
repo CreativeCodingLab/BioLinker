@@ -331,9 +331,9 @@ function secondLayout(selected){
       .enter().append("line")
       .attr("class", "link2")
       .style("stroke", "#000")
-      .style("stroke-opacity", 0.1)
+      .style("stroke-opacity", 0)
       .style("stroke-width",function(l){
-         return l.count*5;
+         return 5+l.count;
       })
       .on('mouseover', function(d) {
         showTip(d); 
@@ -428,8 +428,6 @@ function secondLayout(selected){
           var tipdata;
           var fieldName="type";
           for (var i2=0;i2<d["tip_"+fieldName].length;i2++){
-            console.log("****"+d["tip_"+fieldName][i2][fieldName]);  
-          
              if (d["tip_"+fieldName][i2][fieldName]==l[fieldName]) 
                 tipdata = d["tip_"+fieldName][i2];
           }
@@ -440,8 +438,8 @@ function secondLayout(selected){
           else 
              isOK=false;
 
-          console.log(l.type+" "+d["tip_type"][index].isEnable);  
-          console.log(" tipdata.isEnable"+tipdata.isEnable +" isOK "+isOK);  
+          //console.log(l.type+" "+d["tip_type"][index].isEnable);  
+          //console.log(" tipdata.isEnable"+tipdata.isEnable +" isOK "+isOK);  
           
           //if (d["tip_type"][index].isEnable){  // If this type is enable
           if (isOK){  // If this type is enable
@@ -484,6 +482,11 @@ function secondLayout(selected){
               newLink.source = d;
               newLink.target = neighborNode;
               newLink.type = l.type;
+              newLink.evidence = l.evidence;
+              newLink.Context_Species = getContextFromID(l["Context_Species"][0],speciesMap);
+              newLink.Context_Organ = getContextFromID(l["Context_Organ"][0],organMap);
+              newLink.Context_CellType = getContextFromID(l["Context_CellType"][0],celltypeMap);
+              
               newLink.count = 1;
               links2.push(newLink);
               links2[l.name] = newLink;

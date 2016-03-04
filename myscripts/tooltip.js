@@ -24,33 +24,65 @@ function checkMouseOut(d, tipItem){
 }
 
 function showTip(d) {
-  tip.show(d);
-  tip_svg = d3.select('.d3-tip').append('svg')
+  
+  y_svg = -5; // inital y position     
+
+  if (d.source==undefined && d.target==undefined){ // this is a vertex
+    tip.html(function(d) {
+      var str ="";
+      return str; 
+    });
+
+    tip.show(d);
+    
+    tip_svg = d3.select('.d3-tip').append('svg')
       .attr("width", tipWidth)
-      .attr("height", tipSVGheight)
-      ;
+      .attr("height", tipSVGheight);
+    
+    addText(d);
+    addDotplots(d,"type", "Interaction types");
+    addDotplots(d,"Context_Species", "Context-Species", speciesMap);
+    addDotplots(d,"Context_Organ", "Context-Organ", organMap);
+    addDotplots(d,"Context_CellType", "Context-CellType",celltypeMap);
+  }
+  else if (d.source && d.target){
+    tip.offset([-20,-0])
+    .html(function(d) {
+      var str ="";
+      for (key in d) {
+        str+=  key+": <span style='color:darkblue'>" + d[key] + "</span><br>";
+      } 
+      return str; 
+    });
+    tip.show(d);
+  }  
   d3.select('.d3-tip')
   .on("mouseout", function(){
     if (checkMouseOut(d, this))
       tip.hide(d);
-    /*
-    var coordinate = d3.mouse(this);
-    console.log ("  mouseout"+d3.mouse(this));
-    if (coordinate[0]<0 || coordinate[0]>=tipWidth+20 || coordinate[1]<=0 || coordinate[1]>=tipSVGheight+20){
-      console.log ("******");
-      tip.hide(d);
-    }*/
-     
   })
-  y_svg = -5; // inital y position     
-  addText(d);
-  addDotplots(d,"type", "Interaction types");
-  addDotplots(d,"Context_Species", "Context-Species", speciesMap);
-  addDotplots(d,"Context_Organ", "Context-Organ", organMap);
-  addDotplots(d,"Context_CellType", "Context-CellType",celltypeMap);
+  
+  
 }     
 
 
+function getContextFromID(id_, map){
+  if (id_.indexOf("uniprot:")>-1){
+    var id = id_.replace("uniprot:","");
+    return uniprotMap[id];
+  }
+  else if (id_.indexOf("taxonomy:")>-1){
+    var id = id_.replace("taxonomy:", "");
+    return map[id];
+  }
+  else if (id_.indexOf("uazid:")>-1){
+    var id = id_.replace("uazid:", "");
+    return map[id];
+  } 
+  else{
+    return id_;
+  } 
+}  
 
 function addText(d){
    var curNode = d;
@@ -79,7 +111,7 @@ function addText(d){
       .text(function(d2){
         return d2.key+": "+d2.value;
       })
-      .style("fill", "#444");
+      .style("fill", "#222");
   //}
 }
 
@@ -184,23 +216,8 @@ function addDotplots(d,fieldName,label, map){
       .attr("dy", "0.90em")
       .style("text-anchor", "end")
       .text(function(d2){
-        if (map!=undefined){
-
-          if (d2[fieldName].indexOf("uniprot:")>-1){
-            var id = d2[fieldName].replace("uniprot:","");
-            // console.log("d2[fieldName]"+d2[fieldName]+" id="+id+" name="+uniprotMap[id]);
-            return uniprotMap[id];
-          }
-          else if (d2[fieldName].indexOf("taxonomy:")>-1){
-            var id = d2[fieldName].replace("taxonomy:", "");
-            return map[id];
-          }
-          else if (d2[fieldName].indexOf("uazid:")>-1){
-            var id = d2[fieldName].replace("uazid:", "");
-            return map[id];
-          } 
-        }  
-        return d2[fieldName];
+        return getContextFromID(d2[fieldName],map);
+        
       })
       .style("fill", function(d2){
          return getColor(d2[fieldName]);
