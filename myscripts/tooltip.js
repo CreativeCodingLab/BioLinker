@@ -13,11 +13,6 @@ var tip = d3.tip()
   .offset([-(tipSVGheight),-tipWidth/2])
   .style('border', '0.5px solid #bbb');
 
-var tipTimeArcs = d3.tip()
-  .attr('class', 'd3-tip')
-  .offset([-(tipSVGheight),-tipWidth/2])
-  .style('border', '0.5px solid #bbb');  
-
 function checkMouseOut(d, tipItem){
   var isOut=false;
    var coordinate = d3.mouse(tipItem);
@@ -38,8 +33,9 @@ function showTip(d) {
       return str; 
     });
     tip.offset([-(tipSVGheight),-tipWidth/2])
+
     tip.show(d);
-    
+     
     tip_svg = d3.select('.d3-tip').append('svg')
       .attr("width", tipWidth)
       .attr("height", tipSVGheight);
@@ -52,13 +48,7 @@ function showTip(d) {
 
 
     // TimeArcs
-    tipTimeArcs_svg = svg2.append('rect')
-      .attr("x", mouseCoordinate[0])
-      .attr("y", mouseCoordinate[1])
-      .attr("width", 200)
-      .attr("height", 200);
-
-    
+    drawTimeArcs(d);
   }
   else if (d.source && d.target){
     tip.offset([-20,-0])
@@ -73,8 +63,11 @@ function showTip(d) {
   }  
   d3.select('.d3-tip')
   .on("mouseout", function(){
-    if (checkMouseOut(d, this))
+    if (checkMouseOut(d, this)){
       tip.hide(d);
+      removeTimeArcs();    
+    }
+      
   }) 
 }     
 

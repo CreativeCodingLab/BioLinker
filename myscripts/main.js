@@ -331,6 +331,7 @@ function secondLayout(selected){
       })
       .on('mouseout', function(d) {
         tip.hide(d); 
+        removeTimeArcs();
       });
 
     svg2.selectAll(".link2")
@@ -347,6 +348,7 @@ function secondLayout(selected){
       })
       .on('mouseout', function(d) {
         tip.hide(d); 
+        removeTimeArcs();
       });  
 
 
@@ -450,6 +452,7 @@ function secondLayout(selected){
   function click2(d) {
         isDisplayingPopup = !isDisplayingPopup;
           tip.hide(d);
+          removeTimeArcs();
           expand2(d);
         
      } 
