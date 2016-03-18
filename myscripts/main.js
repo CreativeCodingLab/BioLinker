@@ -20,6 +20,10 @@ var svg = d3.select("body").append("svg")
 var svg2 = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
+var mouseCoordinate;
+svg2.on('mousemove', function () {
+  mouseCoordinate = d3.mouse(this);
+});
 
 //Set up the force layout
 var force = d3.layout.force()
@@ -74,7 +78,6 @@ myPromise.then(function(data) {
 
 
 svg2.call(tip);  
-
 var nodes = [];
 var links = [];
 var nodes2 = [];
@@ -86,6 +89,8 @@ var nameToNode={};
 var nameToNode2;
 var data3;
 var isDisplayingPopup;
+
+var pmcData = {}; // Save PMC data to reduce server request 
 
 
 drawColorLegend();
@@ -167,7 +172,9 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
         l["Context_Species"] = d.extracted_information.context.Species;
         l["Context_Organ"] = d.extracted_information.context.Organ;
         l["Context_CellType"] = d.extracted_information.context.CellType;
-        
+        l.pmc_id = d.pmc_id;
+
+
         l.name = node1.fields.entity_text+"__"+node2.fields.entity_text;
         links.push(l);
       }     
@@ -343,42 +350,83 @@ function secondLayout(selected){
       });  
 
 
-    svg2.selectAll(".node")
+
+
+
+    nodes2.forEach(function(d){
+      var curNode = d;
+      if (curNode.ref!=undefined){
+          curNode = curNode.ref;
+      }
+      // Compute direct links ********************************
+      if (curNode.directLinks==undefined){
+          curNode.directLinks = [];
+          for (var i=0; i<links.length;i++){
+              var l = links[i];
+              if (curNode==l.source || curNode==l.target){
+                var pcm_id = l.pmc_id;
+                if (pcm_id.indexOf("PMC")<0){
+                  pcm_id="PMC"+pcm_id;
+                }
+                if (pmcData[pcm_id]==undefined){     
+                  d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/NXML/'+pcm_id)
+                    .header('Content-Type', 'application/json')
+                    .get()
+                    .on('load', function(d2) { 
+                      console.log("loaded: "+d2.id);
+                      pmcData[d2.id] = d2.articleFront;
+                    });
+                  curNode.directLinks.push(l);     
+                }         
+              }
+          }
+      }
+    });
+
+   svg2.selectAll(".node")
+    .data(nodes2)
+    .enter().append("circle")
+      .attr("class", "node")
+      .attr("r", function(d) {
+        var curNode = d;
+        if (curNode.ref!=undefined){
+            curNode = curNode.ref;
+        }
+        return 2+Math.pow(curNode.directLinks.length, 0.4);    
+      })
+      .style("fill", "#444")
+      .style("stroke", "#eee")
+      //.style("stroke", function(d){
+      //   console.log("d.name="+d.ref.fields.entity_text);
+      //   return getColor(l.type);
+      //})
+      .style("stroke-opacity", 0.5)
+      .style("stroke-width", 0.3)
+      .call(force2.drag)
+      //.on("click", click2)
+      .on('mouseover', function(d) {
+        showTip(d); 
+      });
+
+     /* 
+    function uu(pmcData){
+     // debugger;
+      svg2.selectAll(".node")
       .data(nodes2)
-      .enter().append("circle")
         .attr("class", "node")
         .attr("r", function(d) {
           var curNode = d;
           if (curNode.ref!=undefined){
               curNode = curNode.ref;
           }
-          // Compute direct links ********************************
-          if (curNode.directLinks==undefined){
-              curNode.directLinks = [];
-              for (var i=0; i<links.length;i++){
-                  var l = links[i];
-                  if (curNode==l.source || curNode==l.target){
-                      curNode.directLinks.push(l);
-                  }
-              }
-          }
           return 2+Math.pow(curNode.directLinks.length, 0.4);    
         })
-        .style("fill", "#444")
-        .style("stroke", "#eee")
-        //.style("stroke", function(d){
-        //   console.log("d.name="+d.ref.fields.entity_text);
-        //   return getColor(l.type);
-        //})
-        .style("stroke-opacity", 0.5)
-        .style("stroke-width", 0.3)
-        .call(force2.drag)
-        //.on("click", click2)
         .on('mouseover', function(d) {
+          debugger;
           showTip(d); 
         });
+    }*/
     
-
     // Labels **********************************************    
     forceLabel
       .nodes(labelAnchors)

@@ -11,7 +11,12 @@ var cellHeight = 14;
 var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-(tipSVGheight),-tipWidth/2])
-  .style('border', '0.5px solid #bbb');;
+  .style('border', '0.5px solid #bbb');
+
+var tipTimeArcs = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-(tipSVGheight),-tipWidth/2])
+  .style('border', '0.5px solid #bbb');  
 
 function checkMouseOut(d, tipItem){
   var isOut=false;
@@ -32,18 +37,28 @@ function showTip(d) {
       var str ="";
       return str; 
     });
-
+    tip.offset([-(tipSVGheight),-tipWidth/2])
     tip.show(d);
     
     tip_svg = d3.select('.d3-tip').append('svg')
       .attr("width", tipWidth)
       .attr("height", tipSVGheight);
-    
+
     addText(d);
     addDotplots(d,"type", "Interaction types");
     addDotplots(d,"Context_Species", "Context-Species", speciesMap);
     addDotplots(d,"Context_Organ", "Context-Organ", organMap);
     addDotplots(d,"Context_CellType", "Context-CellType",celltypeMap);
+
+
+    // TimeArcs
+    tipTimeArcs_svg = svg2.append('rect')
+      .attr("x", mouseCoordinate[0])
+      .attr("y", mouseCoordinate[1])
+      .attr("width", 200)
+      .attr("height", 200);
+
+    
   }
   else if (d.source && d.target){
     tip.offset([-20,-0])
@@ -60,10 +75,9 @@ function showTip(d) {
   .on("mouseout", function(){
     if (checkMouseOut(d, this))
       tip.hide(d);
-  })
-  
-  
+  }) 
 }     
+
 
 
 function getContextFromID(id_, map){
