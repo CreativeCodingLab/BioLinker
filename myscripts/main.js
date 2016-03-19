@@ -14,8 +14,8 @@ var height = 700 - margin.top - margin.bottom;
 //Append a SVG to the body of the html page. Assign this SVG as an object to svg
 var svg = d3.select("body").append("svg")
     .style("background", "#eee")
-    .attr("width", width)
-    .attr("height", height);
+    .attr("width", width/3)
+    .attr("height", width/3);
 
 var svg2 = d3.select("body").append("svg")
     .attr("width", width)

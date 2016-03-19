@@ -108,7 +108,6 @@ function drawTimeArcs(vertex){
           .attr("cy", function(d) { return mouseCoordinate[1] + d.y; });
 
        svg2.selectAll(".linkArc").attr("d", linkArc);    
-
   }
 }      
 function getNode(d){
@@ -131,6 +130,18 @@ function detactTimeSeries(){
 
   update3();
   //svg2.selectAll(".timeArcsRect").remove();
+}
+
+function linkArcTime(d) {
+    var dx = d.target.x - d.source.x,
+        dy = d.target.y - d.source.y,
+        dr = Math.sqrt(dx * dx + dy * dy)/2;
+    // return "M" + (xStep+d.source.x) + "," + d.source.y + " Q" + ((xStep+d.source.x)+dr) + "," + d.target.y+ " " + (xStep+d.target.x) + "," + d.target.y;
+ 
+    if (d.source.y<d.target.y )
+        return "M" + (mouseCoordinate[0]-tWidth/2+d.source.x) + "," + (mouseCoordinate[1]+d.source.y) + "A" + dr + "," + dr + " 0 0,1 " + (mouseCoordinate[0]-tWidth/2+d.target.x) + "," + (mouseCoordinate[1]+d.target.y);
+    else
+        return "M" + (mouseCoordinate[0]-tWidth/2+d.target.x) + "," + (mouseCoordinate[1]+d.target.y) + "A" + dr + "," + dr + " 0 0,1 " + (mouseCoordinate[0]-tWidth/2+d.source.x) + "," + (mouseCoordinate[1]+d.source.y);
 }
 
 function linkArc(d) {
