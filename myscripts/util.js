@@ -3,117 +3,39 @@ var diameter = 1000,
     innerRadius = radius - 120;
 
   // Add color legend
+var typeList = ["increases_activity","decreases_activity", "translocation", "binds","increases"]  
 function drawColorLegend() {
-      var xx = 6;
-      var y1 = 20;
-      var y2 = 34;
-      var y3 = 48;
-      var y4 = 62;
-      var y5 = 76;
-      var rr = 6;
-      
-      svg.append("circle")
-        .attr("class", "nodeLegend")
-        .attr("cx", xx)
-        .attr("cy", y1)
-        .attr("r", rr)
-        .style("fill", "#00aa00");
-      
-      svg.append("text")
-        .attr("class", "nodeLegend")
-        .attr("x", xx+10)
-        .attr("y", y1+2)
-        .text("increases_activity")
-       // .text("adds_modification")
-       // .text("InfoVis")
-       //.text("Comedy")
-        .attr("dy", ".21em")
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "12px")
-        .style("text-anchor", "left")
-        .style("fill", "#00aa00");
-   
-      svg.append("circle")
-        .attr("class", "nodeLegend")
-        .attr("cx", xx)
-        .attr("cy", y2)
-        .attr("r", rr)
-        .style("fill", "#cc0000");  
-
-      svg.append("text")
-        .attr("class", "nodeLegend")
-        .attr("x", xx+10)
-        .attr("y", y2+2)
-        .text("decreases_activity")
-        //.text("removes_modification")
-        //.text("VAST")
-        //.text("Action")
-        .attr("dy", ".21em")
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "12px")
-        .style("text-anchor", "left")
-        .style("fill", "#cc0000");  
-
-       svg.append("circle")
-        .attr("class", "nodeLegend")
-        .attr("cx", xx)
-        .attr("cy", y3)
-        .attr("r", rr)
-        .style("fill", "#cc0");  
-
-      svg.append("text")
-        .attr("class", "nodeLegend")
-        .attr("x", xx+10)
-        .attr("y", y3+2)
-        .text("translocation")
-       // .text("SciVis")
-       // .text("Drama")
-        .attr("dy", ".21em")
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "12px")
-        .style("text-anchor", "left")
-        .style("fill", "#cc0");  
-
-
-       svg.append("circle")
-        .attr("class", "nodeLegend")
-        .attr("cx", xx)
-        .attr("cy", y4)
-        .attr("r", rr)
-        .style("fill", "#00f");  
-
-      svg.append("text")
-        .attr("class", "nodeLegend")
-        .attr("x", xx+10)
-        .attr("y", y4+2)
-        .text("binds")
-       // .text("SciVis")
-       // .text("Drama")
-        .attr("dy", ".21em")
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "12px")
-        .style("text-anchor", "left")
-        .style("fill", "#00f");  
-
-     svg.append("circle")
-        .attr("class", "nodeLegend")
-        .attr("cx", xx)
-        .attr("cy", y5)
-        .attr("r", rr)
-        .style("fill", "#f0f");  
-
-      svg.append("text")
-        .attr("class", "nodeLegend")
-        .attr("x", xx+10)
-        .attr("y", y5+2)
-        .text("increases")
-       // .text("SciVis")
-       // .text("Drama")
-        .attr("dy", ".21em")
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "12px")
-        .style("text-anchor", "left")
-        .style("fill", "#f0f");     
+  var xx = 16;
+  var y1 = 20;    
+  svg2.selectAll(".arcLegend").data(typeList).enter()
+  .append("path")
+    .attr("class", "arcLegend")
+    .style("fill-opacity", 0)
+    .style("stroke-width", 2)
+    .style("stroke", function (d) {
+        return getColor(d);
+    })
+    .attr("d", function(l,i){
+      var yy = y1+14*i-10;
+      var rr = 5.6;
+      return "M" + xx + "," + yy + "A" + rr + "," + rr*1.25 + " 0 0,1 " + xx + "," + (yy+rr*2);
+    });    
+  svg2.selectAll(".textLegend").data(typeList).enter()
+    .append("text")
+      .attr("class", "textLegend")
+      .attr("x", xx+8)
+      .attr("y", function(l,i){
+        return y1+14*i;
+      })
+      .text(function (d) {
+        return d;
+      })
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "12px")
+      .style("text-anchor", "left")
+      .style("fill", function (d) {
+        return getColor(d);
+      }); 
 }
 
 function removeColorLegend() {

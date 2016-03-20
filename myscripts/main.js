@@ -20,7 +20,6 @@ var svg = d3.select("body").append("svg")
     .style("background", "#eee")
     .attr("width", width/3)
     .attr("height", height);
-
 svg.append("rect")
     .attr("width", width/3)
     .attr("height", width/4)
@@ -33,12 +32,37 @@ d3.select("body").append("svg")
     .attr("height", 10);    
 
 var svg2 = d3.select("body").append("svg")
-    .style("background", "#eee")
+    .style("background", "#dde")
     .attr("width", width*2/3)
     .attr("height", height);
 svg2.append("rect")
     .attr("width", width*2/3)
     .attr("height", height)
+    .style("stroke","#000")
+    .style("fill-opacity",0); 
+
+
+var svg3 = d3.select("body").append("svg")
+    .style("background", "#eed")
+    .attr("width", width/3)
+    .attr("height", height2);
+svg3.append("rect")
+    .attr("width", width/3)
+    .attr("height", height2)
+    .style("stroke","#000")
+    .style("fill-opacity",0); 
+
+d3.select("body").append("svg")
+    .attr("width", 10)
+    .attr("height", 10);    
+
+var svg4 = d3.select("body").append("svg")
+    .style("background", "#eee")
+    .attr("width", width*2/3)
+    .attr("height", height2);
+svg4.append("rect")
+    .attr("width", width*2/3)
+    .attr("height", height2)
     .style("stroke","#000")
     .style("fill-opacity",0); 
 
@@ -328,7 +352,8 @@ function secondLayout(selected){
   update1(); // Update the overview graph 
   update2();
   expand2(newNode);   
-  addStacking(newNode);  
+  addStacking(newNode); 
+  drawTimeArcs(newNode); 
 }
   function addNodes() {
     force2
@@ -422,29 +447,13 @@ function secondLayout(selected){
       .style("stroke-opacity", 0.5)
       .style("stroke-width", 0.3)
       .call(force2.drag)
-      //.on("click", click2)
+      .on("click", click2)
       .on('mouseover', function(d) {
         showTip(d); 
+      })
+      .on('mouseout', function(d) {
+        tip.hide(); 
       });
-
-     /* 
-    function uu(pmcData){
-     // debugger;
-      svg2.selectAll(".node")
-      .data(nodes2)
-        .attr("class", "node")
-        .attr("r", function(d) {
-          var curNode = d;
-          if (curNode.ref!=undefined){
-              curNode = curNode.ref;
-          }
-          return 2+Math.pow(curNode.directLinks.length, 0.4);    
-        })
-        .on('mouseover', function(d) {
-          debugger;
-          showTip(d); 
-        });
-    }*/
     
     // Labels **********************************************    
     forceLabel
@@ -467,12 +476,10 @@ function secondLayout(selected){
     }
 
   function click2(d) {
-        isDisplayingPopup = !isDisplayingPopup;
-          tip.hide(d);
-          removeTimeArcs();
-          expand2(d);
-        
-     } 
+    isDisplayingPopup = !isDisplayingPopup;
+    tip.hide(d);
+    expand2(d);
+  } 
     // Toggle children on click.
     function expand2(d) {
       //if (!d3.event.defaultPrevented) {

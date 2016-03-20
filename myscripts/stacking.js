@@ -1,4 +1,4 @@
-var y_svg = 323;
+var y_svg = 320;
 var cellHeight2 = 13;
 
 function addStacking(d){
@@ -6,9 +6,9 @@ function addStacking(d){
   svg.append("rect")
     .attr("class", "stackingRect")
     .attr("x", 0)
-    .attr("y", y_svg-8.5)
+    .attr("y", y_svg-5.5)
     .attr("width", width/3)
-    .attr("height", height-y_svg+8.5)
+    .attr("height", height-y_svg+5.5)
     .style("stroke-opacity",0)
     .style("fill","#fff"); 
   svg.append("rect")
@@ -17,8 +17,8 @@ function addStacking(d){
     .attr("y", y_svg)
     .attr("width", width/3)
     .attr("height", height-y_svg)
-    .style("stroke","#000")
-    .style("fill","#eee"); 
+    //.style("stroke","#000")
+    .style("fill","#ddd"); 
 
   addStacking2(d,"type", "Interaction types");
   addStacking2(d,"Context_Species", "Context-Species", speciesMap);
@@ -78,7 +78,7 @@ function addStacking2(d,fieldName,label, map){
     // Label ********************************************************
   svg.append('text')
     .attr("class", "tiplabel_"+fieldName)
-    .attr("x", 5 )
+    .attr("x", 10)
     .attr("y", d["ylabel_"+fieldName])
     .style("font-family", "sans-serif")
     .style("font-size", "11px")
@@ -95,7 +95,7 @@ function addStacking2(d,fieldName,label, map){
       .attr("class", "tipTypeRect_"+fieldName)
       .attr("rx", 4)
       .attr("ry", 4)
-      .attr("x", 10)
+      .attr("x", 20)
       .attr("y", function(d2, index){
         return d2.y;
       })
@@ -120,7 +120,7 @@ function addStacking2(d,fieldName,label, map){
       .attr("class", "tipTypeText_"+fieldName)
       .attr("font-family", "sans-serif")
       .attr("font-size", "11px")
-      .attr("x", 115)
+      .attr("x", 125)
       .attr("y", function(d2){return d2.y;})
       .attr("dy", "0.90em")
       .style("text-anchor", "end")
@@ -210,7 +210,7 @@ function addStacking2(d,fieldName,label, map){
       else{
         types[l[fieldName]].currentIndex++;
       }
-      var xx = 120+types[l[fieldName]].currentIndex*4;
+      var xx = 130+types[l[fieldName]].currentIndex*4;
       var yy = d["tip_"+fieldName][l[fieldName]].y+1;
       var rr = 5.4;
       return "M" + xx + "," + yy + "A" + rr + "," + rr*1.25 + " 0 0,1 " + xx + "," + (yy+rr*2);

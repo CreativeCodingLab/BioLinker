@@ -1,5 +1,5 @@
 var tipWidth = 300;
-var tipSVGheight = 500;
+var tipSVGheight = 200;
 var tip_svg;
 var y_svg;
 
@@ -32,7 +32,7 @@ function showTip(d) {
       var str ="";
       return str; 
     });
-    tip.offset([-(tipSVGheight),-tipWidth/2])
+    tip.offset([-(tipSVGheight+10),-tipWidth/2])
 
     tip.show(d);
      
@@ -42,13 +42,9 @@ function showTip(d) {
 
     addText(d);
     addDotplots(d,"type", "Interaction types");
-    addDotplots(d,"Context_Species", "Context-Species", speciesMap);
-    addDotplots(d,"Context_Organ", "Context-Organ", organMap);
-    addDotplots(d,"Context_CellType", "Context-CellType",celltypeMap);
-
-
-    // TimeArcs
-    drawTimeArcs(d);
+    //addDotplots(d,"Context_Species", "Context-Species", speciesMap);
+    //addDotplots(d,"Context_Organ", "Context-Organ", organMap);
+    //addDotplots(d,"Context_CellType", "Context-CellType",celltypeMap);
   }
   else if (d.source && d.target){
     tip.offset([-20,-0])
@@ -311,6 +307,7 @@ function addDotplots(d,fieldName,label, map){
     mouseoutType(d2);
   });   
 
+  /*
   // Close button ***************************************************************  
   var buttonCloseWidth = 60;
   var buttonheight = 17;
@@ -401,7 +398,7 @@ function addDotplots(d,fieldName,label, map){
     })
     .on('click', function(d2){
       click2(d);
-    });     
+    });    */ 
 }
 
 
