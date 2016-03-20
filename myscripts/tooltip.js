@@ -129,8 +129,6 @@ function addDotplots(d,fieldName,label, map){
       curNode = curNode.ref;
   }
   
-
-
   curNode.directLinks.sort(function (a, b) {
       if (a.type > b.type) {
           return 1;

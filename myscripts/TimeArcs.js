@@ -129,6 +129,7 @@ function detactTimeSeries(){
   });
 
   update3();
+  debugger;
   //svg2.selectAll(".timeArcsRect").remove();
 }
 

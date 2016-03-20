@@ -7,19 +7,41 @@
 //Constants for the SVG
 var margin = {top: 0, right: 0, bottom: 5, left: 15};
 var width = document.body.clientWidth - margin.left - margin.right;
-var height = 700 - margin.top - margin.bottom;
+var height = 800 - margin.top - margin.bottom;
 
 //---End Insert------
 
 //Append a SVG to the body of the html page. Assign this SVG as an object to svg
+d3.select("body").append("svg")
+    .attr("width", width/1.5)
+    .attr("height", 1);
+
 var svg = d3.select("body").append("svg")
     .style("background", "#eee")
     .attr("width", width/3)
-    .attr("height", width/3);
+    .attr("height", height);
+
+svg.append("rect")
+    .attr("width", width/3)
+    .attr("height", width/4)
+    .style("stroke","#000")
+    .style("fill-opacity",0); 
+
+
+d3.select("body").append("svg")
+    .attr("width", 10)
+    .attr("height", 10);    
 
 var svg2 = d3.select("body").append("svg")
-    .attr("width", width)
+    .style("background", "#eee")
+    .attr("width", width*2/3)
     .attr("height", height);
+svg2.append("rect")
+    .attr("width", width*2/3)
+    .attr("height", height)
+    .style("stroke","#000")
+    .style("fill-opacity",0); 
+
 var mouseCoordinate;
 svg2.on('mousemove', function () {
   mouseCoordinate = d3.mouse(this);
@@ -27,12 +49,12 @@ svg2.on('mousemove', function () {
 
 //Set up the force layout
 var force = d3.layout.force()
-    .charge(-20)
-    .linkDistance(15)
-    .gravity(0.05)
+    .charge(-4)
+    .linkDistance(2)
+    .gravity(0.15)
     //.friction(0.5)
   //  .alpha(0.1)
-    .size([width, height]);
+    .size([width/3, width/4]);
 
 var force2 = d3.layout.force()
     .charge(-100)
@@ -40,7 +62,7 @@ var force2 = d3.layout.force()
     .gravity(0.1)
     //.friction(0.5)
   //  .alpha(0.1)
-    .size([width, height]);
+    .size([width*2/3, width*2/3]);
 
 
 var forceLabel = d3.layout.force()
@@ -305,7 +327,7 @@ function secondLayout(selected){
   addNodes();
   update1(); // Update the overview graph 
   update2();
-    
+  expand2(newNode);  
         
   }
   function addNodes() {
@@ -468,7 +490,7 @@ function secondLayout(selected){
         for (var i=0;i<curNode.directLinks.length;i++){
           var l = curNode.directLinks[i];
           var index;
-          for (var j=0;j<d["tip_type"].length;j++){
+          for (var j=0; d["tip_type"] && j<d["tip_type"].length;j++){
               if (d["tip_type"][l.type]!=undefined)
                 index = j; 
           }
@@ -478,22 +500,16 @@ function secondLayout(selected){
 
           var tipdata;
           var fieldName="type";
-          for (var i2=0;i2<d["tip_"+fieldName].length;i2++){
+          for (var i2=0; d["tip_"+fieldName] && i2<d["tip_"+fieldName].length;i2++){
              if (d["tip_"+fieldName][i2][fieldName]==l[fieldName]) 
                 tipdata = d["tip_"+fieldName][i2];
           }
           
-          var isOK ;
-          if (tipdata.isEnable==true)
-             isOK=true;
-          else 
-             isOK=false;
-
-          //console.log(l.type+" "+d["tip_type"][index].isEnable);  
+           //console.log(l.type+" "+d["tip_type"][index].isEnable);  
           //console.log(" tipdata.isEnable"+tipdata.isEnable +" isOK "+isOK);  
           
           //if (d["tip_type"][index].isEnable){  // If this type is enable
-          if (isOK){  // If this type is enable
+          if (!d["tip_"+fieldName] || tipdata.isEnable){  // If this type is enable
             if (links2[l.name]==undefined){
               var neighbor;
               if (curNode==l.source){
