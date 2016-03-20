@@ -327,9 +327,9 @@ function secondLayout(selected){
   addNodes();
   update1(); // Update the overview graph 
   update2();
-  expand2(newNode);  
-        
-  }
+  expand2(newNode);   
+  addStacking(newNode);  
+}
   function addNodes() {
     force2
         .nodes(nodes2)
@@ -372,11 +372,6 @@ function secondLayout(selected){
         tip.hide(d); 
         removeTimeArcs();
       });  
-
-
-
-
-
     nodes2.forEach(function(d){
       var curNode = d;
       if (curNode.ref!=undefined){

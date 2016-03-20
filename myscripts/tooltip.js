@@ -286,122 +286,124 @@ function addDotplots(d,fieldName,label, map){
         })   
     }
 
-    var dotRadius =4;    
-    tip_svg.selectAll(".tipTypeDot_"+fieldName).data(curNode.directLinks)
-      .enter().append('circle')
-      .attr("class", "tipTypeDot_"+fieldName)
-        .attr('r',dotRadius)
-        .attr('cx',function(l, index){
-          if (types[l[fieldName]].currentIndex==undefined){
-            types[l[fieldName]].currentIndex=0;
-          }
-          else{
-            types[l[fieldName]].currentIndex++;
-          }
-          return 135+types[l[fieldName]].currentIndex*2*dotRadius;
-        })
-        .attr('cy',function(l){
-          return  d["tip_"+fieldName][l[fieldName]].y+7;  // Get the y position of a type
-        })
-        .style("fill", function(d2){
-           return getColor(d2.type);
-        });
+  var dotRadius =4;    
+  tip_svg.selectAll(".tipTypeDot_"+fieldName).data(curNode.directLinks)
+    .enter().append('circle')
+    .attr("class", "tipTypeDot_"+fieldName)
+      .attr('r',dotRadius)
+      .attr('cx',function(l, index){
+        if (types[l[fieldName]].currentIndex==undefined){
+          types[l[fieldName]].currentIndex=0;
+        }
+        else{
+          types[l[fieldName]].currentIndex++;
+        }
+        return 135+types[l[fieldName]].currentIndex*2*dotRadius;
+      })
+      .attr('cy',function(l){
+        return  d["tip_"+fieldName][l[fieldName]].y+7;  // Get the y position of a type
+      })
+      .style("fill", function(d2){
+         return getColor(d2.type);
+      });
 
-    d["tip_"+fieldName].forEach(function(d2){   // make sure disable types are greyout on the second mouse over
-      mouseoutType(d2);
-    });   
+  d["tip_"+fieldName].forEach(function(d2){   // make sure disable types are greyout on the second mouse over
+    mouseoutType(d2);
+  });   
 
   // Close button ***************************************************************  
-    var buttonCloseWidth = 60;
-    var buttonheight = 17;
-    var roundConner = 3;
+  var buttonCloseWidth = 60;
+  var buttonheight = 17;
+  var roundConner = 3;
 
-    tip_svg.append('rect')
-      .attr("class", "tipCloseRect")
-      .attr("x", tipWidth-buttonCloseWidth-1)
-      .attr("y", tipSVGheight-buttonheight-1)
-      .attr("rx", roundConner)
-      .attr("ry", roundConner)
-      .attr("width", buttonCloseWidth)
-      .attr("height", buttonheight)
-      .style("stroke", "#000")
-      .style("stroke-width", 0.1)
-      .style("fill", buttonColor)
-      .on('mouseover', function(d2){
+  tip_svg.append('rect')
+    .attr("class", "tipCloseRect")
+    .attr("x", tipWidth-buttonCloseWidth-1)
+    .attr("y", tipSVGheight-buttonheight-1)
+    .attr("rx", roundConner)
+    .attr("ry", roundConner)
+    .attr("width", buttonCloseWidth)
+    .attr("height", buttonheight)
+    .style("stroke", "#000")
+    .style("stroke-width", 0.1)
+    .style("fill", buttonColor)
+    .on('mouseover', function(d2){
+      tip_svg.selectAll(".tipCloseRect")
+          .style("fill", colorHighlight);
+    })
+    .on('mouseout', function(d2){
+      tip_svg.selectAll(".tipCloseRect")
+          .style("fill", buttonColor);
+    })
+    .on('click', tip.hide);         
+  tip_svg.append('text')
+    .attr("class", "tipCloseText")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "11px")
+    .attr("x", tipWidth-buttonCloseWidth/2)
+    .attr("y", tipSVGheight-5)
+    .text("Close")
+    .style("text-anchor", "middle")
+    .style("fill", "#000")
+    .on('mouseover', function(d2){
         tip_svg.selectAll(".tipCloseRect")
-            .style("fill", colorHighlight);
-      })
-      .on('mouseout', function(d2){
+          .style("fill", colorHighlight);
+    })
+    .on('mouseout', function(d2){
         tip_svg.selectAll(".tipCloseRect")
-            .style("fill", buttonColor);
-      })
-      .on('click', tip.hide);         
-    tip_svg.append('text')
-        .attr("class", "tipCloseText")
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "11px")
-        .attr("x", tipWidth-buttonCloseWidth/2)
-        .attr("y", tipSVGheight-5)
-        .text("Close")
-        .style("text-anchor", "middle")
-        .style("fill", "#000")
-        .on('mouseover', function(d2){
-            tip_svg.selectAll(".tipCloseRect")
-              .style("fill", colorHighlight);
-        })
-        .on('mouseout', function(d2){
-            tip_svg.selectAll(".tipCloseRect")
-              .style("fill", buttonColor);
-        })
-        .on('click', tip.hide);
+          .style("fill", buttonColor);
+    })
+    .on('click', tip.hide);
 
-    // Expand button ***************************************************************  
-    var buttonExpandWidth = 60;
-   
-    tip_svg.append('rect')
-        .attr("class", "tipExpandRect")
-        .attr("x", tipWidth-buttonCloseWidth-buttonExpandWidth-5)
-        .attr("y", tipSVGheight-buttonheight-1)
-        .attr("rx", roundConner)
-        .attr("ry", roundConner)
-        .attr("width", buttonExpandWidth)
-        .attr("height", buttonheight)
-        .style("stroke", "#000")
-        .style("stroke-width", 0.1)
-        .style("fill", buttonColor)
-        .on('mouseover', function(d2){
-            tip_svg.selectAll(".tipExpandRect")
-              .style("fill", colorHighlight);
-        })
-        .on('mouseout', function(d2){
-            tip_svg.selectAll(".tipExpandRect")
-              .style("fill", buttonColor);
-        })
-        .on('click', function(d2){
-          isDisplayingPopup = !isDisplayingPopup;
-          tip.hide(d);
-          expand2(d);
-        });         
-    tip_svg.append('text')
-        .attr("class", "tipExpandText")
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "11px")
-        .attr("x", tipWidth-buttonCloseWidth-buttonExpandWidth/2-3)
-        .attr("y", tipSVGheight-5)
-        .text("Expand")
-        .style("text-anchor", "middle")
-        .style("fill", "#000")
-        .on('mouseover', function(d2){
-            tip_svg.selectAll(".tipExpandRect")
-              .style("fill", colorHighlight);
-        })
-        .on('mouseout', function(d2){
-            tip_svg.selectAll(".tipExpandRect")
-              .style("fill", buttonColor);
-        })
-        .on('click', function(d2){
-          click2(d);
-        });     
-  
-
+  // Expand button ***************************************************************  
+  var buttonExpandWidth = 60;
+ 
+  tip_svg.append('rect')
+    .attr("class", "tipExpandRect")
+    .attr("x", tipWidth-buttonCloseWidth-buttonExpandWidth-5)
+    .attr("y", tipSVGheight-buttonheight-1)
+    .attr("rx", roundConner)
+    .attr("ry", roundConner)
+    .attr("width", buttonExpandWidth)
+    .attr("height", buttonheight)
+    .style("stroke", "#000")
+    .style("stroke-width", 0.1)
+    .style("fill", buttonColor)
+    .on('mouseover', function(d2){
+        tip_svg.selectAll(".tipExpandRect")
+          .style("fill", colorHighlight);
+    })
+    .on('mouseout', function(d2){
+        tip_svg.selectAll(".tipExpandRect")
+          .style("fill", buttonColor);
+    })
+    .on('click', function(d2){
+      isDisplayingPopup = !isDisplayingPopup;
+      tip.hide(d);
+      expand2(d);
+    });         
+  tip_svg.append('text')
+    .attr("class", "tipExpandText")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "11px")
+    .attr("x", tipWidth-buttonCloseWidth-buttonExpandWidth/2-3)
+    .attr("y", tipSVGheight-5)
+    .text("Expand")
+    .style("text-anchor", "middle")
+    .style("fill", "#000")
+    .on('mouseover', function(d2){
+        tip_svg.selectAll(".tipExpandRect")
+          .style("fill", colorHighlight);
+    })
+    .on('mouseout', function(d2){
+        tip_svg.selectAll(".tipExpandRect")
+          .style("fill", buttonColor);
+    })
+    .on('click', function(d2){
+      click2(d);
+    });     
 }
+
+
+
+
