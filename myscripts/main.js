@@ -434,6 +434,21 @@ function secondLayout(selected){
                       return 20*(l.year-minYear);  
                   });
                   force3.start();  */
+                  force3 = d3.layout.force()
+                    .charge(-80)
+                    .gravity(0.1)
+                    //.friction(0.5)
+                    .alpha(0.1)
+                    .size([tWidth, height2]);
+                  force3.stop();  
+                  force3.linkDistance(function(l) {
+                    console.log("l.year="+l.year);
+                    if (l.year)
+                      return 20*(l.year-minYear);  
+                    else
+                      return 100;
+                  });
+                  force3.start();
                 }         
               }
           }
