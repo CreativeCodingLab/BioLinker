@@ -371,7 +371,7 @@ function secondLayout(selected){
       })
       .style("stroke-opacity", 0.5)
       .style("stroke-width",function(l){
-         return l.count;
+         return l.list.length;
       })
       .on('mouseover', function(d) {
         showTip(d); 
@@ -388,7 +388,7 @@ function secondLayout(selected){
       .style("stroke", "#000")
       .style("stroke-opacity", 0)
       .style("stroke-width",function(l){
-         return 5+l.count;
+         return 5+l.list.length;
       })
       .on('mouseover', function(d) {
         showTip(d); 
@@ -420,7 +420,20 @@ function secondLayout(selected){
                       console.log("loaded: "+d2.id);
                       pmcData[d2.id] = d2.articleFront;
                     });
-                  curNode.directLinks.push(l);     
+                  curNode.directLinks.push(l);   
+                  /*
+                  force3 = d3.layout.force()
+                    .charge(-80)
+                    .gravity(0.1)
+                    //.friction(0.5)
+                    .alpha(0.1)
+                    .size([tWidth, height2]);
+
+                  force3.linkDistance(function(l) {
+                    console.log("****");
+                      return 20*(l.year-minYear);  
+                  });
+                  force3.start();  */
                 }         
               }
           }
@@ -556,13 +569,14 @@ function secondLayout(selected){
               newLink.Context_Organ = getContextFromID(l["Context_Organ"][0],organMap);
               newLink.Context_CellType = getContextFromID(l["Context_CellType"][0],celltypeMap);
               
-              newLink.count = 1;
+              newLink.list =[];
+              newLink.list.push(l);
               links2.push(newLink);
               links2[l.name] = newLink;
               count++;
             } 
             else{
-              links2[l.name].count++;
+              newLink.list.push(l);
             } 
           }
         }
