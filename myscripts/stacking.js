@@ -1,7 +1,8 @@
-var y_svg = 320;
+var y_svg;
 var cellHeight2 = 13;
 
-function addStacking(d){
+function addStacking(){
+  y_svg = 320;
   svg.selectAll(".stackingRect").remove();
   svg.append("rect")
     .attr("class", "stackingRect")
@@ -18,26 +19,22 @@ function addStacking(d){
     .attr("width", width/3)
     .attr("height", height-y_svg)
     //.style("stroke","#000")
-    .style("fill","#ddd"); 
+    .style("fill","#ccc"); 
 
-  addStacking2(d,"type", "Interaction types");
-  addStacking2(d,"Context_Species", "Context-Species", speciesMap);
-  addStacking2(d,"Context_Organ", "Context-Organ", organMap);
-  addStacking2(d,"Context_CellType", "Context-CellType",celltypeMap);
+  addStacking2("type", "Interaction types");
+  addStacking2("Context_Species", "Context-Species", speciesMap);
+  addStacking2("Context_Organ", "Context-Organ", organMap);
+  addStacking2("Context_CellType", "Context-CellType",celltypeMap);
 }  
 
-function addStacking2(d,fieldName,label, map){
+function addStacking2(fieldName,label, map){
   y_svg += 20; // inital y position     
-  var curNode = d;
-  if (curNode.ref!=undefined){
-      curNode = curNode.ref;
-  }
-  
-  curNode.directLinks.sort(function (a, b) {
-      if (a.type > b.type) {
+  var obj = {};
+  tlinks.sort(function (a, b) {
+      if (a.ref.type > b.ref.type) {
           return 1;
       }
-      if (a.type < b.type) {
+      if (a.ref.type < b.ref.type) {
           return -1;
       }
       return 0;
@@ -45,8 +42,8 @@ function addStacking2(d,fieldName,label, map){
 
      // Compute statistics for neighbors ***************************************
     var types = new Object();
-    for (var i=0; i<curNode.directLinks.length;i++){
-      var l = curNode.directLinks[i];
+    for (var i=0; i<tlinks.length;i++){
+      var l = tlinks[i].ref;
       if (types[l[fieldName]]==undefined){
           types[l[fieldName]] = new Object();
           types[l[fieldName]].count = 1;
@@ -58,9 +55,9 @@ function addStacking2(d,fieldName,label, map){
         types[l[fieldName]].list = [];
       types[l[fieldName]].list.push(l); 
     }
-    if (d["tip_"+fieldName]==undefined){
-      d["tip_"+fieldName] = [];
-      d["ylabel_"+fieldName] = y_svg-4;
+    if (obj["tip_"+fieldName]==undefined){
+      obj["tip_"+fieldName] = [];
+      obj["ylabel_"+fieldName] = y_svg-4;
       for (key in types) {
         var e= new Object;
         e[fieldName] = key;
@@ -71,15 +68,17 @@ function addStacking2(d,fieldName,label, map){
         e.stroke= "#000";
         e.y = y_svg;  
         y_svg+=cellHeight2;  // the next y position
-        d["tip_"+fieldName].push(e);
-        d["tip_"+fieldName][e[fieldName]] =e; // hash from type to the actual element
+        obj["tip_"+fieldName].push(e);
+        obj["tip_"+fieldName][e[fieldName]] =e; // hash from type to the actual element
       }
     }
+   
     // Label ********************************************************
-  svg.append('text')
+    svg.selectAll(".tiplabel_"+fieldName).remove();
+    svg.append('text')
     .attr("class", "tiplabel_"+fieldName)
     .attr("x", 10)
-    .attr("y", d["ylabel_"+fieldName])
+    .attr("y", obj["ylabel_"+fieldName])
     .style("font-family", "sans-serif")
     .style("font-size", "11px")
     .style("font-weight", "bold")
@@ -87,10 +86,9 @@ function addStacking2(d,fieldName,label, map){
     .text(label)
     .style("fill", "#000");
   
-    
-
     // background rows ********************************************************
-    svg.selectAll(".tipTypeRect_"+fieldName).data(d["tip_"+fieldName])
+    svg.selectAll(".tipTypeRect_"+fieldName).remove();
+    svg.selectAll(".tipTypeRect_"+fieldName).data(obj["tip_"+fieldName])
       .enter().append('rect')
       .attr("class", "tipTypeRect_"+fieldName)
       .attr("rx", 4)
@@ -99,7 +97,7 @@ function addStacking2(d,fieldName,label, map){
       .attr("y", function(d2, index){
         return d2.y;
       })
-      .attr("width", tipWidth-10)
+      .attr("width", width/3-40)
       .attr("height", cellHeight2)
       .style("text-anchor", "end")
       .style("fill", function(d2,index){
@@ -114,8 +112,8 @@ function addStacking2(d,fieldName,label, map){
       .on('click', clickType);
      
 
-
-    svg.selectAll(".tipTypeText_"+fieldName).data(d["tip_"+fieldName])
+    svg.selectAll(".tipTypeText_"+fieldName).remove();
+    svg.selectAll(".tipTypeText_"+fieldName).data(obj["tip_"+fieldName])
       .enter().append('text')
       .attr("class", "tipTypeText_"+fieldName)
       .attr("font-family", "sans-serif")
@@ -138,7 +136,7 @@ function addStacking2(d,fieldName,label, map){
     function mouseoverType(d){
       svg.selectAll(".tipTypeRect_"+fieldName)
           .style("fill" , function(d2){
-            if (d[fieldName]==d2[fieldName]){
+            if (obj[fieldName]==d2[fieldName]){
               return "#fca";
             }
             else
@@ -179,9 +177,9 @@ function addStacking2(d,fieldName,label, map){
       svg.selectAll(".tipTypeDot_"+fieldName)
         .style("fill-opacity" , function(d4){
           var tipdata;
-          for (var i=0;i<d["tip_"+fieldName].length;i++){
-             if (d["tip_"+fieldName][i][fieldName]==d4[fieldName]) 
-                tipdata = d["tip_"+fieldName][i];
+          for (var i=0;i<obj["tip_"+fieldName].length;i++){
+             if (obj["tip_"+fieldName][i][fieldName]==d4[fieldName]) 
+                tipdata = obj["tip_"+fieldName][i];
           }
           if (tipdata.isEnable==true)
             return 1;
@@ -193,33 +191,33 @@ function addStacking2(d,fieldName,label, map){
   
   
   svg.selectAll(".arc_"+fieldName).remove();
-  svg.selectAll(".arc_"+fieldName).data(curNode.directLinks).enter()
+  svg.selectAll(".arc_"+fieldName).data(tlinks).enter()
     .append("path")
     .attr("class", "arc_"+fieldName)
     .style("fill-opacity", 0)
     .style("stroke", function (l) {
-        return getColor(l.type);
+        return getColor(l.ref.type);
     })
     .style("stroke-width", function (d) {
-        return  2;
+        return  1.2;
     })
     .attr("d", function(l){
-      if (types[l[fieldName]].currentIndex==undefined){
-          types[l[fieldName]].currentIndex=0;
+      if (types[l.ref[fieldName]].currentIndex==undefined){
+          types[l.ref[fieldName]].currentIndex=0;
       }
       else{
-        types[l[fieldName]].currentIndex++;
+        types[l.ref[fieldName]].currentIndex++;
       }
-      var xx = 130+types[l[fieldName]].currentIndex*4;
-      var yy = d["tip_"+fieldName][l[fieldName]].y+1;
-      var rr = 5.4;
+      var xx = 130+types[l.ref[fieldName]].currentIndex*2;
+      var yy = obj["tip_"+fieldName][l.ref[fieldName]].y+1.2;
+      var rr = 5.2;
       return "M" + xx + "," + yy + "A" + rr + "," + rr*1.25 + " 0 0,1 " + xx + "," + (yy+rr*2);
     });  
 
 
       
 
-  d["tip_"+fieldName].forEach(function(d2){   // make sure disable types are greyout on the second mouse over
+  obj["tip_"+fieldName].forEach(function(d2){   // make sure disable types are greyout on the second mouse over
     mouseoutType(d2);
   });   
 }

@@ -137,6 +137,7 @@ var data3;
 var isDisplayingPopup;
 
 var pmcData = {}; // Save PMC data to reduce server request 
+var optArray = [];   // FOR search box
 
 
 drawColorLegend();
@@ -182,7 +183,7 @@ d3.tsv("data/uniprot-proteins.tsv", function(error, data_) {
 d3.json("data/cardsWithContextData.json", function(error, data_) {
     data3 = data_;
     data3.forEach(function(d, index){ 
-      if (index<2000) {  // Limit to 1000 first index cards ********************************************
+      if (index<3000) {  // Limit to 1000 first index cards ********************************************
         //var a = d.card.extracted_information.participant_a;
         //var b = d.card.extracted_information.participant_b;
         var a = d.extracted_information.participant_a;
@@ -224,6 +225,17 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
         l.name = node1.fields.entity_text+"__"+node2.fields.entity_text;
         links.push(l);
       }     
+    });
+
+    for (var i = 0; i < nodes.length; i++) {
+      if (nodes[i].fields.entity_text)
+        optArray.push(nodes[i].fields.entity_text);
+    }
+    optArray = optArray.sort();
+    $(function () {
+        $("#search").autocomplete({
+            source: optArray
+        });
     });
     function processNode(fields){
         if (nameToNode[fields.entity_text]==undefined){
@@ -284,7 +296,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
          svg.selectAll(".node")
           .style("stroke-width" ,0);  
       }); 
-      
+   
   function click1(d){
     secondLayout(d.id);
   }   
@@ -303,10 +315,11 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
 
   });
 
-//  secondLayout(301);
-  secondLayout(17);
+ secondLayout( 1970);
+//  secondLayout(17);
 
 });
+
 
 // Update the overview graph when we change the second layout
 function update1(d) {  
@@ -353,8 +366,8 @@ function secondLayout(selected){
   update1(); // Update the overview graph 
   update2();
   expand2(newNode);   
-  addStacking(newNode); 
-  drawTimeArcs(newNode); 
+  drawTimeArcs(); 
+  addStacking(); 
 }
   function addNodes() {
     force2
@@ -405,44 +418,26 @@ function secondLayout(selected){
       }
       // Compute direct links ********************************
       if (curNode.directLinks==undefined){
-          curNode.directLinks = [];
-          for (var i=0; i<links.length;i++){
-              var l = links[i];
-              if (curNode==l.source || curNode==l.target){
-                var pcm_id = l.pmc_id;
-                if (pcm_id.indexOf("PMC")<0){
-                  pcm_id="PMC"+pcm_id;
-                }
-                if (pmcData[pcm_id]==undefined){     
-                  d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/NXML/'+pcm_id)
-                    .header('Content-Type', 'application/json')
-                    .get()
-                    .on('load', function(d2) { 
-                      //console.log("loaded: "+d2.id);
-                      pmcData[d2.id] = d2.articleFront;
-                    });
-                  curNode.directLinks.push(l);   
-                  
-
-                  //resetForce3();
-                 /* force3 = d3.layout.force()
-                    .charge(-80)
-                    .gravity(0.1)
-                    //.friction(0.5)
-                    .alpha(0.1)
-                    .size([tWidth, height2]);
-                  force3.stop();  
-                  force3.linkDistance(function(l) {
-                    console.log("l.year="+l.year);
-                    if (l.year)
-                      return 20*(l.year-minYear);  
-                    else
-                      return 100;
-                  });
-                  force3.start();*/
-                }         
-              }
+        curNode.directLinks = [];
+        for (var i=0; i<links.length;i++){
+          var l = links[i];
+          if (curNode==l.source || curNode==l.target){
+            var pcm_id = l.pmc_id;
+            if (pcm_id.indexOf("PMC")<0){
+              pcm_id="PMC"+pcm_id;
+            }
+            if (pmcData[pcm_id]==undefined){     
+              d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/NXML/'+pcm_id)
+                .header('Content-Type', 'application/json')
+                .get()
+                .on('load', function(d2) { 
+                  //console.log("loaded: "+d2.id);
+                  pmcData[d2.id] = d2.articleFront;
+                });
+            }
+            curNode.directLinks.push(l);            
           }
+        }
       }
     });
 
@@ -498,9 +493,8 @@ function secondLayout(selected){
     isDisplayingPopup = !isDisplayingPopup;
     tip.hide(d);
     expand2(d);
-    //addStacking(newNode); 
     drawTimeArcs(); 
-
+    addStacking(); 
   } 
     // Toggle children on click.
     function expand2(d) {

@@ -1,6 +1,6 @@
 
 var tWidth = 800;
-var height2 = 400;
+var height2 = 600;
 
 var force3 = d3.layout.force()
     .charge(-100)
@@ -28,6 +28,8 @@ var maxYear = 0;
 var transTime = 1000;
 // vertex is the input node which contains neighbors information
 function drawTimeArcs(){
+  tWidth = width*2/3;
+
   tnodes = [];
   tlinks = [];
   nodesList = {};

@@ -68,13 +68,17 @@ function drawTimeLegend() {
 }  
 
 function getColor(category) {
-  var minSat = 0;
-  var maxSat = 150;
-  var sat = 20;
-  if (category=="InfoVis" || category=="Comedy" || category=="adds_modification" || category=="increases_activity")
+  var sat = 0;
+  if (category=="increases_activity")
     return "rgb("+sat+", "+200+", "+sat+")" ; // leaf node
-  else if (category=="VAST" || category=="Action" || category=="removes_modification" || category=="decreases_activity")
-    return "rgb("+200+", "+sat+", "+sat+")" ; // leaf node
+  else if (category=="adds_modification")
+    return "rgb("+sat+", "+120+", "+120+")" ; // leaf node
+  else if (category=="decreases_activity")
+    return "rgb("+220+", "+sat+", "+sat+")" ; // leaf node
+  else if (category=="removes_modification")
+    return "rgb("+200+", "+100+", "+sat+")" ; // leaf node
+  else if (category=="inhibits_modification")
+    return "rgb("+120+", "+sat+", "+sat+")" ; // leaf node
   else if (category=="SciVis" || category=="Drama"|| category=="translocation")
     return "rgb("+200+", "+200+", "+sat+")" ; // leaf node
   else if (category=="binds")
@@ -157,46 +161,7 @@ d3.select(self.frameElement).style("height", diameter + "px");
 
 
 
-// Toggle children on click.
-function click(d) {
-/*  if (d3.event.defaultPrevented) return; // ignore drag
-  if (d.children) {
-    d._children = d.children;
-    d.children = null;
-  } else {
-    d.children = d._children;
-    d._children = null;
-  }
-  console.log("Clicking on = "+d.name+ " d.depth = "+d.depth);
-  
- update();*/
+function searchNode() {
+  searchTerm = document.getElementById('search').value;
+  secondLayout(nameToNode[searchTerm].id); 
 }
-
-/*
-function collide(alpha) {
-  var quadtree = d3.geom.quadtree(tree_nodes);
-  return function(d) {
-    quadtree.visit(function(quad, x1, y1, x2, y2) {
-    if (quad.point && (quad.point !== d) && (quad.point !== d.parent) && (quad.point.parent !== d)) {
-         var rb = getRadius(d) + getRadius(quad.point),
-        nx1 = d.x - rb,
-        nx2 = d.x + rb,
-        ny1 = d.y - rb,
-        ny2 = d.y + rb;
-
-        var x = d.x - quad.point.x,
-            y = d.y - quad.point.y,
-            l = Math.sqrt(x * x + y * y);
-          if (l < rb) {
-          l = (l - rb) / l * alpha;
-          d.x -= x *= l;
-          d.y -= y *= l;
-          quad.point.x += x;
-          quad.point.y += y;
-        }
-      }
-      return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-    });
-  };
-}
-*/
