@@ -60,8 +60,9 @@ function drawTimeArcs(){
   }
 
   resetForce3();
-
+  
   // Horizontal lines
+  svg4.selectAll(".nodeLine4").remove();
   svg4.selectAll(".nodeLine4").data(tnodes).enter()
     .append("line")
     .attr("class", "nodeLine4")
@@ -84,8 +85,8 @@ function drawTimeArcs(){
     .style("stroke-width", function (d) {
         return  1;
     })     
-    .style("stroke-width",0.5)
-    .style("stroke-opacity", 0.6);       
+    .style("stroke-width",0.75)
+    .style("stroke-opacity", 0.8);       
 
 
   /*svg4.selectAll(".node4").remove();
@@ -160,7 +161,7 @@ function resetForce3(){
   force3.linkDistance(function(l) {
     if (l.year){
       if (l.source.ref.isExpanded==true && l.target.ref.isExpanded==true) {
-        return (maxYear-minYear)*5;  
+        return (maxYear-minYear)*6;  
       }   
       else
         return (l.year-minYear)*2;    
@@ -224,13 +225,65 @@ function detactTimeSeries(){
   svg4.selectAll(".linkArc").transition().duration(transTime).attr("d", linkArcTime);  
   //svg4.selectAll(".node4").attr("cx", function(d) { return d.x; })
   //    .attr("cy", function(d) { return d.y; });
-  svg4.selectAll(".nodeText4").attr("x", function(d) { return d.x; })
+  svg4.selectAll(".nodeText4").transition().duration(transTime).attr("x", function(d) { return d.x; })
       .attr("y", function(d) { return d.y; });
-   svg4.selectAll(".nodeLine4")
+   svg4.selectAll(".nodeLine4").transition().duration(transTime)
       .attr("x1", function(d) {return d.x;})
       .attr("y1", function(d) {return d.y;})
       .attr("x2", function(d) {return d.x2;})
-      .attr("y2", function(d) {return d.y;})
+      .attr("y2", function(d) {return d.y;});
+
+  var maxY = 0;    
+  tnodes.forEach(function(d){
+    if (d.y>maxY)
+      maxY = d.y;
+  });    
+  svg4.selectAll(".timeLegendText").transition().duration(transTime)
+    .attr("y", function(d) {return maxY+12;})
+
+}
+
+function drawTimeLegend() {
+  var xScale = d3.scale.linear()
+    .domain([minYear, maxYear])
+    .range([50, tWidth-100]);
+
+  var listX=[];
+  for (var i=minYear; i<=maxYear;i++){
+    var xx = xScale(i);
+    var obj = {};
+    obj.x = xx;
+    obj.year = i;
+    listX.push(obj);    
+  }
+  
+  svg4.selectAll(".timeLegendLine").remove();
+  svg4.selectAll(".timeLegendLine").data(listX)
+    .enter().append("line")
+      .attr("class", "timeLegendLine")
+      .style("stroke", "#000") 
+      .style("stroke-dasharray", "1, 2")
+      .style("stroke-opacity", 1)
+      .style("stroke-width", 0.2)
+      .attr("x1", function(d){ return d.x; })
+      .attr("x2", function(d){ return d.x; })
+      .attr("y1", function(d){ return 0; })
+      .attr("y2", function(d){ return height2; });
+  svg4.selectAll(".timeLegendText").remove();
+  svg4.selectAll(".timeLegendText").data(listX)
+    .enter().append("text")
+      .attr("class", "timeLegendText")
+      .style("fill", "#000000")   
+      .style("text-anchor","start")
+      .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
+      .attr("x", function(d){ return d.x; })
+      .attr("y", height2-7)
+      .attr("dy", ".21em")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "12px")
+      .text(function(d,i) { 
+        return d.year;  
+      });     
 }
 
 
@@ -263,7 +316,10 @@ function update3(){
   svg4.selectAll(".nodeText4").attr("x", function(d) { return d.x; })
       .attr("y", function(d) { return d.y; });
     
-  svg4.selectAll(".linkArc").attr("d", linkArc);    
+  svg4.selectAll(".linkArc").attr("d", linkArc);   
+
+  drawTimeLegend();
+   
 }
 
 function linkArcTime(d) {
@@ -285,10 +341,14 @@ function linkArcTime(d) {
         dy = d.target.y - d.source.y,
         dr = Math.sqrt(dx * dx + dy * dy)/2;
     
+    var mul=1;
+    if (d.ref.type=="increases_activity")
+        mul = 1.004;
+
     if (d.source.y<d.target.y )
-        return "M" + newX + "," + (d.source.y) + "A" + dr + "," + dr + " 0 0,1 " + newX + "," + (d.target.y);
+        return "M" + newX + "," + (d.source.y) + "A" + dr + "," + dr*mul + " 0 0,1 " + newX + "," + (d.target.y);
     else
-        return "M" + newX+ "," + (d.target.y) + "A" + dr + "," + dr + " 0 0,1 " + newX+ "," + (d.source.y);
+        return "M" + newX+ "," + (d.target.y) + "A" + dr + "," + dr*mul + " 0 0,1 " + newX+ "," + (d.source.y);
 }
 
 function linkArc(d) {

@@ -220,12 +220,142 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
         l["Context_Organ"] = d.extracted_information.context.Organ;
         l["Context_CellType"] = d.extracted_information.context.CellType;
         l.pmc_id = d.pmc_id;
-
-
         l.name = node1.fields.entity_text+"__"+node2.fields.entity_text;
         links.push(l);
       }     
     });
+    
+    // Construct conflicting examples ********************
+    var list = {};
+    links.forEach(function(l){
+      if (list[l.name]==undefined)
+        list[l.name] =[];
+      list[l.name].push(l) 
+    });
+
+    svg2.append('text')
+      .attr("class", "buttonTitle")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "11px")
+      .attr("x", width*2/3-80)
+      .attr("y", 14)
+      .text("Conflicting examples:")
+      .style("text-anchor", "middle")
+      .style("fill", "#000");
+     
+    var a = [];
+    for (var key in list) {
+      if (list[key].length>1){
+        var isIncrease = false;
+        var isDecrease = false;
+        for (var i=0; i<list[key].length;i++){
+          if (list[key][i].type=="increases_activity")
+            isIncrease = true;
+          if (list[key][i].type=="decreases_activity")
+            isDecrease = true;
+        }
+        if (isIncrease && isDecrease){
+          console.log("key=" + key + " = " + list[key]);
+          a.push(key);
+        }
+      }
+    }
+    var buttonWidth =130;
+    var buttonheight =15;
+    var roundConner = 4;
+    var colorHighlight = "#f80";
+    var buttonColor = "#ddd";
+
+    svg2.selectAll(".buttonText").data(a).enter()
+      .append('text')
+      .attr("class", "buttonText")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "10px")
+      .attr("x", width*2/3-buttonWidth/2-2)
+      .attr("y", function(d,i){
+        return 31+i*buttonheight;
+      })
+      .text(function(d){
+        return d;
+      })
+      .style("text-anchor", "middle")
+      .style("fill", "#000");
+    svg2.selectAll(".buttonRect").data(a).enter()
+      .append('rect')
+      .attr("class", "buttonRect")
+      .attr("x", width*2/3-buttonWidth-2)
+      .attr("y", function(d,i){
+        return 20+i*buttonheight;
+      })
+      .attr("rx", roundConner)
+      .attr("ry", roundConner)
+      .attr("width", buttonWidth)
+      .attr("height", buttonheight)
+      .style("stroke", "#000")
+      .style("stroke-width", 0.1)
+      .style("fill", function(d){
+        if (d=="SP__CD4+")
+          return "#f88";
+        else if (list[d].length>2)
+          return "#888";
+        else 
+          return buttonColor;
+      })
+      .style("fill-opacity", 0.3)
+      .on('mouseover', function(d2){
+        svg2.selectAll(".buttonRect")
+            .style("fill", function(d4){
+              if (d4==d2)
+                return colorHighlight;
+              else if (list[d4].length>2)
+                return "#888";
+              else  
+                return buttonColor;
+            });
+      })
+      .on('mouseout', function(d2){
+        svg2.selectAll(".buttonRect")
+            .style("fill", function(d4){
+              if (d4=="SP__CD4+")
+                return "#f88";
+              else if (list[d4].length>2)
+                return "#888";
+              else  
+                return buttonColor;
+            });
+      })
+      .on('click', function(d2){
+         svg2.selectAll(".buttonRect")
+          .style("stroke-width", function(d4){
+            if (d4==d2)
+              return 1;
+            else  
+              return 0.1;
+         });
+
+        secondLayout(list[d2][0].source.id);
+
+        nodes2.forEach(function(d){
+          if (d.ref.fields.entity_text==list[d2][0].target.fields.entity_text){
+              expand2(d);
+              drawTimeArcs(); 
+              addStacking(); 
+          }   
+          else if (d.ref.fields.entity_text=="A1-I3"){
+              expand2(d);
+              drawTimeArcs(); 
+              addStacking(); 
+          }    
+
+        });
+
+       
+
+      });         
+
+    
+    
+
 
     for (var i = 0; i < nodes.length; i++) {
       if (nodes[i].fields.entity_text)
