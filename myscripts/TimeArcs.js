@@ -3,18 +3,18 @@ var tWidth = 800;
 var height2 = 400;
 
 var force3 = d3.layout.force()
-    .charge(-80)
+    .charge(-100)
     .gravity(0.1)
     //.friction(0.5)
-    .linkDistance(100)
     .alpha(0.1)
     .size([tWidth, height2]);
   
   force3.linkDistance(function(l) {
-    if (l.year)
-      return 20*(l.year-minYear);  
+    if (l.year){
+        return 4*(l.year-minYear);    
+    }
     else
-      return 100;
+      return 50;
   });
 
 
@@ -57,18 +57,8 @@ function drawTimeArcs(){
     }
   }
 
-  force3
-    .nodes(tnodes)
-    .links(tlinks)
-    .start();
+  resetForce3();
 
-  force3.on("tick", function() {
-    update3();
-  });  
-  force3.on("end", function () {
-    detactTimeSeries();
-  });  
-    
   // Horizontal lines
   svg4.selectAll(".nodeLine4").data(tnodes).enter()
     .append("line")
@@ -92,7 +82,8 @@ function drawTimeArcs(){
     .style("stroke-width", function (d) {
         return  1;
     })     
-    .style("stroke-opacity", 0.25);       
+    .style("stroke-width",0.5)
+    .style("stroke-opacity", 0.6);       
 
 
   /*svg4.selectAll(".node4").remove();
@@ -135,6 +126,70 @@ function getNode(d){
 
 }  
 
+function resetForce3(){
+  minYear = 40000;
+  maxYear = 0;
+  for (var i=0; i<tlinks.length;i++){
+    var l = tlinks[i];
+    var pmcId = l.ref.pmc_id;
+    if (pmcId.indexOf("PMC")<0)
+      pmcId = "PMC"+pmcId; 
+    if (pmcData[pmcId]){
+      l.year = parseInt(pmcData[pmcId]["article-meta"][0]["pub-date"][0].year);
+      if (l.year>maxYear)
+        maxYear = l.year;
+      if (l.year<minYear)
+        minYear = l.year;
+    }
+  }
+  minYear--;
+  maxYear++; 
+
+  var numYear = (maxYear-minYear);
+  if (numYear<0)
+    numYear =10;
+  console.log("numYear="+numYear);
+  force3 = d3.layout.force()
+    .charge(-50)
+    .gravity(0.1)
+    .alpha(0.1)
+    .size([tWidth, height2]);
+  
+  force3.linkDistance(function(l) {
+    if (l.year){
+      if (l.source.ref.isExpanded==true && l.target.ref.isExpanded==true) {
+        return (maxYear-minYear)*5;  
+      }   
+      else
+        return (l.year-minYear)*2;    
+
+
+    }
+    else
+      return numYear*2;
+  });
+  force3.linkStrength(function(l) {
+    if (l.year){
+        return 1+(maxYear-l.year)*0.1;    
+    }
+    else
+      return 1;      
+  });
+  
+
+  force3
+    .nodes(tnodes)
+    .links(tlinks)
+    .start();
+
+  force3.on("tick", function() {
+    update3();
+  });  
+  force3.on("end", function () {
+    detactTimeSeries();
+  });  
+}  
+
 function detactTimeSeries(){
   // Compute y position *************************
   var termArray = [];
@@ -155,7 +210,7 @@ function detactTimeSeries(){
     return 0;
   });  
 
-  var step = Math.min((height-25)/(tnodes.length+1),12);
+  var step = Math.min((height2-25)/(tnodes.length+1),12);
   for (var i=0; i< termArray.length; i++) {
       tnodes[termArray[i].nodeId].y = 12+i*step;
   }

@@ -303,6 +303,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
 
   });
 
+//  secondLayout(301);
   secondLayout(17);
 
 });
@@ -417,24 +418,14 @@ function secondLayout(selected){
                     .header('Content-Type', 'application/json')
                     .get()
                     .on('load', function(d2) { 
-                      console.log("loaded: "+d2.id);
+                      //console.log("loaded: "+d2.id);
                       pmcData[d2.id] = d2.articleFront;
                     });
                   curNode.directLinks.push(l);   
-                  /*
-                  force3 = d3.layout.force()
-                    .charge(-80)
-                    .gravity(0.1)
-                    //.friction(0.5)
-                    .alpha(0.1)
-                    .size([tWidth, height2]);
+                  
 
-                  force3.linkDistance(function(l) {
-                    console.log("****");
-                      return 20*(l.year-minYear);  
-                  });
-                  force3.start();  */
-                  force3 = d3.layout.force()
+                  //resetForce3();
+                 /* force3 = d3.layout.force()
                     .charge(-80)
                     .gravity(0.1)
                     //.friction(0.5)
@@ -448,7 +439,7 @@ function secondLayout(selected){
                     else
                       return 100;
                   });
-                  force3.start();
+                  force3.start();*/
                 }         
               }
           }
@@ -507,6 +498,9 @@ function secondLayout(selected){
     isDisplayingPopup = !isDisplayingPopup;
     tip.hide(d);
     expand2(d);
+    //addStacking(newNode); 
+    drawTimeArcs(); 
+
   } 
     // Toggle children on click.
     function expand2(d) {
@@ -591,11 +585,12 @@ function secondLayout(selected){
               count++;
             } 
             else{
-              newLink.list.push(l);
+              links2[l.name].list.push(l);
             } 
           }
         }
-      
+        d.ref.isExpanded = true;
+        d.isExpanded = true;
         addNodes();   
         update2();
         update1(); // Update the overview graph  
