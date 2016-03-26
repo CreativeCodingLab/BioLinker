@@ -2,20 +2,20 @@ var y_svg;
 var cellHeight2 = 13;
 
 function addStacking(){
-  y_svg = 320;
+  y_svg = width/4;
   svg.selectAll(".stackingRect").remove();
   svg.append("rect")
     .attr("class", "stackingRect")
     .attr("x", 0)
-    .attr("y", y_svg-5.5)
+    .attr("y", y_svg)
     .attr("width", width/3)
-    .attr("height", height-y_svg+5.5)
+    .attr("height", height-y_svg)
     .style("stroke-opacity",0)
     .style("fill","#fff"); 
   svg.append("rect")
     .attr("class", "stackingRect")
     .attr("x", 0)
-    .attr("y", y_svg)
+    .attr("y", y_svg+6)
     .attr("width", width/3)
     .attr("height", height-y_svg)
     //.style("stroke","#000")
@@ -28,7 +28,7 @@ function addStacking(){
 }  
 
 function addStacking2(fieldName,label, map){
-  y_svg += 20; // inital y position     
+  y_svg += 25; // inital y position     
   var obj = {};
   tlinks.sort(function (a, b) {
       if (a.ref.type > b.ref.type) {

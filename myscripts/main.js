@@ -183,7 +183,7 @@ d3.tsv("data/uniprot-proteins.tsv", function(error, data_) {
 d3.json("data/cardsWithContextData.json", function(error, data_) {
     data3 = data_;
     data3.forEach(function(d, index){ 
-      if (index<3000) {  // Limit to 1000 first index cards ********************************************
+      if (index<2000) {  // Limit to 1000 first index cards ********************************************
         //var a = d.card.extracted_information.participant_a;
         //var b = d.card.extracted_information.participant_b;
         var a = d.extracted_information.participant_a;
@@ -335,19 +335,20 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
 
         secondLayout(list[d2][0].source.id);
 
+        /*
         nodes2.forEach(function(d){
           if (d.ref.fields.entity_text==list[d2][0].target.fields.entity_text){
               expand2(d);
               drawTimeArcs(); 
               addStacking(); 
           }   
-          else if (d.ref.fields.entity_text=="A1-I3"){
+          /*else if (d.ref.fields.entity_text=="A1-I3"){
               expand2(d);
               drawTimeArcs(); 
               addStacking(); 
-          }    
+          } */   
 
-        });
+        //});
 
        
 
@@ -445,8 +446,8 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
 
   });
 
- secondLayout( 1970);
-//  secondLayout(17);
+// secondLayout( 1970);
+  secondLayout(17);
 
 });
 
