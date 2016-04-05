@@ -29,7 +29,6 @@ var transTime = 1000;
 // vertex is the input node which contains neighbors information
 function drawTimeArcs(){
   tWidth = width*2/3;
-
   tnodes = [];
   tlinks = [];
   nodesList = {};

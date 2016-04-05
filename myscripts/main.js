@@ -9,8 +9,6 @@ var margin = {top: 0, right: 0, bottom: 5, left: 15};
 var width = document.body.clientWidth - margin.left - margin.right;
 var height = 800 - margin.top - margin.bottom;
 
-//---End Insert------
-
 //Append a SVG to the body of the html page. Assign this SVG as an object to svg
 d3.select("body").append("svg")
     .attr("width", width/1.5)
@@ -196,19 +194,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
         }
         
         var type = d.extracted_information.interaction_type;
-    /*    var year = d.metadata.articleFront["article-meta"][0]["pub-date"][0].year;
-        var title = d.metadata.articleFront["article-meta"][0]["title-group"][0]["article-title"][0];
-            
-        if (a.entity_text!=undefined && b.entity_text!=undefined){   
-            var title2 = title+"";
-            if (title2.indexOf("[object Object]") > -1){
-                title2 = title["_"];
-            }
-            title = (title2+"").replace(/(\r\n|\n|\r)/gm,"");
-        }*/
-        //console.log("aaa:"+JSON.stringify(d));
-        //debugger;
-
+   
         var node1 = processNode(a);
         var node2 = processNode(b);
         var l = new Object();
@@ -221,6 +207,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
         l["Context_CellType"] = d.extracted_information.context.CellType;
         l.pmc_id = d.pmc_id;
         l.name = node1.fields.entity_text+"__"+node2.fields.entity_text;
+        l.ref = d;
         links.push(l);
       }     
     });
@@ -354,10 +341,6 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
 
       });         
 
-    
-    
-
-
     for (var i = 0; i < nodes.length; i++) {
       if (nodes[i].fields.entity_text)
         optArray.push(nodes[i].fields.entity_text);
@@ -434,18 +417,14 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
 
   node.append("title")
       .text(function(d) { return d.fields.entity_text; });
-
   force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
-
     node.attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
-
   });
-
 // secondLayout( 1970);
   secondLayout(17);
 
@@ -498,6 +477,7 @@ function secondLayout(selected){
   update2();
   expand2(newNode);   
   drawTimeArcs(); 
+  drawMatrix();
   addStacking(); 
 }
   function addNodes() {
@@ -625,6 +605,7 @@ function secondLayout(selected){
     tip.hide(d);
     expand2(d);
     drawTimeArcs(); 
+    drawMatrix(); 
     addStacking(); 
   } 
     // Toggle children on click.
@@ -634,7 +615,6 @@ function secondLayout(selected){
         if (curNode.ref!=undefined){
             curNode = curNode.ref;
         }
-    
         var count=0;
         for (var i=0;i<curNode.directLinks.length;i++){
           var l = curNode.directLinks[i];
@@ -643,21 +623,13 @@ function secondLayout(selected){
               if (d["tip_type"][l.type]!=undefined)
                 index = j; 
           }
-            
-          //debugger;
-
-
           var tipdata;
           var fieldName="type";
           for (var i2=0; d["tip_"+fieldName] && i2<d["tip_"+fieldName].length;i2++){
              if (d["tip_"+fieldName][i2][fieldName]==l[fieldName]) 
                 tipdata = d["tip_"+fieldName][i2];
           }
-          
-           //console.log(l.type+" "+d["tip_type"][index].isEnable);  
-          //console.log(" tipdata.isEnable"+tipdata.isEnable +" isOK "+isOK);  
-          
-          //if (d["tip_type"][index].isEnable){  // If this type is enable
+            
           if (!d["tip_"+fieldName] || tipdata.isEnable){  // If this type is enable
             if (links2[l.name]==undefined){
               var neighbor;
@@ -687,7 +659,6 @@ function secondLayout(selected){
                 labelAnchorLinks.push(labelLink);
                 // Labels **********************************************
                 
-
                 nameToNode2[neighbor.fields.entity_text] = neighborNode;
               }
               else{
@@ -725,7 +696,6 @@ function secondLayout(selected){
         link2 = svg2.selectAll(".link")
         node3 = svg2.selectAll(".anchorNode")
         link3 = svg2.selectAll(".anchorLink")
-
         force2.on("tick", tickBoth);    
         forceLabel.on("tick", tickBoth);
         function tickBoth(){
@@ -733,23 +703,20 @@ function secondLayout(selected){
             .attr("y1", function(d) { return d.source.y; })
             .attr("x2", function(d) { return d.target.x; })
             .attr("y2", function(d) { return d.target.y; });
-
           svg2.selectAll(".link2").attr("x1", function(d) { return d.source.x; })
             .attr("y1", function(d) { return d.source.y; })
             .attr("x2", function(d) { return d.target.x; })
             .attr("y2", function(d) { return d.target.y; });  
-
           node2.attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; });
-
           node3.each(function(d, i) {
             if(i % 2 == 0) {
               d.x = d.node.x;
               d.y = d.node.y;
               d.shiftX=0;
               d.shiftY=0;
-            } else {
-              
+            } 
+            else {
               var b = this.getBBox();
              // debugger;
               var diffX = d.x - d.node.x; 
@@ -764,18 +731,13 @@ function secondLayout(selected){
               d.shiftY = 5;
             }
           });    
-
           link3.attr("x1", function(d) { return d.source.x; })
             .attr("y1", function(d) { return d.source.y; })
             .attr("x2", function(d) { return d.target.x; })
             .attr("y2", function(d) { return d.target.y; });
-
           node3.attr("x", function(d) { return d.x+d.shiftX; })
             .attr("y", function(d) { return d.y+d.shiftY; });
         }
-
-       
-
     };    
 
 

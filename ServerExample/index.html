@@ -42,7 +42,10 @@ var postData = {
 d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/IndexCards/compare')
   .header('Content-Type', 'application/json')
   .post(JSON.stringify(postData))
-  .on('load', function(d) { console.log(d); });
+  .on('load', function(d) { 
+    debugger;
+    console.log("Compare:"+d); 
+  });
 
 d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/IndexCards/findOne')
   .header('Content-Type', 'application/json')
@@ -54,7 +57,6 @@ d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/IndexCards/findOne')
       .header('Content-Type', 'application/json')
       .get()
       .on('load', function(d) { 
-        debugger;
         console.log(d); });
       });
 
