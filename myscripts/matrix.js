@@ -6,13 +6,25 @@ var compareList = {};
 var array2D;
 var cellSize = 10;
 var cellSpacing = 2;
-var cellMarginX = 50;
-var cellMarginY = 30;
+var cellMarginX = 20;
+var cellMarginY = 50;
+var numCards = 0;
+
 function drawMatrix(){
-  array2D = []; 
-  var numCards = tlinks.length;
+  // remove the cells before
   for (var i=0;i<numCards;i++){
-    for (var j=0;j<numCards;j++){
+    for (var j=0;j<i;j++){
+      g3.selectAll(".cells"+i+"__"+j).remove();
+    }
+  }
+
+  array2D = []; 
+  numCards = tlinks.length;
+  console.log("numCards="+numCards);
+  cellSize = Math.min(20,(width/3-cellMarginX-40)/numCards-cellSpacing);
+
+  for (var i=0;i<numCards;i++){
+    for (var j=0;j<i;j++){
       var cell = {};
       cell.row = tlinks[i];
       cell.rowId = i;
@@ -22,8 +34,9 @@ function drawMatrix(){
     }
   }  
 
+  
   // Draw the matrix
-  svg3.selectAll(".cells").data(array2D).enter().append("rect")
+  g3.selectAll(".cells").data(array2D).enter().append("rect")
     .attr("class", function(d){
       return "cells"+d.rowId+"__"+d.columnId;
     }) 
@@ -41,8 +54,8 @@ function drawMatrix(){
       
 
   // Download potential conflicts data  
-  for (var i=0;i<tlinks.length;i++){
-    for (var j=i+1;j<tlinks.length;j++){
+  for (var i=0;i<numCards;i++){
+    for (var j=0;j<i;j++){
       var cardI = tlinks[i].ref.ref;
       var cardJ = tlinks[j].ref.ref;
       cardI.rowId = i;
@@ -57,12 +70,12 @@ function drawMatrix(){
           .header('Content-Type', 'application/json')
           .post(JSON.stringify(postData))
           .on('load', function(d) { 
-            console.log("potentialConflict:"+d.response.comparsion.potentialConflict
-              +" A="+d.response.cardA.rowId+" B="+d.response.cardB.columnId+" score="+d.response.comparsion.score);
-            svg3.selectAll(".cells"+d.response.cardA.rowId+"__"+d.response.cardB.columnId)
+            //console.log("potentialConflict:"+d.response.comparsion.potentialConflict
+            //  +" A="+d.response.cardA.rowId+" B="+d.response.cardB.columnId+" score="+d.response.comparsion.score);
+            g3.selectAll(".cells"+d.response.cardA.rowId+"__"+d.response.cardB.columnId)
               .style("stroke", function(d2){
                 if (d.response.comparsion.potentialConflict)
-                  return "#f00";
+                  return "#a04";
                 else 
                   return "#fff";
               });
