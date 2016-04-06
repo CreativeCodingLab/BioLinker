@@ -85,7 +85,11 @@ function drawTimeArcs(){
         return  1;
     })     
     .style("stroke-width",0.75)
-    .style("stroke-opacity", 0.8);       
+    .style("stroke-opacity", 0.8)
+    .on("mouseover", function(d){
+      debugger;
+
+    });       
 
 
   /*svg4.selectAll(".node4").remove();
@@ -248,7 +252,7 @@ function drawTimeLegend() {
     .range([50, tWidth-100]);
 
   var listX=[];
-  for (var i=minYear; i<=maxYear;i++){
+  for (var i=minYear; i<=maxYear;i+=2){
     var xx = xScale(i);
     var obj = {};
     obj.x = xx;

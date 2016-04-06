@@ -53,9 +53,9 @@ function drawMatrix(){
       d.y = cellMarginY+d.rowId*(cellSpacing + cellSize);
       return d.y;
     })
-    .style("fill-opacity", 0)
-    .style("stroke", "#bbb")
-    .style("stroke-width", cellSize/50);
+    .style("fill-opacity", 1)
+    .style("fill", "#ddd")
+    .style("stroke-width", 0);
 
   // Draw arcs TOP cell in matrix  
   g3.selectAll(".arcs1").data(array2D).enter().append("path")
@@ -69,7 +69,7 @@ function drawMatrix(){
       else
         return getColor(d.column.ref.type);
     })
-    .style("stroke-width", cellSize/20)     
+    .style("stroke-width", cellSize/15)     
     .style("stroke-opacity", 1)
     .attr("d", cellArc1);   
 
@@ -85,10 +85,28 @@ function drawMatrix(){
       else
         return getColor(d.row.ref.type);
     })
-    .style("stroke-width", cellSize/20)     
+    .style("stroke-width", cellSize/15)     
     .style("stroke-opacity", 1)
     .attr("d", cellArc2);         
 
+  // Draw index cards text 
+  g3.selectAll(".cardTexts").data(tlinks).enter().append("text")
+    .attr("class", "cardTexts") 
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "10px")
+    .attr("x", 0)
+    .attr("y", 0)
+    .text(function(d){
+      return d.source.ref.fields.entity_text+" - "+d.target.ref.fields.entity_text;
+    })
+    .attr("transform", function (d,i){
+      var xText = cellMarginX+i*(cellSpacing + cellSize)+4;
+      var yText = cellMarginY+i*(cellSpacing + cellSize)+cellSize-1;
+      return "translate("+xText+","+yText+") rotate(-30)"
+    })
+    .style("text-anchor", "start")
+    .style("fill", "#000");         
+  
       
 
   // Download potential conflicts data  
@@ -112,9 +130,9 @@ function drawMatrix(){
           //  +" A="+d.response.cardA.rowId+" B="+d.response.cardB.columnId+" score="+d.response.comparsion.score);
           compareList[d.response.cardA._id+"__"+d.response.cardB._id] =d;
           g3.selectAll(".cells"+d.response.cardA.rowId+"__"+d.response.cardB.columnId)
-            .style("stroke", function(d2){
+            .style("fill", function(d2){
               if (d.response.comparsion.potentialConflict)
-                return "#000";
+                return "#fc8";
               else 
                 return "#fff";
             });
@@ -126,9 +144,9 @@ function drawMatrix(){
       }  
       else{
         g3.selectAll(".cells"+i+"__"+j)
-          .style("stroke", function(d2){
+          .style("fill", function(d2){
             if (compareList[cardI._id+"__"+cardJ._id].response.comparsion.potentialConflict)
-              return "#000";
+              return "#fc8";
             else 
               return "#fff";
           });
@@ -138,18 +156,18 @@ function drawMatrix(){
 }    
 
 function cellArc1(d) {
-    var dr = cellSize*0.54;
-    var x1 = d.x+cellSize*0.22;
-    var x2 = d.x+cellSize*0.88;
-    var y1 = d.y+cellSize*0.78;
-    var y2 = d.y+cellSize*0.12;
+    var dr = cellSize*0.5;
+    var x1 = d.x+cellSize*0.25;
+    var x2 = d.x+cellSize*0.87;
+    var y1 = d.y+cellSize*0.75;
+    var y2 = d.y+cellSize*0.13;
     return "M" + x1 + "," + y1 + "A" + dr + "," + dr + " 0 0,1 " + x2 + "," + y2;
 }  
 function cellArc2(d) {
-    var dr = cellSize*0.54;
-    var x1 = d.x+cellSize*0.78;
-    var x2 = d.x+cellSize*0.12;
-    var y1 = d.y+cellSize*0.22;
-    var y2 = d.y+cellSize*0.88;
+    var dr = cellSize*0.5;
+    var x1 = d.x+cellSize*0.75;
+    var x2 = d.x+cellSize*0.13;
+    var y1 = d.y+cellSize*0.25;
+    var y2 = d.y+cellSize*0.87;
     return "M" + x1 + "," + y1 + "A" + dr + "," + dr + " 0 0,1 " + x2 + "," + y2;
 }  
