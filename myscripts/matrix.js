@@ -63,10 +63,11 @@ function drawMatrix(){
       g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
         .style("fill", "#f0d"); 
 
-      console.log("*******mouseover i="+d.rowId+" j="+d.columnId) ; 
       for (var i=0;i<tlinks.length;i++){
         if (i==d.rowId || i==d.columnId)
            tlinks[i].mouseover = true;
+        else
+            tlinks[i].mouseover = false;
       }  
       updateLinks();
     })
@@ -95,7 +96,7 @@ function drawMatrix(){
     .attr("d", cellArc1);   
 
   // Draw arcs DOWN cell in matrix  
-  /*g3.selectAll(".arcs2").data(array2D).enter().append("path")
+  g3.selectAll(".arcs2").data(array2D).enter().append("path")
     .attr("class", function(d){
       return "arcs2"+d.rowId+"__"+d.columnId;
     }) 
@@ -106,7 +107,7 @@ function drawMatrix(){
     .style("stroke-width", cellSize/10)     
     .style("stroke-opacity", 1)
     .attr("d", cellArc2);         
-  */
+  
   // Draw index cards text 
   var fontSize = Math.min(cellSize,10);
   g3.selectAll(".cardTexts").data(tlinks).enter().append("text")
@@ -126,8 +127,6 @@ function drawMatrix(){
     .style("text-anchor", "start")
     .style("fill", "#000");         
   
-      
-
   // Download potential conflicts data  
   for (var i=0;i<numCards;i++){
     for (var j=0;j<i;j++){
@@ -170,6 +169,8 @@ function drawMatrix(){
       }
     }  
   }
+   debugger;
+ 
 }    
 
 function cellArc1(d) {
@@ -195,7 +196,7 @@ function updateLinks() {
     for (var j=0;j<i;j++){
       g3.selectAll(".arcs1"+i+"__"+j)
         .style("stroke-opacity", function (d) {
-          if (d.column.mouseover){
+          if (d.column.mouseover== true){
             console.log("mouseover="+d.column.mouseover+" i="+i+" j="+j+" "+d.rowId+"__"+d.columnId);  
             return 1;    
           }

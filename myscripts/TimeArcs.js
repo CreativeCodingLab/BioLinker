@@ -57,6 +57,16 @@ function drawTimeArcs(){
       tlinks.push(newlink);
     }
   }
+  tlinks.sort(function (a, b) {
+    if (a.ref.type > b.ref.type) {
+      return 1;
+    }
+    if (a.ref.type < b.ref.type) {
+      return -1;
+    }
+    return 0;
+  });  
+
 
   resetForce3();
   
