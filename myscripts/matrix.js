@@ -12,11 +12,12 @@ var numCards = 0;
 
 function drawMatrix(){
   // remove the cells before
+  g3.selectAll(".cardTexts").remove();
   for (var i=0;i<numCards;i++){
     for (var j=0;j<i;j++){
       g3.selectAll(".cells"+i+"__"+j).remove();
       g3.selectAll(".arcs1"+i+"__"+j).remove();
-      g3.selectAll(".arcs2"+i+"__"+j).remove();
+      g3.selectAll(".arcs2"+i+"__"+j).remove();     
     }
   }
 
@@ -36,7 +37,6 @@ function drawMatrix(){
       array2D.push(cell);
     }
   }  
-
   
   // Draw the matrix
   g3.selectAll(".cells").data(array2D).enter().append("rect")
@@ -54,8 +54,32 @@ function drawMatrix(){
       return d.y;
     })
     .style("fill-opacity", 1)
-    .style("fill", "#ddd")
-    .style("stroke-width", 0);
+    .style("fill", function(d){
+      d.fill = "#ddd";
+      return d.fill;
+    })
+    .style("stroke-width", 0)
+    .on("mouseover", function(d){
+      g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
+        .style("fill", "#f0d"); 
+
+      console.log("*******mouseover i="+d.rowId+" j="+d.columnId) ; 
+      for (var i=0;i<tlinks.length;i++){
+        if (i==d.rowId || i==d.columnId)
+           tlinks[i].mouseover = true;
+      }  
+      updateLinks();
+    })
+    .on("mouseout", function(d){
+      g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
+        .style("fill", function(d2){
+          return d2.fill;
+        }); 
+      for (var i=0;i<tlinks.length;i++){
+        tlinks[i].mouseover = false;
+      }  
+      resetLinks();  
+    });
 
   // Draw arcs TOP cell in matrix  
   g3.selectAll(".arcs1").data(array2D).enter().append("path")
@@ -64,44 +88,39 @@ function drawMatrix(){
     }) 
     .style("fill-opacity", 0)
     .style("stroke", function (d) {
-      if (d.rowId<d.columnId)
-        return getColor(d.row.ref.type);
-      else
-        return getColor(d.column.ref.type);
+      return getColor(d.column.ref.type);
     })
-    .style("stroke-width", cellSize/15)     
+    .style("stroke-width", cellSize/10)     
     .style("stroke-opacity", 1)
     .attr("d", cellArc1);   
 
   // Draw arcs DOWN cell in matrix  
-  g3.selectAll(".arcs2").data(array2D).enter().append("path")
+  /*g3.selectAll(".arcs2").data(array2D).enter().append("path")
     .attr("class", function(d){
       return "arcs2"+d.rowId+"__"+d.columnId;
     }) 
     .style("fill-opacity", 0)
     .style("stroke", function (d) {
-      if (d.rowId<d.columnId)
-        return getColor(d.column.ref.type);
-      else
-        return getColor(d.row.ref.type);
+      return getColor(d.row.ref.type);
     })
-    .style("stroke-width", cellSize/15)     
+    .style("stroke-width", cellSize/10)     
     .style("stroke-opacity", 1)
     .attr("d", cellArc2);         
-
+  */
   // Draw index cards text 
+  var fontSize = Math.min(cellSize,10);
   g3.selectAll(".cardTexts").data(tlinks).enter().append("text")
     .attr("class", "cardTexts") 
     .attr("font-family", "sans-serif")
-    .attr("font-size", "10px")
+    .attr("font-size", fontSize+"px")
     .attr("x", 0)
     .attr("y", 0)
     .text(function(d){
       return d.source.ref.fields.entity_text+" - "+d.target.ref.fields.entity_text;
     })
     .attr("transform", function (d,i){
-      var xText = cellMarginX+i*(cellSpacing + cellSize)+4;
-      var yText = cellMarginY+i*(cellSpacing + cellSize)+cellSize-1;
+      var xText = cellMarginX+i*(cellSpacing + cellSize)+fontSize/3;
+      var yText = cellMarginY+i*(cellSpacing + cellSize)+cellSize-fontSize/10;
       return "translate("+xText+","+yText+") rotate(-30)"
     })
     .style("text-anchor", "start")
@@ -132,23 +151,21 @@ function drawMatrix(){
           g3.selectAll(".cells"+d.response.cardA.rowId+"__"+d.response.cardB.columnId)
             .style("fill", function(d2){
               if (d.response.comparsion.potentialConflict)
-                return "#fc8";
+                d2.fill = "#fc8";
               else 
-                return "#fff";
+                d2.fill = "#fff";
+              return d2.fill;
             });
-            //.style("stroke-width", function(d2){
-            //  return d.response.comparsion.score;
-            //});
-          return d; 
         });
       }  
       else{
         g3.selectAll(".cells"+i+"__"+j)
           .style("fill", function(d2){
             if (compareList[cardI._id+"__"+cardJ._id].response.comparsion.potentialConflict)
-              return "#fc8";
+              d2.fill = "#fc8";
             else 
-              return "#fff";
+              d2.fill = "#fff";
+            return d2.fill;
           });
       }
     }  
@@ -156,7 +173,7 @@ function drawMatrix(){
 }    
 
 function cellArc1(d) {
-    var dr = cellSize*0.5;
+    var dr = cellSize*0.49;
     var x1 = d.x+cellSize*0.25;
     var x2 = d.x+cellSize*0.87;
     var y1 = d.y+cellSize*0.75;
@@ -164,10 +181,38 @@ function cellArc1(d) {
     return "M" + x1 + "," + y1 + "A" + dr + "," + dr + " 0 0,1 " + x2 + "," + y2;
 }  
 function cellArc2(d) {
-    var dr = cellSize*0.5;
+    var dr = cellSize*0.49;
     var x1 = d.x+cellSize*0.75;
     var x2 = d.x+cellSize*0.13;
     var y1 = d.y+cellSize*0.25;
     var y2 = d.y+cellSize*0.87;
     return "M" + x1 + "," + y1 + "A" + dr + "," + dr + " 0 0,1 " + x2 + "," + y2;
 }  
+
+function updateLinks() {
+  // Update matrix *****************************************
+  for (var i=0;i<numCards;i++){
+    for (var j=0;j<i;j++){
+      g3.selectAll(".arcs1"+i+"__"+j)
+        .style("stroke-opacity", function (d) {
+          if (d.column.mouseover){
+            console.log("mouseover="+d.column.mouseover+" i="+i+" j="+j+" "+d.rowId+"__"+d.columnId);  
+            return 1;    
+          }
+          else
+            return 0.1;  
+        })   
+    }
+  }
+  debugger;
+      
+}
+function resetLinks() {
+  // Update matrix *****************************************
+  for (var i=0;i<numCards;i++){
+    for (var j=0;j<i;j++){
+      g3.selectAll(".arcs1"+i+"__"+j)
+        .style("stroke-opacity", 1)   
+    }
+  }
+}
