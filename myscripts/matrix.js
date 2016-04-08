@@ -5,7 +5,7 @@ var mWidth = 800;
 var compareList = {};
 var array2D;
 var cellSize = 10;
-var cellSpacing = 2;
+var cellSpacing = 0;
 var cellMarginX = 20;
 var cellMarginY = 50;
 var numCards = 0;
@@ -26,7 +26,7 @@ function drawMatrix(){
   numCards = tlinks.length;
   console.log("numCards="+numCards);
   cellSize = Math.min(20,(width/3-cellMarginX-40)/numCards);
-  cellSpacing = cellSize/10;
+  cellSpacing = cellSize/25;
 
   for (var i=0;i<numCards;i++){
     for (var j=0;j<i;j++){
@@ -59,11 +59,11 @@ function drawMatrix(){
       d.fill = "#ddd";
       return d.fill;
     })
-    .style("stroke", "#000")
-    .style("stroke-width", 0)
+    .style("stroke", "#eed")
+    .style("stroke-width", cellSpacing)
     .on("mouseover", function(d){
       g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
-        .style("stroke-width", 1); 
+        .style("stroke", "#000"); 
       for (var i=0;i<tlinks.length;i++){
         if (i==d.rowId || i==d.columnId)
            tlinks[i].mouseover = true;
@@ -74,7 +74,7 @@ function drawMatrix(){
     })
     .on("mouseout", function(d){
       g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
-        .style("stroke-width", 0); 
+        .style("stroke", "#eed"); 
       for (var i=0;i<tlinks.length;i++){
         tlinks[i].mouseover = false;
       }  
@@ -94,15 +94,19 @@ function drawMatrix(){
     .style("stroke-opacity", 1)
     .attr("d", cellArc1)
     .on("mouseover", function(d){
+      g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
+        .style("stroke", "#000"); 
       for (var i=0;i<tlinks.length;i++){
-        if (i==d.columnId)
-          tlinks[i].mouseover = true;
+        if (i==d.rowId || i==d.columnId)
+         tlinks[i].mouseover = true;
         else
           tlinks[i].mouseover = false;
       }  
       updateLinks();
     })
     .on("mouseout", function(d){
+      g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
+        .style("stroke", "#eed"); 
       for (var i=0;i<tlinks.length;i++){
         tlinks[i].mouseover = false;
       }  
@@ -122,15 +126,19 @@ function drawMatrix(){
     .style("stroke-opacity", 1)
     .attr("d", cellArc2)
     .on("mouseover", function(d){
+      g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
+        .style("stroke", "#000"); 
       for (var i=0;i<tlinks.length;i++){
-        if (i==d.rowId)
-          tlinks[i].mouseover = true;
+        if (i==d.rowId || i==d.columnId)
+         tlinks[i].mouseover = true;
         else
           tlinks[i].mouseover = false;
       }  
       updateLinks();
     })
     .on("mouseout", function(d){
+      g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
+        .style("stroke", "#eed"); 
       for (var i=0;i<tlinks.length;i++){
         tlinks[i].mouseover = false;
       }  
@@ -146,7 +154,7 @@ function drawMatrix(){
     .attr("x", 0)
     .attr("y", 0)
     .text(function(d){
-      return d.source.ref.fields.entity_text+" - "+d.target.ref.fields.entity_text;
+      return d.ref.name;
     })
     .attr("transform", function (d,i){
       var xText = cellMarginX+i*(cellSpacing + cellSize)+fontSize/3;
@@ -197,6 +205,22 @@ function drawMatrix(){
                 d2.fill = "#fff";
               return d2.fill;
             });
+
+          if (d.response.cardA.rowId==numCards-1
+            && d.response.cardB.columnId==numCards-2){
+              tlinks.sort(function (a, b) {
+                if (a.ref.type+a.ref.name > b.ref.type+b.ref.name) {
+                  return 1;
+                }
+                if (a.ref.type+a.ref.name < b.ref.type+b.ref.name) {
+                  return -1;
+                }
+                return 0;
+              });  
+              console.log("Finish re-sort index cards after downloading publication data. rowId="+d.response.cardA.rowId);
+          }
+
+  
         });
       }  
       else{
@@ -232,7 +256,7 @@ function cellArc2(d) {
 
 function updateLinks() {
   // Update matrix *****************************************
-  var fadeOpacity = 0.06;
+  var fadeOpacity = 0.05;
   for (var i=0;i<numCards;i++){
     for (var j=0;j<i;j++){
       g3.selectAll(".arcs1"+i+"__"+j)

@@ -452,8 +452,8 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
         .attr("cy", function(d) { return d.y; });
   });
 // secondLayout( 1970);
-  secondLayout(17);
-
+  //secondLayout(17);
+  secondLayout(18);
 });
 
 

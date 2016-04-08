@@ -58,15 +58,14 @@ function drawTimeArcs(){
     }
   }
   tlinks.sort(function (a, b) {
-    if (a.ref.type > b.ref.type) {
+    if (a.ref.type+a.ref.name > b.ref.type+b.ref.name) {
       return 1;
     }
-    if (a.ref.type < b.ref.type) {
+    if (a.ref.type+a.ref.name < b.ref.type+b.ref.name) {
       return -1;
     }
     return 0;
   });  
-
 
   resetForce3();
   
