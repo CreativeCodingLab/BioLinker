@@ -11,6 +11,7 @@ var cellMarginY = 50;
 var numCards = 0;
 
 function drawMatrix(){
+  
   // remove the cells before
   g3.selectAll(".cardTexts").remove();
   for (var i=0;i<numCards;i++){
@@ -58,11 +59,11 @@ function drawMatrix(){
       d.fill = "#ddd";
       return d.fill;
     })
+    .style("stroke", "#000")
     .style("stroke-width", 0)
     .on("mouseover", function(d){
       g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
-        .style("fill", "#f0d"); 
-
+        .style("stroke-width", 1); 
       for (var i=0;i<tlinks.length;i++){
         if (i==d.rowId || i==d.columnId)
            tlinks[i].mouseover = true;
@@ -73,9 +74,7 @@ function drawMatrix(){
     })
     .on("mouseout", function(d){
       g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
-        .style("fill", function(d2){
-          return d2.fill;
-        }); 
+        .style("stroke-width", 0); 
       for (var i=0;i<tlinks.length;i++){
         tlinks[i].mouseover = false;
       }  
@@ -93,7 +92,22 @@ function drawMatrix(){
     })
     .style("stroke-width", cellSize/10)     
     .style("stroke-opacity", 1)
-    .attr("d", cellArc1);   
+    .attr("d", cellArc1)
+    .on("mouseover", function(d){
+      for (var i=0;i<tlinks.length;i++){
+        if (i==d.columnId)
+          tlinks[i].mouseover = true;
+        else
+          tlinks[i].mouseover = false;
+      }  
+      updateLinks();
+    })
+    .on("mouseout", function(d){
+      for (var i=0;i<tlinks.length;i++){
+        tlinks[i].mouseover = false;
+      }  
+      resetLinks();  
+    });   
 
   // Draw arcs DOWN cell in matrix  
   g3.selectAll(".arcs2").data(array2D).enter().append("path")
@@ -106,7 +120,22 @@ function drawMatrix(){
     })
     .style("stroke-width", cellSize/10)     
     .style("stroke-opacity", 1)
-    .attr("d", cellArc2);         
+    .attr("d", cellArc2)
+    .on("mouseover", function(d){
+      for (var i=0;i<tlinks.length;i++){
+        if (i==d.rowId)
+          tlinks[i].mouseover = true;
+        else
+          tlinks[i].mouseover = false;
+      }  
+      updateLinks();
+    })
+    .on("mouseout", function(d){
+      for (var i=0;i<tlinks.length;i++){
+        tlinks[i].mouseover = false;
+      }  
+      resetLinks();  
+    });         
   
   // Draw index cards text 
   var fontSize = Math.min(cellSize,10);
@@ -125,7 +154,22 @@ function drawMatrix(){
       return "translate("+xText+","+yText+") rotate(-30)"
     })
     .style("text-anchor", "start")
-    .style("fill", "#000");         
+    .style("fill", "#000")
+    .on("mouseover", function(d){
+      for (var i=0;i<tlinks.length;i++){
+        if (tlinks[i]==d)
+          tlinks[i].mouseover = true;
+        else
+          tlinks[i].mouseover = false;
+      }  
+      updateLinks();
+    })
+    .on("mouseout", function(d){
+      for (var i=0;i<tlinks.length;i++){
+        tlinks[i].mouseover = false;
+      }  
+      resetLinks();  
+    });         
   
   // Download potential conflicts data  
   for (var i=0;i<numCards;i++){
@@ -144,8 +188,6 @@ function drawMatrix(){
         .header('Content-Type', 'application/json')
         .post(JSON.stringify(postData))
         .on('load', function(d) { 
-          //console.log("potentialConflict:"+d.response.comparsion.potentialConflict
-          //  +" A="+d.response.cardA.rowId+" B="+d.response.cardB.columnId+" score="+d.response.comparsion.score);
           compareList[d.response.cardA._id+"__"+d.response.cardB._id] =d;
           g3.selectAll(".cells"+d.response.cardA.rowId+"__"+d.response.cardB.columnId)
             .style("fill", function(d2){
@@ -169,8 +211,6 @@ function drawMatrix(){
       }
     }  
   }
-   debugger;
- 
 }    
 
 function cellArc1(d) {
@@ -192,28 +232,84 @@ function cellArc2(d) {
 
 function updateLinks() {
   // Update matrix *****************************************
+  var fadeOpacity = 0.06;
   for (var i=0;i<numCards;i++){
     for (var j=0;j<i;j++){
       g3.selectAll(".arcs1"+i+"__"+j)
         .style("stroke-opacity", function (d) {
-          if (d.column.mouseover== true){
-            console.log("mouseover="+d.column.mouseover+" i="+i+" j="+j+" "+d.rowId+"__"+d.columnId);  
+          if (d.column.mouseover== true)
             return 1;    
-          }
           else
-            return 0.1;  
+            return fadeOpacity;  
         })   
+      g3.selectAll(".arcs2"+i+"__"+j)
+        .style("stroke-opacity", function (d) {
+          if (d.row.mouseover== true)
+            return 1;    
+          else
+            return fadeOpacity;  
+        })     
     }
   }
-  debugger;
-      
+  g3.selectAll(".cardTexts")
+    .style("fill-opacity", function (d) {
+      if (d.mouseover== true)
+        return 1;    
+      else
+        return fadeOpacity;  
+    })   
+
+  // TimeArcs 
+  svg4.selectAll(".linkArc")
+    .style("stroke-opacity", function (d) {
+      if (d.mouseover== true)
+        return 1;    
+      else
+        return fadeOpacity;  
+    })  
+  //stacking  
+  svg.selectAll(".arc_type")
+    .style("stroke-opacity", function (d) {
+      if (d.mouseover== true)
+        return 1;    
+      else
+        return fadeOpacity;  
+    })
+  svg.selectAll(".arc_Context_Species")
+    .style("stroke-opacity", function (d) {
+      if (d.mouseover== true)
+        return 1;    
+      else
+        return fadeOpacity;  
+    })
+  svg.selectAll(".arc_Context_Organ")
+    .style("stroke-opacity", function (d) {
+      if (d.mouseover== true)
+        return 1;    
+      else
+        return fadeOpacity;  
+    })
+  svg.selectAll(".arc_Context_CellType")
+    .style("stroke-opacity", function (d) {
+      if (d.mouseover== true)
+        return 1;    
+      else
+        return fadeOpacity;  
+    })      
 }
 function resetLinks() {
   // Update matrix *****************************************
   for (var i=0;i<numCards;i++){
     for (var j=0;j<i;j++){
-      g3.selectAll(".arcs1"+i+"__"+j)
-        .style("stroke-opacity", 1)   
+      g3.selectAll(".arcs1"+i+"__"+j).style("stroke-opacity", 1)  
+      g3.selectAll(".arcs2"+i+"__"+j).style("stroke-opacity", 1)     
     }
   }
+  g3.selectAll(".cardTexts").style("fill-opacity", 1);
+  // TimeArcs
+  svg4.selectAll(".linkArc").style("stroke-opacity",1);
+  svg.selectAll(".arc_type").style("stroke-opacity",1); 
+  svg.selectAll(".arc_Context_Species").style("stroke-opacity",1); 
+  svg.selectAll(".arc_Context_Organ").style("stroke-opacity",1); 
+  svg.selectAll(".arc_Context_CellType").style("stroke-opacity",1);  
 }

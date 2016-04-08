@@ -223,6 +223,3 @@ function addStacking2(fieldName,label, map){
 }
 
 
-function linkArc(xx,yy,rr) {
-  
-}
