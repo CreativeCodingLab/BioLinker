@@ -206,8 +206,7 @@ function drawMatrix(){
               return d2.fill;
             });
 
-          if (d.response.cardA.rowId==numCards-1
-            && d.response.cardB.columnId==numCards-2){
+          if (d.response.cardB.columnId==d.response.cardA.rowId-1){
               tlinks.sort(function (a, b) {
                 if (a.ref.type+a.ref.name > b.ref.type+b.ref.name) {
                   return 1;
@@ -255,6 +254,31 @@ function cellArc2(d) {
 }  
 
 function updateLinks() {
+  var mouseoverNames = {};
+  for (var i=0;i<tnodes.length;i++){
+    tnodes[i].timeX = undefined;
+  }  
+  for (var i=0;i<numCards;i++){
+    if (tlinks[i].mouseover){
+      var name1 = tlinks[i].source.ref.fields.entity_text;
+      var name2 = tlinks[i].target.ref.fields.entity_text;
+      if (mouseoverNames[name1]==undefined)
+        mouseoverNames[name1] = tlinks[i].source;
+      if (mouseoverNames[name2]==undefined)
+        mouseoverNames[name2] = tlinks[i].target;
+    
+      if (mouseoverNames[name1].timeX!=undefined)
+        mouseoverNames[name1].timeX = Math.min(tlinks[i].timeX,mouseoverNames[name1].timeX);
+      else 
+        mouseoverNames[name1].timeX = tlinks[i].timeX;
+
+      if (mouseoverNames[name2].timeX!=undefined)
+        mouseoverNames[name2].timeX = Math.min(tlinks[i].timeX,mouseoverNames[name2].timeX);
+      else
+        mouseoverNames[name2].timeX = tlinks[i].timeX;
+    } 
+  } 
+ 
   // Update matrix *****************************************
   var fadeOpacity = 0.05;
   for (var i=0;i<numCards;i++){
@@ -281,17 +305,43 @@ function updateLinks() {
         return 1;    
       else
         return fadeOpacity;  
-    })   
+    });   
 
-  // TimeArcs 
+  // TimeArcs ********************************
   svg4.selectAll(".linkArc")
     .style("stroke-opacity", function (d) {
-      if (d.mouseover== true)
+      if (d.mouseover== true){
         return 1;    
+      }
       else
         return fadeOpacity;  
     })  
-  //stacking  
+  svg4.selectAll(".nodeText4")
+    .style("fill-opacity", function (d) {
+      if (mouseoverNames[d.ref.fields.entity_text]!= undefined)
+        return 1;    
+      else
+        return fadeOpacity;  
+    });
+  svg4.selectAll(".nodeText4").transition().duration(1000)
+    .attr("x", function (d) {
+      if (mouseoverNames[d.ref.fields.entity_text]!= undefined && d.timeX!=undefined){
+        return d.timeX;
+      }
+      else
+        return d.x;  
+    }); 
+  svg4.selectAll(".nodeLine4")  
+    .style("stroke-opacity", function (d) {
+      if (mouseoverNames[d.ref.fields.entity_text]!= undefined){
+        return 1;    
+      }
+      else
+        return fadeOpacity;  
+    });
+
+
+  // Stacking ******************************** 
   svg.selectAll(".arc_type")
     .style("stroke-opacity", function (d) {
       if (d.mouseover== true)
@@ -330,10 +380,14 @@ function resetLinks() {
     }
   }
   g3.selectAll(".cardTexts").style("fill-opacity", 1);
-  // TimeArcs
+  // TimeArcs *****************************************
   svg4.selectAll(".linkArc").style("stroke-opacity",1);
   svg.selectAll(".arc_type").style("stroke-opacity",1); 
   svg.selectAll(".arc_Context_Species").style("stroke-opacity",1); 
   svg.selectAll(".arc_Context_Organ").style("stroke-opacity",1); 
   svg.selectAll(".arc_Context_CellType").style("stroke-opacity",1);  
+  svg4.selectAll(".nodeText4").style("fill-opacity", 1);
+  svg4.selectAll(".nodeText4").transition().duration(1000)
+    .attr("x", function (d) { return d.x;  });   
+  svg4.selectAll(".nodeLine4").style("stroke-opacity", 1);  
 }

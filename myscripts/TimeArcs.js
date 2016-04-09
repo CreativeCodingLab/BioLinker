@@ -95,10 +95,35 @@ function drawTimeArcs(){
     })     
     .style("stroke-width",0.75)
     .style("stroke-opacity", 0.8)
-    .on("mouseover", function(d){
-      debugger;
+  ;    
 
-    });       
+  svg4.selectAll(".linkArc2").remove();
+  svg4.selectAll(".linkArc2")
+    .data(tlinks).enter().append("path")
+    .attr("class", "linkArc2")
+    .style("stroke", function (l) {
+        return getColor(l.ref.type);
+    })
+    .style("stroke-width", function (d) {
+        return  1;
+    })     
+    .style("stroke-width",5)
+    .style("stroke-opacity", 0)
+    .on("mouseover", function(d){
+      for (var i=0;i<tlinks.length;i++){
+        if (tlinks[i]==d)
+          tlinks[i].mouseover = true;
+        else
+          tlinks[i].mouseover = false;
+      }  
+      updateLinks();
+    })
+    .on("mouseout", function(d){
+      for (var i=0;i<tlinks.length;i++){
+        tlinks[i].mouseover = false;
+      }  
+      resetLinks();  
+    });         
 
 
   /*svg4.selectAll(".node4").remove();
@@ -124,7 +149,22 @@ function drawTimeArcs(){
     .style("font-weight", function(d) { return d.isSearchTerm ? "bold" : ""; })
     .attr("dy", ".21em")
     .attr("font-family", "sans-serif")
-    .attr("font-size", "10px");
+    .attr("font-size", "10px")
+    .on("mouseover", function(d){
+      for (var i=0;i<tlinks.length;i++){
+        if (tlinks[i].source==d || tlinks[i].target==d)
+          tlinks[i].mouseover = true;
+        else
+          tlinks[i].mouseover = false;
+      }  
+      updateLinks();
+    })
+    .on("mouseout", function(d){
+      for (var i=0;i<tlinks.length;i++){
+        tlinks[i].mouseover = false;
+      }  
+      resetLinks();  
+    });
 
 
 }      
@@ -235,6 +275,7 @@ function detactTimeSeries(){
     d.x2 = 0;
   });
   svg4.selectAll(".linkArc").transition().duration(transTime).attr("d", linkArcTime);  
+  svg4.selectAll(".linkArc2").transition().duration(transTime).attr("d", linkArcTime);  
   //svg4.selectAll(".node4").attr("cx", function(d) { return d.x; })
   //    .attr("cy", function(d) { return d.y; });
   svg4.selectAll(".nodeText4").transition().duration(transTime).attr("x", function(d) { return d.x; })
@@ -251,7 +292,7 @@ function detactTimeSeries(){
       maxY = d.y;
   });    
   svg4.selectAll(".timeLegendText").transition().duration(transTime)
-    .attr("y", function(d) {return maxY+12;})
+    .attr("y", function(d) {return maxY+15;})
 
 }
 
@@ -329,6 +370,7 @@ function update3(){
       .attr("y", function(d) { return d.y; });
     
   svg4.selectAll(".linkArc").attr("d", linkArc);   
+  svg4.selectAll(".linkArc2").attr("d", linkArc);   
 
   drawTimeLegend();
    
@@ -348,7 +390,8 @@ function linkArcTime(d) {
       d.source.x2 = newX;
     if (newX>d.target.x2)
       d.target.x2 = newX;
-    
+    d.timeX = newX;
+
     var dx = 0,
         dy = d.target.y - d.source.y,
         dr = Math.sqrt(dx * dx + dy * dy)/2;
