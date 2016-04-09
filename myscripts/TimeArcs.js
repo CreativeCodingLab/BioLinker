@@ -57,16 +57,7 @@ function drawTimeArcs(){
       tlinks.push(newlink);
     }
   }
-  tlinks.sort(function (a, b) {
-    if (a.ref.type+a.ref.name > b.ref.type+b.ref.name) {
-      return 1;
-    }
-    if (a.ref.type+a.ref.name < b.ref.type+b.ref.name) {
-      return -1;
-    }
-    return 0;
-  });  
-
+  sort_tlinks();
   resetForce3();
   
   // Horizontal lines
@@ -375,6 +366,18 @@ function update3(){
   drawTimeLegend();
    
 }
+
+function sort_tlinks() {
+  tlinks.sort(function (a, b) {
+    if (a.ref.type+a.ref.name > b.ref.type+b.ref.name) {
+      return 1;
+    }
+    if (a.ref.type+a.ref.name < b.ref.type+b.ref.name) {
+      return -1;
+    }
+    return 0;
+  });  
+}  
 
 function linkArcTime(d) {
   var xScale = d3.scale.linear()

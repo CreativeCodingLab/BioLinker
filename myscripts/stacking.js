@@ -30,15 +30,8 @@ function addStacking(){
 function addStacking2(fieldName,label, map){
   y_svg += 25; // inital y position     
   var obj = {};
-  tlinks.sort(function (a, b) {
-      if (a.ref.type > b.ref.type) {
-          return 1;
-      }
-      if (a.ref.type < b.ref.type) {
-          return -1;
-      }
-      return 0;
-  }); 
+
+  sort_tlinks(); // In TimeArcs.js 
 
      // Compute statistics for neighbors ***************************************
     var types = new Object();

@@ -205,21 +205,6 @@ function drawMatrix(){
                 d2.fill = "#fff";
               return d2.fill;
             });
-
-          if (d.response.cardB.columnId==d.response.cardA.rowId-1){
-              tlinks.sort(function (a, b) {
-                if (a.ref.type+a.ref.name > b.ref.type+b.ref.name) {
-                  return 1;
-                }
-                if (a.ref.type+a.ref.name < b.ref.type+b.ref.name) {
-                  return -1;
-                }
-                return 0;
-              });  
-              console.log("Finish re-sort index cards after downloading publication data. rowId="+d.response.cardA.rowId);
-          }
-
-  
         });
       }  
       else{
@@ -256,7 +241,7 @@ function cellArc2(d) {
 function updateLinks() {
   var mouseoverNames = {};
   for (var i=0;i<tnodes.length;i++){
-    tnodes[i].timeX = undefined;
+    tnodes[i].timeX = undefined;   // Reset TimeArcs position for tnodes
   }  
   for (var i=0;i<numCards;i++){
     if (tlinks[i].mouseover){
