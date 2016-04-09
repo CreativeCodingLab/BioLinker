@@ -30,42 +30,60 @@ function addStacking(){
 function addStacking2(fieldName,label, map){
   y_svg += 25; // inital y position     
   var obj = {};
-
   sort_tlinks(); // In TimeArcs.js 
 
-     // Compute statistics for neighbors ***************************************
-    var types = new Object();
-    for (var i=0; i<tlinks.length;i++){
-      var l = tlinks[i].ref;
-      if (types[l[fieldName]]==undefined){
-          types[l[fieldName]] = new Object();
-          types[l[fieldName]].count = 1;
-      }
-      else{
-          types[l[fieldName]].count++;   
-      }
-      if (types[l[fieldName]].list==undefined)
-        types[l[fieldName]].list = [];
-      types[l[fieldName]].list.push(l); 
+   // Compute statistics for neighbors ***************************************
+  var types = new Object();
+  for (var i=0; i<tlinks.length;i++){
+    var l = tlinks[i].ref;
+
+    var name = getContextFromID(""+l[fieldName],map);
+    if (name==undefined)
+      name="?";
+    l[fieldName+"_name"] = name;
+    if (types[name]==undefined){
+        types[name] = new Object();
+        types[name].count = 1;
     }
-    if (obj["tip_"+fieldName]==undefined){
-      obj["tip_"+fieldName] = [];
-      obj["ylabel_"+fieldName] = y_svg-4;
-      for (key in types) {
-        var e= new Object;
-        e[fieldName] = key;
-        e.count= types[key].count;
-        e.list= types[key].list;        
-        e.isEnable = true;
-        e.backgroundColor = "#fff";
-        e.stroke= "#000";
-        e.y = y_svg;  
-        y_svg+=cellHeight2;  // the next y position
-        obj["tip_"+fieldName].push(e);
-        obj["tip_"+fieldName][e[fieldName]] =e; // hash from type to the actual element
-      }
+    else{
+        types[name].count++;   
     }
-   
+    if (types[name].list==undefined)
+      types[name].list = [];
+    types[name].list.push(l); 
+  }
+        
+  if (obj["tip_"+fieldName]==undefined){
+    obj["tip_"+fieldName] = [];
+    obj["ylabel_"+fieldName] = y_svg-4;
+    for (key in types) {
+      var e= new Object;
+      e[fieldName] = key;
+      e.count= types[key].count;
+      e.list= types[key].list;        
+      obj["tip_"+fieldName].push(e);
+      obj["tip_"+fieldName][e[fieldName]] =e; // hash from type to the actual element
+    }
+  }
+  // Sort by number of links for each type
+  obj["tip_"+fieldName].sort(function (a, b) {
+    if (a.count > b.count) {
+      return -1;
+    }
+    if (a.count < b.count) {
+      return 1;
+    }
+    return 0;
+  });  
+  // Initialize the type list postion and values
+  obj["tip_"+fieldName].forEach(function(e){
+    e.y = y_svg;  
+    y_svg+=cellHeight2;  // the next y position
+    e.isEnable = true;
+    e.backgroundColor = "#fff";
+    e.stroke= "#000";    
+  });
+
     // Label ********************************************************
     svg.selectAll(".tiplabel_"+fieldName).remove();
     svg.append('text')
@@ -116,8 +134,7 @@ function addStacking2(fieldName,label, map){
       .attr("dy", "0.90em")
       .style("text-anchor", "end")
       .text(function(d2){
-        return getContextFromID(d2[fieldName],map);
-        
+        return d2[fieldName];
       })
       .style("fill", function(d2){
          return getColor(d2[fieldName]);
@@ -195,14 +212,14 @@ function addStacking2(fieldName,label, map){
         return  1.2;
     })
     .attr("d", function(l){
-      if (types[l.ref[fieldName]].currentIndex==undefined){
-          types[l.ref[fieldName]].currentIndex=0;
+      if (types[l.ref[fieldName+"_name"]].currentIndex==undefined){
+          types[l.ref[fieldName+"_name"]].currentIndex=0;
       }
       else{
-        types[l.ref[fieldName]].currentIndex++;
+        types[l.ref[fieldName+"_name"]].currentIndex++;
       }
-      var xx = 130+types[l.ref[fieldName]].currentIndex*2;
-      var yy = obj["tip_"+fieldName][l.ref[fieldName]].y+1.2;
+      var xx = 130+types[l.ref[fieldName+"_name"]].currentIndex*2;
+      var yy = obj["tip_"+fieldName][l.ref[fieldName+"_name"]].y+1.2;
       var rr = 5.2;
       return "M" + xx + "," + yy + "A" + rr + "," + rr*1.25 + " 0 0,1 " + xx + "," + (yy+rr*2);
     });  
@@ -215,4 +232,20 @@ function addStacking2(fieldName,label, map){
   });   
 }
 
-
+function getContextFromID(id_, map){
+  if (id_.indexOf("uniprot:")>-1){
+    var id = id_.replace("uniprot:","");
+    return uniprotMap[id];
+  }
+  else if (id_.indexOf("taxonomy:")>-1){
+    var id = id_.replace("taxonomy:", "");
+    return map[id];
+  }
+  else if (id_.indexOf("uazid:")>-1){
+    var id = id_.replace("uazid:", "");
+    return map[id];
+  } 
+  else{
+    return id_;
+  } 
+}  

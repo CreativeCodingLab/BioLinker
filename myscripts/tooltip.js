@@ -67,26 +67,6 @@ function showTip(d) {
   }) 
 }     
 
-
-
-function getContextFromID(id_, map){
-  if (id_.indexOf("uniprot:")>-1){
-    var id = id_.replace("uniprot:","");
-    return uniprotMap[id];
-  }
-  else if (id_.indexOf("taxonomy:")>-1){
-    var id = id_.replace("taxonomy:", "");
-    return map[id];
-  }
-  else if (id_.indexOf("uazid:")>-1){
-    var id = id_.replace("uazid:", "");
-    return map[id];
-  } 
-  else{
-    return id_;
-  } 
-}  
-
 function addText(d){
    var curNode = d;
   if (curNode.ref!=undefined){

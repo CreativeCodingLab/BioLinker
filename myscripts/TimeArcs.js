@@ -3,8 +3,6 @@ var tWidth = 800;
 var height2 = 600;
 
 var force3 = d3.layout.force()
-    .charge(-100)
-    .gravity(0.1)
     //.friction(0.5)
     .alpha(0.1)
     .size([tWidth, height2]);
@@ -194,17 +192,16 @@ function resetForce3(){
   var numYear = (maxYear-minYear);
   if (numYear<0)
     numYear =10;
-  console.log("numYear="+numYear);
   force3 = d3.layout.force()
-    .charge(-50)
-    .gravity(0.1)
+    .charge(-30)
+    .gravity(0.01)
     .alpha(0.1)
     .size([tWidth, height2]);
   
   force3.linkDistance(function(l) {
     if (l.year){
       if (l.source.ref.isExpanded==true && l.target.ref.isExpanded==true) {
-        return (maxYear-minYear)*6;  
+        return (maxYear-minYear)*4;  
       }   
       else
         return (l.year-minYear)*2;    
