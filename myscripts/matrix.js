@@ -75,9 +75,6 @@ function drawMatrix(){
     .on("mouseout", function(d){
       g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
         .style("stroke", "#eed"); 
-      for (var i=0;i<tlinks.length;i++){
-        tlinks[i].mouseover = false;
-      }  
       resetLinks();  
     });
 
@@ -107,9 +104,6 @@ function drawMatrix(){
     .on("mouseout", function(d){
       g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
         .style("stroke", "#eed"); 
-      for (var i=0;i<tlinks.length;i++){
-        tlinks[i].mouseover = false;
-      }  
       resetLinks();  
     });   
 
@@ -139,9 +133,6 @@ function drawMatrix(){
     .on("mouseout", function(d){
       g3.selectAll(".cells"+d.rowId+"__"+d.columnId)
         .style("stroke", "#eed"); 
-      for (var i=0;i<tlinks.length;i++){
-        tlinks[i].mouseover = false;
-      }  
       resetLinks();  
     });         
   
@@ -173,9 +164,6 @@ function drawMatrix(){
       updateLinks();
     })
     .on("mouseout", function(d){
-      for (var i=0;i<tlinks.length;i++){
-        tlinks[i].mouseover = false;
-      }  
       resetLinks();  
     });         
   
@@ -357,6 +345,10 @@ function updateLinks() {
     })      
 }
 function resetLinks() {
+  for (var i=0;i<tlinks.length;i++){
+    tlinks[i].mouseover = false;
+  }  
+      
   // Update matrix *****************************************
   for (var i=0;i<numCards;i++){
     for (var j=0;j<i;j++){

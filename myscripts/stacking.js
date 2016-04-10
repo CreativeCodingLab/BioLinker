@@ -35,9 +35,9 @@ function addStacking2(fieldName,label, map){
    // Compute statistics for neighbors ***************************************
   var types = new Object();
   for (var i=0; i<tlinks.length;i++){
-    var l = tlinks[i].ref;
+    var l = tlinks[i];
 
-    var name = getContextFromID(""+l[fieldName],map);
+    var name = getContextFromID(""+l.ref[fieldName],map);
     if (name==undefined)
       name="?";
     l[fieldName+"_name"] = name;
@@ -77,7 +77,7 @@ function addStacking2(fieldName,label, map){
   });  
   // Initialize the type list postion and values
   obj["tip_"+fieldName].forEach(function(e){
-    e.y = y_svg;  
+    e.yStacking = y_svg;  
     y_svg+=cellHeight2;  // the next y position
     e.isEnable = true;
     e.backgroundColor = "#fff";
@@ -106,7 +106,7 @@ function addStacking2(fieldName,label, map){
       .attr("ry", 4)
       .attr("x", 20)
       .attr("y", function(d2, index){
-        return d2.y;
+        return d2.yStacking;
       })
       .attr("width", width/3-40)
       .attr("height", cellHeight2)
@@ -130,7 +130,7 @@ function addStacking2(fieldName,label, map){
       .attr("font-family", "sans-serif")
       .attr("font-size", "11px")
       .attr("x", 125)
-      .attr("y", function(d2){return d2.y;})
+      .attr("y", function(d2){return d2.yStacking;})
       .attr("dy", "0.90em")
       .style("text-anchor", "end")
       .text(function(d2){
@@ -146,17 +146,28 @@ function addStacking2(fieldName,label, map){
     function mouseoverType(d){
       svg.selectAll(".tipTypeRect_"+fieldName)
           .style("fill" , function(d2){
-            if (obj[fieldName]==d2[fieldName]){
+            if (d[fieldName]==d2[fieldName]){
               return "#fca";
             }
             else
               return d2.backgroundColor;
       });  
+
+      // Link brushing to other views
+      for (var i=0;i<tlinks.length;i++){
+        tlinks[i].mouseover = false;
+      } 
+      for (var i=0; i<d.list.length;i++){
+         d.list[i].mouseover = true;
+      }   
+      updateLinks();
     } 
 
     function mouseoutType(d2){
       setTypeColor(d2);
+      resetLinks();  
     } 
+    
     function clickType(d2){
       d2.isEnable = !d2.isEnable;
       for (var i=0; i<curNode.directLinks.length;i++){
@@ -212,14 +223,14 @@ function addStacking2(fieldName,label, map){
         return  1.2;
     })
     .attr("d", function(l){
-      if (types[l.ref[fieldName+"_name"]].currentIndex==undefined){
-          types[l.ref[fieldName+"_name"]].currentIndex=0;
+      if (types[l[fieldName+"_name"]].currentIndex==undefined){
+          types[l[fieldName+"_name"]].currentIndex=0;
       }
       else{
-        types[l.ref[fieldName+"_name"]].currentIndex++;
+        types[l[fieldName+"_name"]].currentIndex++;
       }
-      var xx = 130+types[l.ref[fieldName+"_name"]].currentIndex*2;
-      var yy = obj["tip_"+fieldName][l.ref[fieldName+"_name"]].y+1.2;
+      var xx = 130+types[l[fieldName+"_name"]].currentIndex*2;
+      var yy = obj["tip_"+fieldName][l[fieldName+"_name"]].yStacking+1.2;
       var rr = 5.2;
       return "M" + xx + "," + yy + "A" + rr + "," + rr*1.25 + " 0 0,1 " + xx + "," + (yy+rr*2);
     });  

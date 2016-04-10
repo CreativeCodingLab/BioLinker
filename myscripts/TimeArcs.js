@@ -108,9 +108,6 @@ function drawTimeArcs(){
       updateLinks();
     })
     .on("mouseout", function(d){
-      for (var i=0;i<tlinks.length;i++){
-        tlinks[i].mouseover = false;
-      }  
       resetLinks();  
     });         
 
@@ -149,9 +146,6 @@ function drawTimeArcs(){
       updateLinks();
     })
     .on("mouseout", function(d){
-      for (var i=0;i<tlinks.length;i++){
-        tlinks[i].mouseover = false;
-      }  
       resetLinks();  
     });
 
