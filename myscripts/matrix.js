@@ -315,34 +315,29 @@ function updateLinks() {
 
 
   // Stacking ******************************** 
-  svg.selectAll(".arc_type")
-    .style("stroke-opacity", function (d) {
-      if (d.mouseover== true)
-        return 1;    
-      else
-        return fadeOpacity;  
-    })
-  svg.selectAll(".arc_Context_Species")
-    .style("stroke-opacity", function (d) {
-      if (d.mouseover== true)
-        return 1;    
-      else
-        return fadeOpacity;  
-    })
-  svg.selectAll(".arc_Context_Organ")
-    .style("stroke-opacity", function (d) {
-      if (d.mouseover== true)
-        return 1;    
-      else
-        return fadeOpacity;  
-    })
-  svg.selectAll(".arc_Context_CellType")
-    .style("stroke-opacity", function (d) {
-      if (d.mouseover== true)
-        return 1;    
-      else
-        return fadeOpacity;  
-    })      
+  fadeStacking("type");
+  fadeStacking("Context_Species");
+  fadeStacking("Context_Organ");
+  fadeStacking("Context_CellType");
+    
+  function fadeStacking(fieldName){
+    svg.selectAll(".arc_"+fieldName)
+      .style("stroke-opacity", function (d) {
+        if (d.mouseover== true)
+          return 1;    
+        else
+          return fadeOpacity;  
+      });
+    svg.selectAll(".tipTypeRect_"+fieldName)
+      .style("fill-opacity" , function(d2){
+        for (var i=0; i<d2.list;i++){
+          if (d2.list[i].mouseover)
+            return 1;
+        }
+        return fadeOpacity;
+      });   
+  }  
+  
 }
 function resetLinks() {
   for (var i=0;i<tlinks.length;i++){
@@ -367,4 +362,6 @@ function resetLinks() {
   svg4.selectAll(".nodeText4").transition().duration(1000)
     .attr("x", function (d) { return d.x;  });   
   svg4.selectAll(".nodeLine4").style("stroke-opacity", 1);  
+
+
 }
