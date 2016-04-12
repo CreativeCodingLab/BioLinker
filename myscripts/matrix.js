@@ -6,8 +6,8 @@ var compareList = {};
 var array2D;
 var cellSize = 10;
 var cellSpacing = 0;
-var cellMarginX = 20;
-var cellMarginY = 50;
+var cellMarginX = 10;
+var cellMarginY = 40;
 var numCards = 0;
 
 function drawMatrix(){

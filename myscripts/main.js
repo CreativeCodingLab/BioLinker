@@ -7,7 +7,7 @@
 //Constants for the SVG
 var margin = {top: 0, right: 0, bottom: 5, left: 15};
 var width = document.body.clientWidth - margin.left - margin.right;
-var height = 800 - margin.top - margin.bottom;
+var height = 700 - margin.top - margin.bottom;
 
 //Append a SVG to the body of the html page. Assign this SVG as an object to svg
 d3.select("body").append("svg")
@@ -619,7 +619,7 @@ function secondLayout(selected){
       .style("fill", "#000")
       .style("text-shadow", "1px 1px 0 rgba(200, 200, 200, 0.6")                
       .attr("font-family", "sans-serif")
-      .attr("font-size", "11px");
+      .attr("font-size", "10px");
                 
    // svg2.selectAll(".anchorLink").data(labelAnchorLinks).enter()
     //  .append("svg:line").attr("class", "anchorLink").style("stroke", "#00f");

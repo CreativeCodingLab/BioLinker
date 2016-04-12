@@ -1,5 +1,5 @@
 var y_svg;
-var cellHeight2 = 13;
+var cellHeight2 = 11;
 
 function addStacking(){
   y_svg = width/4;
@@ -21,14 +21,15 @@ function addStacking(){
     //.style("stroke","#000")
     .style("fill","#ccc"); 
 
+  y_svg += 10; // inital y position     
   addStacking2("type", "Interaction types");
   addStacking2("Context_Species", "Context-Species", speciesMap);
-  addStacking2("Context_Organ", "Context-Organ", organMap);
   addStacking2("Context_CellType", "Context-CellType",celltypeMap);
+  addStacking2("Context_Organ", "Context-Organ", organMap);
 }  
 
 function addStacking2(fieldName,label, map){
-  y_svg += 25; // inital y position     
+  y_svg += 18; // inital y position     
   var obj = {};
   sort_tlinks(); // In TimeArcs.js 
 
@@ -91,7 +92,7 @@ function addStacking2(fieldName,label, map){
     .attr("x", 10)
     .attr("y", obj["ylabel_"+fieldName])
     .style("font-family", "sans-serif")
-    .style("font-size", "11px")
+    .style("font-size", "10px")
     .style("font-weight", "bold")
     .style("text-anchor", "start")
     .text(label)
@@ -128,10 +129,10 @@ function addStacking2(fieldName,label, map){
       .enter().append('text')
       .attr("class", "tipTypeText_"+fieldName)
       .attr("font-family", "sans-serif")
-      .attr("font-size", "11px")
+      .attr("font-size", "10px")
       .attr("x", 125)
       .attr("y", function(d2){return d2.yStacking;})
-      .attr("dy", "0.90em")
+      .attr("dy", "0.85em")
       .style("text-anchor", "end")
       .text(function(d2){
         return d2[fieldName];
@@ -157,6 +158,7 @@ function addStacking2(fieldName,label, map){
       for (var i=0;i<tlinks.length;i++){
         tlinks[i].mouseover = false;
       } 
+
       for (var i=0; i<d.list.length;i++){
          d.list[i].mouseover = true;
       }   
@@ -220,7 +222,7 @@ function addStacking2(fieldName,label, map){
         return getColor(l.ref.type);
     })
     .style("stroke-width", function (d) {
-        return  1.2;
+        return  1.1;
     })
     .attr("d", function(l){
       if (types[l[fieldName+"_name"]].currentIndex==undefined){
@@ -230,9 +232,9 @@ function addStacking2(fieldName,label, map){
         types[l[fieldName+"_name"]].currentIndex++;
       }
       var xx = 130+types[l[fieldName+"_name"]].currentIndex*2;
-      var yy = obj["tip_"+fieldName][l[fieldName+"_name"]].yStacking+1.2;
-      var rr = 5.2;
-      return "M" + xx + "," + yy + "A" + rr + "," + rr*1.25 + " 0 0,1 " + xx + "," + (yy+rr*2);
+      var yy = obj["tip_"+fieldName][l[fieldName+"_name"]].yStacking+1;
+      var rr = 4.4;
+      return "M" + xx + "," + yy + "A" + rr + "," + rr*1.2 + " 0 0,1 " + xx + "," + (yy+rr*2);
     });  
 
 

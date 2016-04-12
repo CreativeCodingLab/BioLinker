@@ -1,6 +1,6 @@
 
 var tWidth = 800;
-var height2 = 600;
+var height2 = 400;
 
 var force3 = d3.layout.force()
     //.friction(0.5)
