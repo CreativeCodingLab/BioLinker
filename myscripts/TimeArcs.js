@@ -188,7 +188,7 @@ function resetForce3(){
     numYear =10;
   force3 = d3.layout.force()
     .charge(-30)
-    .gravity(0.01)
+    .gravity(0.02)
     .alpha(0.1)
     .size([tWidth, height2]);
   

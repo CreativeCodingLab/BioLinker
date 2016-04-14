@@ -114,8 +114,10 @@ var force2 = d3.layout.force()
 
 
 var forceLabel = d3.layout.force()
-  .gravity(0).linkDistance(1)
-  .linkStrength(8).charge(-80)
+  .gravity(0)
+  .linkDistance(1)
+  .linkStrength(5)
+  .charge(-50)
   .size([width, height]);
 
 /*
@@ -503,7 +505,6 @@ function secondLayout(selected){
   update2();
 
   // Add label of the new node
-  nodes2.push(newNode);
   labelAnchors.push({
     node : newNode
   });
@@ -594,6 +595,7 @@ function secondLayout(selected){
       }
     });
 
+   svg2.selectAll(".node").remove();
    svg2.selectAll(".node")
     .data(nodes2)
     .enter().append("circle")

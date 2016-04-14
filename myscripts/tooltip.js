@@ -248,7 +248,7 @@ function addDotplots(d,fieldName,label, map){
             return 0.15;
         }); 
 
-      tip_svg.selectAll(".tipTypeDot_"+fieldName)
+      tip_svg.selectAll(".tipTypeArc_"+fieldName)
         .style("fill-opacity" , function(d4){
           var tipdata;
           for (var i=0;i<d["tip_"+fieldName].length;i++){
@@ -262,10 +262,28 @@ function addDotplots(d,fieldName,label, map){
         })   
     }
 
-  var dotRadius =4;    
-  tip_svg.selectAll(".tipTypeDot_"+fieldName).data(curNode.directLinks)
-    .enter().append('circle')
-    .attr("class", "tipTypeDot_"+fieldName)
+  tip_svg.selectAll(".tipTypeArc_"+fieldName).data(curNode.directLinks)
+    .enter().append('path')
+    .attr("class", "tipTypeArc__"+fieldName)
+    .style("fill-opacity", 0)
+    .style("stroke", function (l) {
+        return getColor(l.type);
+    })
+    .style("stroke-width", 1.5)
+    .attr("d", function(l){
+      if (types[l[fieldName]].currentIndex==undefined){
+          types[l[fieldName]].currentIndex=0;
+      }
+      else{
+        types[l[fieldName]].currentIndex++;
+      }
+      var xx = 130+types[l[fieldName]].currentIndex*3;
+      var yy = d["tip_"+fieldName][l[fieldName]].y+2;
+      var rr = 5;
+      return "M" + xx + "," + yy + "A" + rr + "," + rr*1.2 + " 0 0,1 " + xx + "," + (yy+rr*2);
+    });  
+  
+  /*
       .attr('r',dotRadius)
       .attr('cx',function(l, index){
         if (types[l[fieldName]].currentIndex==undefined){
@@ -281,7 +299,8 @@ function addDotplots(d,fieldName,label, map){
       })
       .style("fill", function(d2){
          return getColor(d2.type);
-      });
+      });*/
+
 
   d["tip_"+fieldName].forEach(function(d2){   // make sure disable types are greyout on the second mouse over
     mouseoutType(d2);

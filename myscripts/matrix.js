@@ -7,7 +7,7 @@ var array2D;
 var cellSize = 10;
 var cellSpacing = 0;
 var cellMarginX = 10;
-var cellMarginY = 40;
+var cellMarginY = 35;
 var numCards = 0;
 
 function drawMatrix(){
