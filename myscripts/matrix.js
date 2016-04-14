@@ -336,8 +336,43 @@ function updateLinks() {
         }
         return fadeOpacity;
       });   
-  }  
-  
+  } 
+  // Main view *****************************************
+  svg2.selectAll(".node")  
+    .style("fill-opacity", function (d) {
+      if (mouseoverNames[d.ref.fields.entity_text]!= undefined){
+        return 1;    
+      }
+      else
+        return fadeOpacity;  
+    }); 
+  svg2.selectAll(".anchorNode")  
+    .style("fill-opacity", function (d) {
+      if (mouseoverNames[d.node.ref.fields.entity_text]!= undefined){
+        return 1;    
+      }
+      else
+        return fadeOpacity;  
+    });   
+  // Set mouseover for links in the main view  
+  for (var i=0;i<tlinks.length;i++){
+    tlinks[i].ref.mouseover = tlinks[i].mouseover;
+  }
+  for (var i=0;i<links2.length;i++){
+    links2[i].mouseover = false;
+    for (var j=0;j<links2[i].list.length;j++){
+      if (links2[i].list[j].mouseover)
+        links2[i].mouseover = true;;
+    }
+  }
+  svg2.selectAll(".link")
+    .style("stroke-opacity", function (d) {
+      if (d.mouseover){
+        return 1;    
+      }
+      else
+        return fadeOpacity;  
+    });
 }
 function resetLinks() {
   for (var i=0;i<tlinks.length;i++){
@@ -369,5 +404,15 @@ function resetLinks() {
     svg.selectAll(".arc_"+fieldName).style("stroke-opacity", 1);
     svg.selectAll(".tipTypeRect_"+fieldName).style("fill-opacity", 1);   
   }  
-
+  // Main view *****************************************
+  svg2.selectAll(".node").style("fill-opacity", 1); 
+  svg2.selectAll(".anchorNode").style("fill-opacity", 1);   
+  // Set mouseover for links in the main view  
+  for (var i=0;i<tlinks.length;i++){
+    tlinks[i].ref.mouseover = tlinks[i].mouseover;
+  }
+  for (var i=0;i<links2.length;i++){
+    links2[i].mouseover = false;
+  }
+  svg2.selectAll(".link").style("stroke-opacity", 1);
 }
