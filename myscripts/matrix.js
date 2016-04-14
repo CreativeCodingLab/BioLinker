@@ -335,7 +335,23 @@ function updateLinks() {
             return 1;
         }
         return fadeOpacity;
+      })
+      .style("stroke-opacity" , function(d2){
+        for (var i=0; i<d2.list.length;i++){
+          if (d2.list[i].mouseover)
+            return 1;
+        }
+        return 5*fadeOpacity;
+      });     
+    svg.selectAll(".tipTypeText_"+fieldName)
+      .style("fill-opacity" , function(d2){
+        for (var i=0; i<d2.list.length;i++){
+          if (d2.list[i].mouseover)
+            return 1;
+        }
+        return fadeOpacity;
       });   
+      
   } 
   // Main view *****************************************
   svg2.selectAll(".node")  
@@ -402,7 +418,8 @@ function resetLinks() {
   
   function resetStacking(fieldName){
     svg.selectAll(".arc_"+fieldName).style("stroke-opacity", 1);
-    svg.selectAll(".tipTypeRect_"+fieldName).style("fill-opacity", 1);   
+    svg.selectAll(".tipTypeRect_"+fieldName).style("fill-opacity", 1).style("stroke-opacity",1);   
+    svg.selectAll(".tipTypeText_"+fieldName).style("fill-opacity" ,1); 
   }  
   // Main view *****************************************
   svg2.selectAll(".node").style("fill-opacity", 1); 

@@ -501,7 +501,23 @@ function secondLayout(selected){
   addNodes();
   update1(); // Update the overview graph 
   update2();
-  expand2(newNode);   
+
+  // Add label of the new node
+  nodes2.push(newNode);
+  labelAnchors.push({
+    node : newNode
+  });
+  labelAnchors.push({
+    node : newNode
+  });   
+  var labelLink = {};
+  labelLink.source = labelAnchors[labelAnchors.length-2];
+  labelLink.target = labelAnchors[labelAnchors.length-1];
+  labelLink.weight = 1;
+  labelAnchorLinks.push(labelLink);
+  nameToNode2[newNode.ref.fields.entity_text] = newNode;
+
+  expand2(newNode);
   drawTimeArcs(); 
   drawMatrix();
   addStacking(); 
