@@ -50,7 +50,6 @@ svg3.append("rect")
     .style("stroke","#000")
     .style("fill-opacity",0); 
 var g3 = svg3.append("g");
-
       // then, create the zoom behvavior
       var zoom = d3.behavior.zoom()
         // only scale up, e.g. between 1x and 50x
@@ -563,8 +562,8 @@ function secondLayout(selected){
       })
       .on('mouseout', function(d) {
         tip.hide(d); 
-        removeTimeArcs();
       });  
+
     nodes2.forEach(function(d){
       var curNode = d;
       if (curNode.ref!=undefined){
@@ -630,6 +629,7 @@ function secondLayout(selected){
       .links(labelAnchorLinks)
       .start();    
 
+    svg2.selectAll(".anchorNode").remove();  
     svg2.selectAll(".anchorNode").data(labelAnchors).enter().append("text").attr("class", "anchorNode")
       .text(function(d, i) {
        return i % 2 == 0 ? "" : d.node.ref.fields.entity_text;

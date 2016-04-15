@@ -51,7 +51,10 @@ function showTip(d) {
     .html(function(d) {
       var str ="";
       for (key in d) {
-        str+=  key+": <span style='color:darkblue'>" + d[key] + "</span><br>";
+        if (key== "source")
+           str+=  key+"1111: <span style='color:darkblue'>" + d[key] + "</span><br>";
+        else   
+          str+=  key+": <span style='color:darkblue'>" + d[key] + "</span><br>";
       } 
       return str; 
     });
@@ -61,9 +64,7 @@ function showTip(d) {
   .on("mouseout", function(){
     if (checkMouseOut(d, this)){
       tip.hide(d);
-      removeTimeArcs();    
-    }
-      
+    }    
   }) 
 }     
 

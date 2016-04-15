@@ -30,19 +30,7 @@ function drawTimeArcs(){
   tnodes = [];
   tlinks = [];
   nodesList = {};
-
-  /*var timeArcsRect = svg4.append('rect')
-    .attr("class", "timeArcsRect")
-    .attr("x", mouseCoordinate[0]-tWidth/2)
-    .attr("y", mouseCoordinate[1])
-    .attr("rx", 6)
-    .attr("ry", 6)
-    .attr("width", tWidth)
-    .attr("height", tHeight)
-    .style("fill", "#eee")
-    .style("stroke", "#000");*/
-  //focusName = vertex.ref.fields.entity_text;  
-  
+ 
   for (var i=0; i<links2.length;i++){
     for (var j=0; j<links2[i].list.length;j++){
       var link = links2[i].list[j];
@@ -414,6 +402,3 @@ function linkArc(d) {
   }    
 }
 
-function removeTimeArcs(){
-  svg4.selectAll(".timeArcsRect").remove();
-}
