@@ -104,8 +104,8 @@ var force = d3.layout.force()
     .size([width/3, width/4]);
 
 var force2 = d3.layout.force()
-    .charge(-100)
-    .linkDistance(50)
+    .charge(-140)
+    .linkDistance(70)
     .gravity(0.1)
     //.friction(0.5)
   //  .alpha(0.1)
@@ -207,8 +207,9 @@ d3.tsv("data/uniprot-proteins.tsv", function(error, data_) {
 //d3.json("data/cards-for-time-arcs.json", function(error, data_) {
 d3.json("data/cardsWithContextData.json", function(error, data_) {
     data3 = data_;
+    var linkNames = {};
     data3.forEach(function(d, index){ 
-      if (index<2000) {  // Limit to 1000 first index cards ********************************************
+      if (index<5000) {  // Limit to 1000 first index cards ********************************************
         //var a = d.card.extracted_information.participant_a;
         //var b = d.card.extracted_information.participant_b;
         var a = d.extracted_information.participant_a;
@@ -235,7 +236,11 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
         l.pmc_id = d.pmc_id;
         l.name = node1.fields.entity_text+"__"+node2.fields.entity_text;
         l.ref = d;
-        links.push(l);
+        if (linkNames[l.name+"_"+l.pmc_id]==undefined){
+          links.push(l);
+          linkNames[l.name+"_"+l.pmc_id] = l;
+        }
+        
       }     
     });
     

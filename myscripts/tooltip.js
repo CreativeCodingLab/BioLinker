@@ -51,8 +51,19 @@ function showTip(d) {
     .html(function(d) {
       var str ="";
       for (key in d) {
-        if (key== "source")
-           str+=  key+"1111: <span style='color:darkblue'>" + d[key] + "</span><br>";
+        if (key== "source" || key== "target")
+          str+=  key+": <span style='color:darkblue'>" + d[key].ref.fields.entity_text + "</span><br>";
+        else if (key== "list"){
+          var list = "";
+          for (var i=0; i< d[key].length; i++){
+            var l = d[key][i];
+            if (i==d[key].length-1)
+              list+="PMC"+l.ref.pmc_id;
+            else
+              list+="PMC"+l.ref.pmc_id+", ";
+          }  
+          str+=  key+": <span style='color:darkblue'>" + list + "</span><br>"; 
+        }
         else   
           str+=  key+": <span style='color:darkblue'>" + d[key] + "</span><br>";
       } 
