@@ -272,7 +272,8 @@ function drawTimeLegend() {
     .range([50, tWidth-100]);
 
   var listX=[];
-  for (var i=minYear; i<=maxYear;i+=2){
+  var timeStep = 1+Math.floor((maxYear-minYear)/15);
+  for (var i=minYear; i<=maxYear;i+=timeStep){
     var xx = xScale(i);
     var obj = {};
     obj.x = xx;

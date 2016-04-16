@@ -62,8 +62,10 @@ function showTip(d) {
             else
               list+="PMC"+l.ref.pmc_id+", ";
           }  
-          str+=  key+": <span style='color:darkblue'>" + list + "</span><br>"; 
+          str+=  "Publications: <span style='color:darkblue'>" + list + "</span><br>"; 
         }
+        else if (key== "mouseover")
+            ;// Do nothing
         else   
           str+=  key+": <span style='color:darkblue'>" + d[key] + "</span><br>";
       } 

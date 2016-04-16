@@ -104,7 +104,7 @@ var force = d3.layout.force()
     .size([width/3, width/4]);
 
 var force2 = d3.layout.force()
-    .charge(-140)
+    .charge(-150)
     .linkDistance(70)
     .gravity(0.1)
     //.friction(0.5)
@@ -274,7 +274,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
             isDecrease = true;
         }
         if (isIncrease && isDecrease){
-          console.log("key=" + key + " = " + list[key]);
+          console.log("key=" + key + "= " + list[key]);
           a.push(key);
         }
       }
@@ -313,7 +313,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
       .style("stroke", "#000")
       .style("stroke-width", 0.1)
       .style("fill", function(d){
-        if (d=="SP__CD4+")
+        if (d=="TGF-beta__IL-17" || d=="EGCG__MMP-13")
           return "#f88";
         else if (list[d].length>2)
           return "#888";
@@ -335,11 +335,6 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
       .on('mouseout', function(d2){
         svg2.selectAll(".buttonRect")
             .style("fill", function(d4){
-              if (d4=="SP__CD4+")
-                return "#f88";
-              else if (list[d4].length>2)
-                return "#888";
-              else  
                 return buttonColor;
             });
       })
@@ -539,7 +534,15 @@ function secondLayout(selected){
       .enter().append("line")
       .attr("class", "link")
       .style("stroke", function(l){
-         return getColor(l.type);
+        if (l.list.length>1){
+          for (var i=0; i<l.list.length;i++){
+            if (l.list[i].type!=l.type)
+               return "#888";
+          }
+          return getColor(l.type);
+        }
+        else
+          return getColor(l.type);
       })
       .style("stroke-opacity", 0.5)
       .style("stroke-width",function(l){
@@ -609,7 +612,7 @@ function secondLayout(selected){
         if (curNode.ref!=undefined){
             curNode = curNode.ref;
         }
-        return 2+Math.pow(curNode.directLinks.length, 0.4);    
+        return 3+Math.pow(curNode.directLinks.length, 0.35);    
       })
       .style("fill", "#444")
       .style("stroke", "#eee")
