@@ -72,29 +72,36 @@ h3 {
   padding: 10px;
   font-size: 14px;
   font-family: "sans-serif";
-  background: rgba(215, 240, 255, 0.95);
+  background: rgba(200, 220, 245, 0.96);
   color: #000;
   border-radius: 2px;
 }
 
 /* Creates a small triangle extender for the tooltip */
-.d3-tip:after {
+/*.d3-tip:after {
   box-sizing: border-box;
   display: inline;
   font-size: 10px;
   width: 100%;
   line-height: 1;
-  color: rgba(215, 240, 255, 0.95);
+  color: rgba(200, 220, 245, 0.96);
   content: "\25BC";
   position: absolute;
   text-align: center;
-}
+}*/
 
 /* Style northward tooltips differently */
 .d3-tip.n:after {
   margin: -1px 0 0 0;
   top: 100%;
   left: 0;
+}
+
+table, th, td {
+    border: 1px solid #888;
+    border-collapse: collapse;
+    padding: 3px;
+    background-color: #fff;
 }
 
 </style>

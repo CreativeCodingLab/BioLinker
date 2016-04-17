@@ -1,5 +1,5 @@
-var tipWidth = 300;
-var tipSVGheight = 200;
+var tipWidth = 250;
+var tipSVGheight = 140;
 var tip_svg;
 var y_svg;
 
@@ -11,7 +11,7 @@ var cellHeight = 14;
 var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-(tipSVGheight),-tipWidth/2])
-  .style('border', '0.5px solid #bbb');
+  .style('border', '1px solid #555');
 
 function checkMouseOut(d, tipItem){
   var isOut=false;
@@ -45,13 +45,15 @@ function showTip(d) {
     //addDotplots(d,"Context_CellType", "Context-CellType",celltypeMap);
   }
   else if (d.source && d.target){
-    tip.offset([-20,-0])
+    tip.offset([-10,-0])
     .html(function(d) {
       var str ="";
       if (d.ref==undefined) { //  In the main View
+        str+="<b> Index card data: </b>"
+        str+="<table border='0.5px'  style='width:100%'>"
         for (key in d) {
           if (key== "source" || key== "target")
-            str+=  key+": <span style='color:darkblue'>" + d[key].ref.fields.entity_text + "</span><br>";
+            str+=  "<tr><td>"+key+"</td> <td>  <span style='color:darkblue'>" + d[key].ref.fields.entity_text + "</span> </td></tr>";
           else if (key== "list"){
             var list = "";
             for (var i=0; i< d[key].length; i++){
@@ -61,7 +63,7 @@ function showTip(d) {
               else
                 list+="PMC"+l.ref.pmc_id+", ";
             }  
-            str+=  "Publications: <span style='color:darkblue'>" + list + "</span><br>"; 
+            str+=  "<tr><td>Paper id</td> <td>  <span style='color:darkblue'>" + list + "</span> </td></tr>"; 
           }
           else if (key== "mouseover")
               ;// Do nothing
@@ -69,18 +71,69 @@ function showTip(d) {
             var value = d[key];
             if (value==undefined)
               value = "?";
-            str+=  key+": <span style='color:darkblue'>" + value + "</span><br>";
+            str+=  "<tr><td>"+key+"</td> <td>  <span style='color:darkblue'>" + value + "</span> </td></tr>";
           }     
         } 
+        str+="</table>"
       }
       else{ //  In the TimeArcs View
-        debugger;
+        str+="<b> Publicaiton data: </b>"
+        
+        str+="<table border='0.5px'  style='width:100%'>"
         var id = "PMC"+d.ref.pmc_id;
-        str+=  "id: <span style='color:darkblue'>" + id + "</span><br>";
-        str+=  "year: <span style='color:darkblue'>" + d.year + "</span><br>";
-          
-        //l.year = parseInt(pmcData[pmcId]["article-meta"][0]["pub-date"][0].year);
-       
+        
+        str+=  "<tr><td>Paper id </td> <td><span style='color:darkblue'>" + id + "</span> </td></tr>";  
+
+        if (pmcData[id]){  // Paper Data
+          if (pmcData[id]["article-meta"]){
+            if (pmcData[id]["article-meta"][0]["title-group"]){
+              var title = pmcData[id]["article-meta"][0]["title-group"][0]["article-title"][0];
+              if (title == "[object Object]")
+                title = pmcData[id]["article-meta"][0]["title-group"][0]["article-title"][0]["_"];
+              str+=  "<tr><td>Title</td> <td> <span style='color:darkblue'>"+title + "</span> </td></tr>";
+            }
+            if (pmcData[id]["article-meta"][0]["aff"]){
+              var aff = pmcData[id]["article-meta"][0]["aff"][0];
+              if (aff == "[object Object]")
+                aff = pmcData[id]["article-meta"][0]["aff"][0]["_"];
+              if (aff!=undefined)
+               str+=  "<tr><td>Affiliation</td> <td> <span style='color:darkblue'>"+aff + "</span> </td></tr>";
+            }
+          }
+        }
+        str+=  "<tr><td>Year</td> <td> <span style='color:darkblue'>"+d.year + "</span> </td></tr>";
+        str+=  "<tr><td>Evidence</td> <td> <span style='color:darkblue'>"+d.ref.evidence + "</span></td></tr>";
+        
+
+        if (pmcData[id]){   // Journal Data
+          if (pmcData[id]["journal-meta"]){
+            if (pmcData[id]["journal-meta"][0]["journal-title"]){
+              var journal = pmcData[id]["journal-meta"][0]["journal-title"][0];
+              str+=  "<tr><td>Journal</td> <td> <span style='color:darkblue'>"+journal + "</span> </td></tr>";
+            }
+            if (pmcData[id]["journal-meta"][0]["publisher"]){
+              if (pmcData[id]["journal-meta"][0]["publisher"][0]["publisher-name"]){
+                var publisherName = pmcData[id]["journal-meta"][0]["publisher"][0]["publisher-name"][0];
+                str+=  "<tr><td>Publisher</td> <td> <span style='color:darkblue'>"+publisherName + "</span> </td></tr>";
+              }
+              if (pmcData[id]["journal-meta"][0]["publisher"][0]["publisher-loc"]){
+                var publisherLocation = pmcData[id]["journal-meta"][0]["publisher"][0]["publisher-loc"][0];
+                str+=  "<tr><td>Publisher location</td> <td> <span style='color:darkblue'>"+publisherLocation + "</span></td></tr>";
+              }
+            }
+          }
+        }
+        if (pmcData[id]){  // Paper Data
+          if (pmcData[id]["article-meta"])
+            if (pmcData[id]["article-meta"][0]["volume"]){
+              var volume = pmcData[id]["article-meta"][0]["volume"][0];
+              if (volume == "[object Object]")
+                volume = pmcData[id]["article-meta"][0]["volume"][0]["_"];
+              if (volume!=undefined)
+               str+=  "<tr><td>Volume</td> <td> <span style='color:darkblue'>"+volume + "</span> </td></tr>";
+            }
+        }    
+        str+="</table>"
       }  
       return str; 
     });
@@ -95,6 +148,17 @@ function showTip(d) {
 }     
 
 function addText(d){
+  tip_svg.append('text')
+    .attr("x", 0)
+    .attr("y", y_svg+=cellHeight)
+    .style("font-family", "sans-serif")
+    .style("font-size", "12px")
+    .style("font-weight", "bold")
+    .style("text-anchor", "start")
+    .text("Protein data")
+    .style("fill", "#000");
+  
+
    var curNode = d;
   if (curNode.ref!=undefined){
       curNode = curNode.ref;
@@ -113,7 +177,7 @@ function addText(d){
       .attr("class", "tipText")
       .attr("font-family", "sans-serif")
       .attr("font-size", "12px")
-      .attr("x", 0)
+      .attr("x", 10)
       .attr("y", function(d2){ 
         return y_svg+=cellHeight;
       })

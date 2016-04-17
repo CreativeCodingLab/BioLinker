@@ -303,6 +303,9 @@ function updateLinks() {
       }
       else
         return d.x;  
+    })
+    .attr("y", function (d) {
+      return d.y;  
     }); 
   svg4.selectAll(".nodeLine4")  
     .style("stroke-opacity", function (d) {

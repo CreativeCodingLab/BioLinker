@@ -209,7 +209,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
     data3 = data_;
     var linkNames = {};
     data3.forEach(function(d, index){ 
-      if (index<5000) {  // Limit to 1000 first index cards ********************************************
+      if (index<1000) {  // Limit to 1000 first index cards ********************************************
         //var a = d.card.extracted_information.participant_a;
         //var b = d.card.extracted_information.participant_b;
         var a = d.extracted_information.participant_a;

@@ -116,7 +116,9 @@ function drawTimeArcs(){
   svg4.selectAll(".nodeText4").data(tnodes).enter()
     .append("text")
     .attr("class", "nodeText4")
-    .text(function(d) { return d.ref.fields.entity_text})           
+    .text(function(d) { return d.ref.fields.entity_text})
+    .attr("x", function(d) { return d.x; })
+    .attr("y", function(d) { return d.y; })          
     .style("fill","#000")
     .style("fill-opacity",1)
     .style("text-anchor","end")
@@ -321,6 +323,7 @@ function update3(){
       pmcId = "PMC"+pmcId; 
     if (pmcData[pmcId]){
       l.year = parseInt(pmcData[pmcId]["article-meta"][0]["pub-date"][0].year);
+      l.month = parseInt(pmcData[pmcId]["article-meta"][0]["pub-date"][0].month);
       if (l.year>maxYear)
         maxYear = l.year;
       if (l.year<minYear)
