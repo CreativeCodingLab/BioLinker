@@ -209,7 +209,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
     data3 = data_;
     var linkNames = {};
     data3.forEach(function(d, index){ 
-      if (index<1000) {  // Limit to 1000 first index cards ********************************************
+      if (2000<index && index<5000) {  // Limit to 1000 first index cards ********************************************
         //var a = d.card.extracted_information.participant_a;
         //var b = d.card.extracted_information.participant_b;
         var a = d.extracted_information.participant_a;
@@ -457,9 +457,8 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
     node.attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
   });
-// secondLayout( 1970);
-  //secondLayout(17);
-  secondLayout(18);
+ secondLayout(0);
+  // secondLayout(18);
 });
 
 
@@ -558,7 +557,7 @@ function secondLayout(selected){
       })
       .on('mouseout', function(d) {
         tip.hide(d); 
-        removeTimeArcs();
+     //   removeTimeArcs();
       });
 
     svg2.selectAll(".link2")

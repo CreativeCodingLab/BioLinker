@@ -65,6 +65,9 @@ function showTip(d) {
             }  
             str+=  "<tr><td>Paper id</td> <td>  <span style='color:darkblue'>" + list + "</span> </td></tr>"; 
           }
+          else if (key== "evidence"){
+              str+=  "<tr><td>Evidence</td> <td>  <span style='color:"+ getColor(d.type)+"'>" + d[key] + "</span> </td></tr>"; 
+          }
           else if (key== "mouseover")
               ;// Do nothing
           else{
@@ -92,6 +95,21 @@ function showTip(d) {
                 title = pmcData[id]["article-meta"][0]["title-group"][0]["article-title"][0]["_"];
               str+=  "<tr><td>Title</td> <td> <span style='color:darkblue'>"+title + "</span> </td></tr>";
             }
+            if (pmcData[id]["article-meta"][0]["contrib-group"]){
+              var authors = pmcData[id]["article-meta"][0]["contrib-group"][0]["contrib"];
+              if (authors){
+                var names = "";
+                for (var i=0; i<authors.length;i++){
+                  if (authors[i].name){
+                    if (i==0)
+                      names+=authors[i].name[0]["given-names"]+" "+ authors[i].name[0]["surname"];
+                    else
+                      names+=", " + authors[i].name[0]["given-names"]+" "+ authors[i].name[0]["surname"];
+                  }       
+                }
+                str+=  "<tr><td>Authors</td> <td> <span style='color:darkblue'>"+names + "</span> </td></tr>"; 
+              }
+            }
             if (pmcData[id]["article-meta"][0]["aff"]){
               var aff = pmcData[id]["article-meta"][0]["aff"][0];
               if (aff == "[object Object]")
@@ -102,7 +120,7 @@ function showTip(d) {
           }
         }
         str+=  "<tr><td>Year</td> <td> <span style='color:darkblue'>"+d.year + "</span> </td></tr>";
-        str+=  "<tr><td>Evidence</td> <td> <span style='color:darkblue'>"+d.ref.evidence + "</span></td></tr>";
+        str+=  "<tr><td><b>Evidence</b></td> <td> <span style='color:"+getColor(d.ref.type)+"'>"+d.ref.evidence + "</span></td></tr>";
         
 
         if (pmcData[id]){   // Journal Data

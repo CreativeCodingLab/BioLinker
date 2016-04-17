@@ -74,7 +74,7 @@ function getColor(category) {
   else if (category=="adds_modification")
     return "rgb("+sat+", "+120+", "+120+")" ; // leaf node
   else if (category=="decreases_activity")
-    return "rgb("+220+", "+sat+", "+sat+")" ; // leaf node
+    return "rgb("+200+", "+sat+", "+sat+")" ; // leaf node
   else if (category=="removes_modification")
     return "rgb("+200+", "+100+", "+sat+")" ; // leaf node
   else if (category=="inhibits_modification")
