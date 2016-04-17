@@ -98,7 +98,7 @@ svg2.on('mousemove', function () {
 var force = d3.layout.force()
     .charge(-4)
     .linkDistance(2)
-    .gravity(0.15)
+    .gravity(0.1)
     //.friction(0.5)
   //  .alpha(0.1)
     .size([width/3, width/4]);
@@ -335,7 +335,12 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
       .on('mouseout', function(d2){
         svg2.selectAll(".buttonRect")
             .style("fill", function(d4){
-                return buttonColor;
+                if (d4=="TGF-beta__IL-17" || d4=="EGCG__MMP-13")
+                  return "#f88";
+                else if (list[d4].length>2)
+                  return "#888";
+                else 
+                  return buttonColor;
             });
       })
       .on('click', function(d2){
@@ -566,10 +571,25 @@ function secondLayout(selected){
          return 5+l.list.length;
       })
       .on('mouseover', function(d) {
+        var a = {};
+        for (var i=0;i<d.list.length;i++){
+          a[d.list[i].name] = d.list[i];
+        }  
+        
+        for (var i=0;i<tlinks.length;i++){
+          if (a[tlinks[i].ref.name])
+            tlinks[i].mouseover = true;
+          else
+            tlinks[i].mouseover = false;
+        } 
+        
         showTip(d); 
+        updateLinks();  
+        
       })
       .on('mouseout', function(d) {
         tip.hide(d); 
+        resetLinks();
       });  
 
     nodes2.forEach(function(d){
@@ -612,16 +632,17 @@ function secondLayout(selected){
         if (curNode.ref!=undefined){
             curNode = curNode.ref;
         }
-        return 3+Math.pow(curNode.directLinks.length, 0.35);    
+        return 3+Math.pow(curNode.directLinks.length, 0.3);    
       })
-      .style("fill", "#444")
-      .style("stroke", "#eee")
-      //.style("stroke", function(d){
-      //   console.log("d.name="+d.ref.fields.entity_text);
-      //   return getColor(l.type);
-      //})
-      .style("stroke-opacity", 0.5)
-      .style("stroke-width", 0.3)
+      .style("fill", "#888")
+      .style("stroke", "#000")
+      .style("stroke-opacity", 1)
+      .style("stroke-width", function(d) {
+        if (d.isExpanded)
+            return 2;
+        else 
+          return 0.1;    
+      })
       .call(force2.drag)
       .on("click", click2)
       .on('mouseover', function(d) {

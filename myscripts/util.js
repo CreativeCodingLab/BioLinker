@@ -3,7 +3,7 @@ var diameter = 1000,
     innerRadius = radius - 120;
 
   // Add color legend
-var typeList = ["increases_activity","decreases_activity", "translocation", "binds","increases"]  
+var typeList = ["increases_activity","decreases_activity", "translocation", "binds", "Multiple interaction types"]  
 function drawColorLegend() {
   var xx = 16;
   var y1 = 20;    
@@ -86,7 +86,7 @@ function getColor(category) {
   else if (category=="increases")
     return "rgb("+255+", "+0+", "+255+")" ; // leaf node
   else{
-    return "#000";    
+    return "#666";    
   }
 }
 

@@ -94,11 +94,12 @@ function drawTimeArcs(){
           tlinks[i].mouseover = false;
       }  
       updateLinks();
+      showTip(d); 
     })
     .on("mouseout", function(d){
       resetLinks();  
+      tip.hide(d); 
     });         
-
 
   /*svg4.selectAll(".node4").remove();
   svg4.selectAll(".node4").data(tnodes).enter()
@@ -168,25 +169,23 @@ function resetForce3(){
         minYear = l.year;
     }
   }
-  minYear--;
-  maxYear++; 
-
+  
   var numYear = (maxYear-minYear);
   if (numYear<0)
     numYear =10;
   force3 = d3.layout.force()
     .charge(-30)
-    .gravity(0.02)
+    .gravity(0.05)
     .alpha(0.1)
     .size([tWidth, height2]);
   
   force3.linkDistance(function(l) {
     if (l.year){
       if (l.source.ref.isExpanded==true && l.target.ref.isExpanded==true) {
-        return (maxYear-minYear)*4;  
+        return (maxYear-minYear)*6;  
       }   
       else
-        return (l.year-minYear)*2;    
+        return (l.year-minYear)*3;    
 
 
     }

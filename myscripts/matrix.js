@@ -361,6 +361,13 @@ function updateLinks() {
       }
       else
         return fadeOpacity;  
+    })
+    .style("stroke-opacity", function (d) {
+      if (mouseoverNames[d.ref.fields.entity_text]!= undefined){
+        return 1;    
+      }
+      else
+        return fadeOpacity;  
     }); 
   svg2.selectAll(".anchorNode")  
     .style("fill-opacity", function (d) {
@@ -422,7 +429,7 @@ function resetLinks() {
     svg.selectAll(".tipTypeText_"+fieldName).style("fill-opacity" ,1); 
   }  
   // Main view *****************************************
-  svg2.selectAll(".node").style("fill-opacity", 1); 
+  svg2.selectAll(".node").style("fill-opacity", 1).style("stroke-opacity", 1); 
   svg2.selectAll(".anchorNode").style("fill-opacity", 1);   
   // Set mouseover for links in the main view  
   for (var i=0;i<tlinks.length;i++){

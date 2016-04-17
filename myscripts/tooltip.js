@@ -23,10 +23,8 @@ function checkMouseOut(d, tipItem){
   return isOut;
 }
 
-function showTip(d) {
-  
+function showTip(d) { 
   y_svg = -5; // inital y position     
-
   if (d.source==undefined && d.target==undefined){ // this is a vertex
     tip.html(function(d) {
       var str ="";
@@ -50,25 +48,40 @@ function showTip(d) {
     tip.offset([-20,-0])
     .html(function(d) {
       var str ="";
-      for (key in d) {
-        if (key== "source" || key== "target")
-          str+=  key+": <span style='color:darkblue'>" + d[key].ref.fields.entity_text + "</span><br>";
-        else if (key== "list"){
-          var list = "";
-          for (var i=0; i< d[key].length; i++){
-            var l = d[key][i];
-            if (i==d[key].length-1)
-              list+="PMC"+l.ref.pmc_id;
-            else
-              list+="PMC"+l.ref.pmc_id+", ";
-          }  
-          str+=  "Publications: <span style='color:darkblue'>" + list + "</span><br>"; 
-        }
-        else if (key== "mouseover")
-            ;// Do nothing
-        else   
-          str+=  key+": <span style='color:darkblue'>" + d[key] + "</span><br>";
-      } 
+      if (d.ref==undefined) { //  In the main View
+        for (key in d) {
+          if (key== "source" || key== "target")
+            str+=  key+": <span style='color:darkblue'>" + d[key].ref.fields.entity_text + "</span><br>";
+          else if (key== "list"){
+            var list = "";
+            for (var i=0; i< d[key].length; i++){
+              var l = d[key][i];
+              if (i==d[key].length-1)
+                list+="PMC"+l.ref.pmc_id;
+              else
+                list+="PMC"+l.ref.pmc_id+", ";
+            }  
+            str+=  "Publications: <span style='color:darkblue'>" + list + "</span><br>"; 
+          }
+          else if (key== "mouseover")
+              ;// Do nothing
+          else{
+            var value = d[key];
+            if (value==undefined)
+              value = "?";
+            str+=  key+": <span style='color:darkblue'>" + value + "</span><br>";
+          }     
+        } 
+      }
+      else{ //  In the TimeArcs View
+        debugger;
+        var id = "PMC"+d.ref.pmc_id;
+        str+=  "id: <span style='color:darkblue'>" + id + "</span><br>";
+        str+=  "year: <span style='color:darkblue'>" + d.year + "</span><br>";
+          
+        //l.year = parseInt(pmcData[pmcId]["article-meta"][0]["pub-date"][0].year);
+       
+      }  
       return str; 
     });
     tip.show(d);
@@ -296,25 +309,6 @@ function addDotplots(d,fieldName,label, map){
       var rr = 5;
       return "M" + xx + "," + yy + "A" + rr + "," + rr*1.2 + " 0 0,1 " + xx + "," + (yy+rr*2);
     });  
-  
-  /*
-      .attr('r',dotRadius)
-      .attr('cx',function(l, index){
-        if (types[l[fieldName]].currentIndex==undefined){
-          types[l[fieldName]].currentIndex=0;
-        }
-        else{
-          types[l[fieldName]].currentIndex++;
-        }
-        return 135+types[l[fieldName]].currentIndex*2*dotRadius;
-      })
-      .attr('cy',function(l){
-        return  d["tip_"+fieldName][l[fieldName]].y+7;  // Get the y position of a type
-      })
-      .style("fill", function(d2){
-         return getColor(d2.type);
-      });*/
-
 
   d["tip_"+fieldName].forEach(function(d2){   // make sure disable types are greyout on the second mouse over
     mouseoutType(d2);
