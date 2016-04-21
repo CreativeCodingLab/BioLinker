@@ -1,5 +1,5 @@
 # BioLinker
-Home of FRIES Index Card visualizations 
+![ScreenShot](https://github.com/CreativeCodingLab/BioLinker/blob/master/figures/TeaserVideo.png)
 
 A force-directed layout shows an overview of over 5,000 Fires index cards in BioLinker.
 
