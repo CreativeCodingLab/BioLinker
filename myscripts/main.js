@@ -550,7 +550,7 @@ function secondLayout(selected){
       })
       .style("stroke-opacity", 0.5)
       .style("stroke-width",function(l){
-         return l.list.length;
+         return 1+Math.sqrt(l.list.length-1);
       })
       .on('mouseover', function(d) {
         showTip(d); 

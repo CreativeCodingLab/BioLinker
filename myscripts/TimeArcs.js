@@ -70,8 +70,8 @@ function drawTimeArcs(){
     .style("stroke-width", function (d) {
         return  1;
     })     
-    .style("stroke-width",0.75)
-    .style("stroke-opacity", 0.8)
+    .style("stroke-width",1)
+    .style("stroke-opacity", 1)
   ;    
 
   svg4.selectAll(".linkArc2").remove();
