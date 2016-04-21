@@ -1,5 +1,7 @@
 # BioLinker
-![ScreenShot](https://github.com/CreativeCodingLab/BioLinker/blob/master/figures/TeaserVideo.png)
+Please click to watch the overview video.
+[![ScreenShot](https://github.com/CreativeCodingLab/BioLinker/blob/master/figures/TeaserVideo.png)](http://www2.cs.uic.edu/~tdang/BioLinker/BioLinker.mp4)
+
 
 A force-directed layout shows an overview of over 5,000 Fires index cards in BioLinker.
 
