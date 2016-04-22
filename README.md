@@ -4,7 +4,7 @@ Please click to watch the overview video.
 
 BioLinker visualization contains multiple views: the overview, context view, main view, conflict matrix, and publication view. 
 Edges in the networks are encoded by interaction types such as green for add modification, red for remove modification.
-![ScreenShot](http://www.cs.uic.edu/~tdang/BioLinker/images/BioLinkerOverview.png)
+![ScreenShot](https://github.com/CreativeCodingLab/BioLinker/blob/master/figures/BioLinkerOverview.png)
 
 
 A force-directed layout shows an overview of over 5,000 Fires index cards in BioLinker.
