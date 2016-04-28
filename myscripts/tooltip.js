@@ -110,12 +110,17 @@ function showTip(d) {
                 str+=  "<tr><td>Authors</td> <td> <span style='color:darkblue'>"+names + "</span> </td></tr>"; 
               }
             }
-            if (pmcData[id]["article-meta"][0]["aff"]){
-              var aff = pmcData[id]["article-meta"][0]["aff"][0];
-              if (aff == "[object Object]")
-                aff = pmcData[id]["article-meta"][0]["aff"][0]["_"];
-              if (aff!=undefined)
-               str+=  "<tr><td>Affiliation</td> <td> <span style='color:darkblue'>"+aff + "</span> </td></tr>";
+
+            var aff=pmcData[id]["article-meta"][0]["aff"];
+            if (aff==undefined && pmcData[id]["article-meta"][0]["contrib-group"]){
+              aff = pmcData[id]["article-meta"][0]["contrib-group"][0]["aff"];
+            }  
+            if (aff){
+              var affiliation = aff[0];
+              if (affiliation == "[object Object]")
+                affiliation = aff[0]["_"];
+              if (affiliation!=undefined)
+               str+=  "<tr><td>Affiliation</td> <td> <span style='color:darkblue'>"+affiliation + "</span> </td></tr>";
             }
           }
         }
@@ -124,9 +129,14 @@ function showTip(d) {
         
 
         if (pmcData[id]){   // Journal Data
+          //debugger;
           if (pmcData[id]["journal-meta"]){
-            if (pmcData[id]["journal-meta"][0]["journal-title"]){
-              var journal = pmcData[id]["journal-meta"][0]["journal-title"][0];
+            var jour = pmcData[id]["journal-meta"][0]["journal-title-group"];
+            if (jour==undefined){
+              jour=pmcData[id]["journal-meta"];
+            }
+            if (jour){
+              var journal = jour[0]["journal-title"][0];
               str+=  "<tr><td>Journal</td> <td> <span style='color:darkblue'>"+journal + "</span> </td></tr>";
             }
             if (pmcData[id]["journal-meta"][0]["publisher"]){

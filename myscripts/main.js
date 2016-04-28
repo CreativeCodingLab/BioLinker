@@ -602,19 +602,6 @@ function secondLayout(selected){
         for (var i=0; i<links.length;i++){
           var l = links[i];
           if (curNode==l.source || curNode==l.target){
-            var pcm_id = l.pmc_id;
-            if (pcm_id.indexOf("PMC")<0){
-              pcm_id="PMC"+pcm_id;
-            }
-            if (pmcData[pcm_id]==undefined){     
-              d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/NXML/'+pcm_id)
-                .header('Content-Type', 'application/json')
-                .get()
-                .on('load', function(d2) { 
-                  //console.log("loaded: "+d2.id);
-                  pmcData[d2.id] = d2.articleFront;
-                });
-            }
             curNode.directLinks.push(l);            
           }
         }
@@ -746,6 +733,22 @@ function secondLayout(selected){
               newLink.Context_Organ = getContextFromID(l["Context_Organ"][0],organMap);
               newLink.Context_CellType = getContextFromID(l["Context_CellType"][0],celltypeMap);
               
+              
+              var pcm_id = l.pmc_id;
+              if (pcm_id.indexOf("PMC")<0){
+                pcm_id="PMC"+pcm_id;
+              }
+              if (pmcData[pcm_id]==undefined){     
+                d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/NXML/'+pcm_id)
+                  .header('Content-Type', 'application/json')
+                  .get()
+                  .on('load', function(d2) { 
+                    //console.log("loaded: "+d2.id);
+                    pmcData[d2.id] = d2.articleFront;
+                  });
+              }
+
+
               newLink.list =[];
               newLink.list.push(l);
               links2.push(newLink);
