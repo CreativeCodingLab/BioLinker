@@ -99,6 +99,12 @@ function drawTimeArcs(){
     .on("mouseout", function(d){
       resetLinks();  
       tip.hide(d); 
+    })
+    .on("click",function(d){
+      var id = "PMC"+d.ref.pmc_id;
+      if (pmcData[id].url)
+        window.open(pmcData[id].url);  
+        
     });         
 
   /*svg4.selectAll(".node4").remove();

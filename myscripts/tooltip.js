@@ -53,7 +53,7 @@ function showTip(d) {
         str+="<table border='0.5px'  style='width:100%'>"
         for (key in d) {
           if (key== "source" || key== "target")
-            str+=  "<tr><td>"+key+"</td> <td>  <span style='color:darkblue'>" + d[key].ref.fields.entity_text + "</span> </td></tr>";
+            str+=  "<tr><td>"+key+"</td> <td>  <span style='color:black'>" + d[key].ref.fields.entity_text + "</span> </td></tr>";
           else if (key== "list"){
             var list = "";
             for (var i=0; i< d[key].length; i++){
@@ -63,7 +63,7 @@ function showTip(d) {
               else
                 list+="PMC"+l.ref.pmc_id+", ";
             }  
-            str+=  "<tr><td>Paper id</td> <td>  <span style='color:darkblue'>" + list + "</span> </td></tr>"; 
+            str+=  "<tr><td>Paper id</td> <td>  <span style='color:black'>" + list + "</span> </td></tr>"; 
           }
           else if (key== "evidence"){
               str+=  "<tr><td>Evidence</td> <td>  <span style='color:"+ getColor(d.type)+"'>" + d[key] + "</span> </td></tr>"; 
@@ -74,7 +74,7 @@ function showTip(d) {
             var value = d[key];
             if (value==undefined)
               value = "?";
-            str+=  "<tr><td>"+key+"</td> <td>  <span style='color:darkblue'>" + value + "</span> </td></tr>";
+            str+=  "<tr><td>"+key+"</td> <td>  <span style='color:black'>" + value + "</span> </td></tr>";
           }     
         } 
         str+="</table>"
@@ -85,7 +85,7 @@ function showTip(d) {
         str+="<table border='0.5px'  style='width:100%'>"
         var id = "PMC"+d.ref.pmc_id;
         
-        str+=  "<tr><td>Paper id </td> <td><span style='color:darkblue'>" + id + "</span> </td></tr>";  
+        str+=  "<tr><td>Paper id </td> <td><span style='color:black'>" + id + "</span> </td></tr>";  
 
         if (pmcData[id]){  // Paper Data
           if (pmcData[id]["article-meta"]){
@@ -93,21 +93,37 @@ function showTip(d) {
               var title = pmcData[id]["article-meta"][0]["title-group"][0]["article-title"][0];
               if (title == "[object Object]")
                 title = pmcData[id]["article-meta"][0]["title-group"][0]["article-title"][0]["_"];
-              str+=  "<tr><td>Title</td> <td> <span style='color:darkblue'>"+title + "</span> </td></tr>";
+              str+=  "<tr><td>Title</td> <td> <span style='color:black'>"+title + "</span> </td></tr>";
             }
             if (pmcData[id]["article-meta"][0]["contrib-group"]){
               var authors = pmcData[id]["article-meta"][0]["contrib-group"][0]["contrib"];
               if (authors){
                 var names = "";
+                var emails = "";
+                
                 for (var i=0; i<authors.length;i++){
                   if (authors[i].name){
                     if (i==0)
                       names+=authors[i].name[0]["given-names"]+" "+ authors[i].name[0]["surname"];
                     else
                       names+=", " + authors[i].name[0]["given-names"]+" "+ authors[i].name[0]["surname"];
+                  }
+                  if (authors[i].email){
+                    if (i==0)
+                      emails+=authors[i].email[0];
+                    else
+                      emails+=", " + authors[i].email[0];
                   }       
                 }
-                str+=  "<tr><td>Authors</td> <td> <span style='color:darkblue'>"+names + "</span> </td></tr>"; 
+                str+=  "<tr><td>Authors</td> <td> <span style='color:black'>"+names + "</span> </td></tr>"; 
+                if (emails!="")
+                  str+=  "<tr><td>Emails</td> <td> <span style='color:black'>"+emails + "</span> </td></tr>"; 
+                else if (pmcData[id]["article-meta"][0]["author-notes"]
+                  && pmcData[id]["article-meta"][0]["author-notes"][0]["corresp"]
+                  && pmcData[id]["article-meta"][0]["author-notes"][0]["corresp"][0]["email"]) {
+                    emails = pmcData[id]["article-meta"][0]["author-notes"][0]["corresp"][0]["email"][0];
+                  str+=  "<tr><td>Emails</td> <td> <span style='color:black'>"+emails + "</span> </td></tr>";     
+                }
               }
             }
 
@@ -120,12 +136,12 @@ function showTip(d) {
               if (affiliation == "[object Object]")
                 affiliation = aff[0]["_"];
               if (affiliation!=undefined)
-               str+=  "<tr><td>Affiliation</td> <td> <span style='color:darkblue'>"+affiliation + "</span> </td></tr>";
+               str+=  "<tr><td>Affiliation</td> <td> <span style='color:black'>"+affiliation + "</span> </td></tr>";
             }
           }
         }
-        str+=  "<tr><td>Year</td> <td> <span style='color:darkblue'>"+d.year + "</span> </td></tr>";
-        str+=  "<tr><td><b>Evidence</b></td> <td> <span style='color:"+getColor(d.ref.type)+"'>"+d.ref.evidence + "</span></td></tr>";
+        str+=  "<tr><td>Year</td> <td> <span style='color:black'>"+d.year + "</span> </td></tr>";
+        str+=  "<tr><td>Evidence</td> <td> <span style='color:"+getColor(d.ref.type)+"'>"+d.ref.evidence + "</span></td></tr>";
         
 
         if (pmcData[id]){   // Journal Data
@@ -137,16 +153,16 @@ function showTip(d) {
             }
             if (jour){
               var journal = jour[0]["journal-title"][0];
-              str+=  "<tr><td>Journal</td> <td> <span style='color:darkblue'>"+journal + "</span> </td></tr>";
+              str+=  "<tr><td>Journal</td> <td> <span style='color:black'>"+journal + "</span> </td></tr>";
             }
             if (pmcData[id]["journal-meta"][0]["publisher"]){
               if (pmcData[id]["journal-meta"][0]["publisher"][0]["publisher-name"]){
                 var publisherName = pmcData[id]["journal-meta"][0]["publisher"][0]["publisher-name"][0];
-                str+=  "<tr><td>Publisher</td> <td> <span style='color:darkblue'>"+publisherName + "</span> </td></tr>";
+                str+=  "<tr><td>Publisher</td> <td> <span style='color:black'>"+publisherName + "</span> </td></tr>";
               }
               if (pmcData[id]["journal-meta"][0]["publisher"][0]["publisher-loc"]){
                 var publisherLocation = pmcData[id]["journal-meta"][0]["publisher"][0]["publisher-loc"][0];
-                str+=  "<tr><td>Publisher location</td> <td> <span style='color:darkblue'>"+publisherLocation + "</span></td></tr>";
+                str+=  "<tr><td>Publisher location</td> <td> <span style='color:black'>"+publisherLocation + "</span></td></tr>";
               }
             }
           }
@@ -158,8 +174,18 @@ function showTip(d) {
               if (volume == "[object Object]")
                 volume = pmcData[id]["article-meta"][0]["volume"][0]["_"];
               if (volume!=undefined)
-               str+=  "<tr><td>Volume</td> <td> <span style='color:darkblue'>"+volume + "</span> </td></tr>";
+               str+=  "<tr><td>Volume</td> <td> <span style='color:black'>"+volume + "</span> </td></tr>";
             }
+          if (pmcData[id]["article-meta"][0]["ext-link"]){
+            if (pmcData[id]["article-meta"][0]["ext-link"]
+              && pmcData[id]["article-meta"][0]["ext-link"][0]["_$"]
+              && pmcData[id]["article-meta"][0]["ext-link"][0]["_$"]["xlink:href"]){
+                var url = pmcData[id]["article-meta"][0]["ext-link"][0]["_$"]["xlink:href"];
+                pmcData[id].url = url;
+                //<a href="http://www.uic.edu/" target="_blank">University of Illinois at Chicago</a>
+                str+=  "<tr><td>URL</td> <td> <a href='"+url + "' target='_blank'>"+ url+"</a> <br> &nbsp; &nbsp; Please click to go to the article.</td></tr>";
+            }
+          }    
         }    
         str+="</table>"
       }  

@@ -70,17 +70,17 @@ function drawTimeLegend() {
 function getColor(category) {
   var sat = 0;
   if (category=="increases_activity")
-    return "rgb("+sat+", "+200+", "+sat+")" ; // leaf node
+    return "rgb("+sat+", "+160+", "+sat+")" ; // leaf node
   else if (category=="adds_modification")
-    return "rgb("+sat+", "+120+", "+120+")" ; // leaf node
+    return "rgb("+sat+", "+120+", "+100+")" ; // leaf node
   else if (category=="decreases_activity")
     return "rgb("+200+", "+sat+", "+sat+")" ; // leaf node
   else if (category=="removes_modification")
     return "rgb("+200+", "+100+", "+sat+")" ; // leaf node
   else if (category=="inhibits_modification")
     return "rgb("+120+", "+sat+", "+sat+")" ; // leaf node
-  else if (category=="SciVis" || category=="Drama"|| category=="translocation")
-    return "rgb("+200+", "+200+", "+sat+")" ; // leaf node
+  else if (category=="translocation")
+    return "rgb("+170+", "+150+", "+sat+")" ; // leaf node
   else if (category=="binds")
     return "rgb("+sat+", "+sat+", "+255+")" ; // leaf node
   else if (category=="increases")
