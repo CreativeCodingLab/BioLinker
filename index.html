@@ -104,6 +104,14 @@ table, th, td {
     background-color: #fff;
 }
 
+ #overviewHolder {
+  position:absolute;
+  z-index: 990;
+  top: 140px;
+  border: 1px solid rgba(0,102,179, 0.5);
+  background-color: rgba(210,242,255, 0.8);
+}
+
 </style>
 <body>
 
@@ -120,10 +128,12 @@ table, th, td {
     <!-- Success Message -->
 </label>
 
-<!--&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<input type="checkbox" id="checkbox1" value="0" class="check" onclick="groupSimilarNodes()">
-<label for="checkbox1" >Group similar nodes</label>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-->
+
+<!-- Success Message -->
+ <div id="overviewPanel"  class="overviewHolder">
+
+</div>
+
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
