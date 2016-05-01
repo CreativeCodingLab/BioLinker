@@ -324,14 +324,14 @@ function updateLinks() {
   fadeStacking("Context_CellType");
     
   function fadeStacking(fieldName){
-    svg.selectAll(".arc_"+fieldName)
+    svgOverview.selectAll(".arc_"+fieldName)
       .style("stroke-opacity", function (d) {
         if (d.mouseover== true)
           return 1;    
         else
           return fadeOpacity;  
       });
-    svg.selectAll(".tipTypeRect_"+fieldName)
+    svgOverview.selectAll(".tipTypeRect_"+fieldName)
       .style("fill-opacity" , function(d2){
         for (var i=0; i<d2.list.length;i++){
           if (d2.list[i].mouseover)
@@ -346,7 +346,7 @@ function updateLinks() {
         }
         return 5*fadeOpacity;
       });     
-    svg.selectAll(".tipTypeText_"+fieldName)
+    svgOverview.selectAll(".tipTypeText_"+fieldName)
       .style("fill-opacity" , function(d2){
         for (var i=0; i<d2.list.length;i++){
           if (d2.list[i].mouseover)
@@ -427,9 +427,9 @@ function resetLinks() {
   resetStacking("Context_CellType");
   
   function resetStacking(fieldName){
-    svg.selectAll(".arc_"+fieldName).style("stroke-opacity", 1);
-    svg.selectAll(".tipTypeRect_"+fieldName).style("fill-opacity", 1).style("stroke-opacity",1);   
-    svg.selectAll(".tipTypeText_"+fieldName).style("fill-opacity" ,1); 
+    svgOverview.selectAll(".arc_"+fieldName).style("stroke-opacity", 1);
+    svgOverview.selectAll(".tipTypeRect_"+fieldName).style("fill-opacity", 1).style("stroke-opacity",1);   
+    svgOverview.selectAll(".tipTypeText_"+fieldName).style("fill-opacity" ,1); 
   }  
   // Main view *****************************************
   svg2.selectAll(".node").style("fill-opacity", 1).style("stroke-opacity", 1); 

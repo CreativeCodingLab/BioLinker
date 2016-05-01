@@ -2,26 +2,9 @@ var y_svg;
 var cellHeight2 = 11;
 
 function addStacking(){
-  y_svg = width/4;
-  svg.selectAll(".stackingRect").remove();
-  svg.append("rect")
-    .attr("class", "stackingRect")
-    .attr("x", 0)
-    .attr("y", y_svg)
-    .attr("width", width/3)
-    .attr("height", height-y_svg)
-    .style("stroke-opacity",0)
-    .style("fill","#fff"); 
-  svg.append("rect")
-    .attr("class", "stackingRect")
-    .attr("x", 0)
-    .attr("y", y_svg+6)
-    .attr("width", width/3)
-    .attr("height", height-y_svg)
-    //.style("stroke","#000")
-    .style("fill","#ccc"); 
-
-  y_svg += 10; // inital y position     
+  svgContext.selectAll(".stackingRect").remove();
+  
+  y_svg = 0; // inital y position     
   addStacking2("type", "Interaction types");
   addStacking2("Context_Species", "Context-Species", speciesMap);
   addStacking2("Context_CellType", "Context-CellType",celltypeMap);
@@ -30,6 +13,7 @@ function addStacking(){
 
 function addStacking2(fieldName,label, map){
   y_svg += 18; // inital y position     
+  console.log(fieldName+" "+y_svg);
   var obj = {};
   sort_tlinks(); // In TimeArcs.js 
 
@@ -86,8 +70,8 @@ function addStacking2(fieldName,label, map){
   });
 
     // Label ********************************************************
-    svg.selectAll(".tiplabel_"+fieldName).remove();
-    svg.append('text')
+    svgContext.selectAll(".tiplabel_"+fieldName).remove();
+    svgContext.append('text')
     .attr("class", "tiplabel_"+fieldName)
     .attr("x", 10)
     .attr("y", obj["ylabel_"+fieldName])
@@ -99,8 +83,8 @@ function addStacking2(fieldName,label, map){
     .style("fill", "#000");
   
     // background rows ********************************************************
-    svg.selectAll(".tipTypeRect_"+fieldName).remove();
-    svg.selectAll(".tipTypeRect_"+fieldName).data(obj["tip_"+fieldName])
+    svgContext.selectAll(".tipTypeRect_"+fieldName).remove();
+    svgContext.selectAll(".tipTypeRect_"+fieldName).data(obj["tip_"+fieldName])
       .enter().append('rect')
       .attr("class", "tipTypeRect_"+fieldName)
       .attr("rx", 4)
@@ -109,7 +93,7 @@ function addStacking2(fieldName,label, map){
       .attr("y", function(d2, index){
         return d2.yStacking;
       })
-      .attr("width", width/3-40)
+      .attr("width", www-30)
       .attr("height", cellHeight2)
       .style("text-anchor", "end")
       .style("fill", function(d2,index){
@@ -124,8 +108,8 @@ function addStacking2(fieldName,label, map){
       .on('click', clickType);
      
 
-    svg.selectAll(".tipTypeText_"+fieldName).remove();
-    svg.selectAll(".tipTypeText_"+fieldName).data(obj["tip_"+fieldName])
+    svgContext.selectAll(".tipTypeText_"+fieldName).remove();
+    svgContext.selectAll(".tipTypeText_"+fieldName).data(obj["tip_"+fieldName])
       .enter().append('text')
       .attr("class", "tipTypeText_"+fieldName)
       .attr("font-family", "sans-serif")
@@ -145,7 +129,7 @@ function addStacking2(fieldName,label, map){
       .on('click', clickType);
 
     function mouseoverType(d){
-      svg.selectAll(".tipTypeRect_"+fieldName)
+      svgContext.selectAll(".tipTypeRect_"+fieldName)
           .style("fill" , function(d2){
             if (d[fieldName]==d2[fieldName]){
               return "#fca";
@@ -180,7 +164,7 @@ function addStacking2(fieldName,label, map){
     } 
 
     function setTypeColor(d2){
-      svg.selectAll(".tipTypeRect_"+fieldName)
+      svgContext.selectAll(".tipTypeRect_"+fieldName)
         .style("fill" , function(d4){
             return d4.backgroundColor;
         })
@@ -189,7 +173,7 @@ function addStacking2(fieldName,label, map){
             return d4.stroke;
             
         });   
-      svg.selectAll(".tipTypeText_"+fieldName)
+      svgContext.selectAll(".tipTypeText_"+fieldName)
         .style("fill-opacity" , function(d4){
           if (d4.isEnable==true)
             return 1;
@@ -197,7 +181,7 @@ function addStacking2(fieldName,label, map){
             return 0.15;
         }); 
 
-      svg.selectAll(".tipTypeDot_"+fieldName)
+      svgContext.selectAll(".tipTypeDot_"+fieldName)
         .style("fill-opacity" , function(d4){
           var tipdata;
           for (var i=0;i<obj["tip_"+fieldName].length;i++){
@@ -213,8 +197,8 @@ function addStacking2(fieldName,label, map){
 
   
   
-  svg.selectAll(".arc_"+fieldName).remove();
-  svg.selectAll(".arc_"+fieldName).data(tlinks).enter()
+  svgContext.selectAll(".arc_"+fieldName).remove();
+  svgContext.selectAll(".arc_"+fieldName).data(tlinks).enter()
     .append("path")
     .attr("class", "arc_"+fieldName)
     .style("fill-opacity", 0)

@@ -104,34 +104,71 @@ table, th, td {
     background-color: #fff;
 }
 
+#searchHolder {
+  position:absolute;
+  z-index: 1;
+  top: 8px;
+  left: 8px;
+}
+
  #overviewHolder {
   position:absolute;
-  z-index: 990;
-  top: 140px;
-  border: 1px solid rgba(0,102,179, 0.5);
-  background-color: rgba(210,242,255, 0.8);
+  z-index: 0;
+  top: 5px;
+  left: 5px;
+  border: 1px solid rgba(0,0,0, 1);
+  background-color: rgba(240,240,240, 1);
+}
+
+ #contextHolder {
+  position:absolute;
+  z-index: 0;
+  top: 390px;
+  left: 5px;
+  border: 1px solid rgba(0,0,0, 1);
+  background-color: rgba(200,200,200, 1);
+}
+
+#matrixHolder {
+  position:absolute;
+  z-index: 1000;
+  top: 600px;
+  left: 600px;
+  border: 1px solid rgba(0,0,0, 1);
+  background-color: rgba(255,255,255, 1);
 }
 
 </style>
 <body>
 
-<!--!<button onclick="detactTimeSeries()">Unroll time series </button>!-->
-<input id="search">
-<button type="button" onclick="searchNode()">Search</button>
-
-<progress value="0" max="100" id="progBar">
-    <span id="downloadProgress">
-        <!-- Your fallback goes here -->
-    </span>
-</progress>
-<label id="progUpdate">
-    <!-- Success Message -->
-</label>
 
 
 <!-- Success Message -->
- <div id="overviewPanel"  class="overviewHolder">
+<div id="container">
+  <div id="searchHolder"  class="searchHolder">
+  <input id="search">
+  <button type="button" onclick="searchNode()">Search</button>
 
+  <progress value="0" max="100" id="progBar">
+      <span id="downloadProgress">
+          <!-- Your fallback goes here -->
+      </span>
+  </progress>
+  <label id="progUpdate">
+      <!-- Success Message -->
+  </label>
+
+  </div> 
+   
+
+ <div id="overviewHolder"  class="overviewHolder">
+</div> 
+
+ <div id="contextHolder"  class="contextHolder">
+ </div> 
+
+ <div id="matrixHolder"  class="matrixHolder">
+ </div> 
 </div>
 
 

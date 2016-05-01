@@ -10,26 +10,22 @@ var width = document.body.clientWidth - margin.left - margin.right;
 var height = 700 - margin.top - margin.bottom;
 
 //Append a SVG to the body of the html page. Assign this SVG as an object to svg
-d3.select("body").append("svg")
-    .attr("width", width/1.5)
-    .attr("height", 1);
+//d3.select("#container").append("svg")
+//    .attr("width", width/1.5)
+//    .attr("height", 1);
 
-var svg = d3.select("body").append("svg")
-    .style("background", "#eee")
-    .attr("width", width/3)
-    .attr("height", height);
-svg.append("rect")
-    .attr("width", width/3)
-    .attr("height", width/4)
-    .style("stroke","#000")
-    .style("fill-opacity",0); 
+var www = 370;
+var svgOverview = d3.select('.overviewHolder').append('svg')
+    .attr("width", www)
+    .attr("height", www)
+
+var svgContext = d3.select('.contextHolder').append('svg')
+    .attr("width", www)
+    .attr("height", www)
 
 
-d3.select("body").append("svg")
-    .attr("width", 10)
-    .attr("height", 10);    
 
-var svg2 = d3.select("body").append("svg")
+var svg2 = d3.select("#container").append("svg")
     .style("background", "#dde")
     .attr("width", width*2/3)
     .attr("height", height);
@@ -40,15 +36,23 @@ svg2.append("rect")
     .style("fill-opacity",0); 
 
 
-var svg3 = d3.select("body").append("svg")
-    .style("background", "#eed")
-    .attr("width", width/3)
+
+var svg4 = d3.select("#container").append("svg")
+    .style("background", "#eee")
+    .attr("width", width*2/3)
     .attr("height", height2);
-svg3.append("rect")
-    .attr("width", width/3)
+svg4.append("rect")
+    .attr("width", width*2/3)
     .attr("height", height2)
     .style("stroke","#000")
     .style("fill-opacity",0); 
+
+
+var svg3 = d3.select('.matrixHolder').append('svg')
+    .style("background", "#eed")
+    .attr("width", 300)
+    .attr("height", 300)
+
 var g3 = svg3.append("g");
       // then, create the zoom behvavior
       var zoom = d3.behavior.zoom()
@@ -75,19 +79,6 @@ var g3 = svg3.append("g");
         });
     svg3.call(zoom);
 
-d3.select("body").append("svg")
-    .attr("width", 10)
-    .attr("height", 10);    
-
-var svg4 = d3.select("body").append("svg")
-    .style("background", "#eee")
-    .attr("width", width*2/3)
-    .attr("height", height2);
-svg4.append("rect")
-    .attr("width", width*2/3)
-    .attr("height", height2)
-    .style("stroke","#000")
-    .style("fill-opacity",0); 
 
 var mouseCoordinate;
 svg2.on('mousemove', function () {
@@ -101,7 +92,7 @@ var force = d3.layout.force()
     .gravity(0.1)
     //.friction(0.5)
   //  .alpha(0.1)
-    .size([width/3, width/4]);
+    .size([www, www]);
 
 var force2 = d3.layout.force()
     .charge(-150)
@@ -404,7 +395,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
       .links(links)
       .start();
 
-  var link = svg.selectAll(".link")
+  var link = svgOverview.selectAll(".link")
       .data(links)
     .enter().append("line")
       .attr("class", "link")
@@ -414,7 +405,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
       .style("stroke-opacity", 0.5)
       .style("stroke-width", 1);
 
-  var node = svg.selectAll(".node")
+  var node = svgOverview.selectAll(".node")
       .data(nodes)
     .enter().append("circle")
       .attr("class", "node")
@@ -426,7 +417,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
       .call(force.drag)
       .on("click", click1)
       .on('mouseover', function(d) {
-        svg.selectAll(".node")
+        svgOverview.selectAll(".node")
           .style("stroke" , function(d2){
             if (d.id==d2.id){
               return "#000";
@@ -439,7 +430,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
           });   
       })
       .on('mouseout', function(){
-         svg.selectAll(".node")
+         svgOverview.selectAll(".node")
           .style("stroke-width" ,0);  
       }); 
    
@@ -464,7 +455,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
 
 // Update the overview graph when we change the second layout
 function update1(d) {  
-  svg.selectAll(".link")
+  svgOverview.selectAll(".link")
     .style("stroke-opacity", function(l){
       var lName = l.source.fields.entity_text+"__"+l.target.fields.entity_text;
       if (links2[lName]!=undefined)
@@ -472,7 +463,7 @@ function update1(d) {
       else
         return 0.1;
     });
-  svg.selectAll(".node")
+  svgOverview.selectAll(".node")
     .style("fill-opacity", function(d){
       if (nameToNode2[d.fields.entity_text]!=undefined)
         return 1;
