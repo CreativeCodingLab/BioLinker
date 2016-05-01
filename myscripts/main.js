@@ -21,6 +21,7 @@ var svgOverview = d3.select('.overviewHolder').append('svg')
     .attr("height", www)
 
 var svgContext = d3.select('.contextHolder').append('svg')
+    .attr("class", "contextView")
     .attr("width", www)
     .attr("height", www)
 
@@ -31,10 +32,29 @@ var svg2 = d3.select("#container").append("svg")
     .attr("width", width)
     .attr("height", height);
 
+var wPublication = width-www-wMatrix-12;
 var svg4 = d3.select(".publicationHolder").append("svg")
+    .attr("class", "publicationView")
     //.style("background", "#eee")
-    .attr("width", width-www-wMatrix)
+    .attr("width", wPublication)
     .attr("height", wMatrix);
+//d3.select(".publicationView")
+//  .attr("width", 100);
+
+
+var force3 = d3.layout.force()
+    //.friction(0.5)
+    .alpha(0.1)
+    .size([wPublication, wMatrix]);
+  
+  force3.linkDistance(function(l) {
+    if (l.year){
+        return 4*(l.year-minYear);    
+    }
+    else
+      return 50;
+  });
+
 
 
 var svg3 = d3.select('.matrixHolder').append('svg')
@@ -89,7 +109,7 @@ var force2 = d3.layout.force()
     .gravity(0.1)
     //.friction(0.5)
   //  .alpha(0.1)
-    .size([width+www, height]);
+    .size([width+www, height-wMatrix]);
 
 
 var forceLabel = d3.layout.force()
@@ -97,7 +117,7 @@ var forceLabel = d3.layout.force()
   .linkDistance(1)
   .linkStrength(5)
   .charge(-50)
-  .size([width+www, height]);
+  .size([width+www, height-wMatrix]);
 
 /*
 var myPromise = new Promise(function(resolve) {

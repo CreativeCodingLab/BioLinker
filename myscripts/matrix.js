@@ -10,7 +10,8 @@ var cellMarginY = 35;
 var numCards = 0;
 
 function drawMatrix(){
-  
+   document.getElementById("matrixHolder").style.left =  (wPublication+www+19)+"px";
+
   // remove the cells before
   g3.selectAll(".cardTexts").remove();
   for (var i=0;i<numCards;i++){

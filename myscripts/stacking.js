@@ -9,6 +9,10 @@ function addStacking(){
   addStacking2("Context_Species", "Context-Species", speciesMap);
   addStacking2("Context_CellType", "Context-CellType",celltypeMap);
   addStacking2("Context_Organ", "Context-Organ", organMap);
+
+  d3.select(".contextView")
+    .attr("height", y_svg+10);
+
 }  
 
 function addStacking2(fieldName,label, map){

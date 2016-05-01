@@ -5,8 +5,8 @@ var diameter = 1000,
   // Add color legend
 var typeList = ["increases_activity","decreases_activity", "translocation", "binds", "Multiple interaction types"]  
 function drawColorLegend() {
-  var xx = 16;
-  var y1 = 20;    
+  var xx = 380;
+  var y1 = 13;    
   svg2.selectAll(".arcLegend").data(typeList).enter()
   .append("path")
     .attr("class", "arcLegend")

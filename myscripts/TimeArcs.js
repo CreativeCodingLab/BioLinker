@@ -1,19 +1,4 @@
 
-var tWidth = 800;
-var height2 = 450;
-
-var force3 = d3.layout.force()
-    //.friction(0.5)
-    .alpha(0.1)
-    .size([tWidth, height2]);
-  
-  force3.linkDistance(function(l) {
-    if (l.year){
-        return 4*(l.year-minYear);    
-    }
-    else
-      return 50;
-  });
 
 
 var tnodes = [];
@@ -26,7 +11,6 @@ var maxYear = 0;
 var transTime = 1000;
 // vertex is the input node which contains neighbors information
 function drawTimeArcs(){
-  tWidth = width*2/3;
   tnodes = [];
   tlinks = [];
   nodesList = {};
@@ -185,7 +169,7 @@ function resetForce3(){
     .charge(-30)
     .gravity(0.05)
     .alpha(0.1)
-    .size([tWidth, height2]);
+    .size([wPublication, www]);
   
   force3.linkDistance(function(l) {
     if (l.year){
@@ -242,13 +226,13 @@ function detactTimeSeries(){
     return 0;
   });  
 
-  var step = Math.min((height2-25)/(tnodes.length+1),12);
+  var step = Math.min((www-25)/(tnodes.length+1),12);
   for (var i=0; i< termArray.length; i++) {
       tnodes[termArray[i].nodeId].y = 12+i*step;
   }
   
   tnodes.forEach(function(d){
-    d.x = tWidth;
+    d.x = wPublication;
     d.x2 = 0;
   });
   svg4.selectAll(".linkArc").transition().duration(transTime).attr("d", linkArcTime);  
@@ -276,7 +260,7 @@ function detactTimeSeries(){
 function drawTimeLegend() {
   var xScale = d3.scale.linear()
     .domain([minYear, maxYear])
-    .range([50, tWidth-100]);
+    .range([50, wPublication-100]);
 
   var listX=[];
   var timeStep = 1+Math.floor((maxYear-minYear)/15);
@@ -299,7 +283,7 @@ function drawTimeLegend() {
       .attr("x1", function(d){ return d.x; })
       .attr("x2", function(d){ return d.x; })
       .attr("y1", function(d){ return 0; })
-      .attr("y2", function(d){ return height2; });
+      .attr("y2", function(d){ return www; });
   svg4.selectAll(".timeLegendText").remove();
   svg4.selectAll(".timeLegendText").data(listX)
     .enter().append("text")
@@ -308,7 +292,7 @@ function drawTimeLegend() {
       .style("text-anchor","start")
       .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
       .attr("x", function(d){ return d.x; })
-      .attr("y", height2-7)
+      .attr("y", www-7)
       .attr("dy", ".21em")
       .attr("font-family", "sans-serif")
       .attr("font-size", "12px")
@@ -341,7 +325,7 @@ function update3(){
   
 
   tnodes.forEach(function(d){
-    d.x += (tWidth/2-d.x)*0.01;      
+    d.x += (wPublication/2-d.x)*0.01;      
   });
   //svg4.selectAll(".node4").attr("cx", function(d) { return d.x; })
   //    .attr("cy", function(d) { return d.y; });
@@ -370,7 +354,7 @@ function sort_tlinks() {
 function linkArcTime(d) {
   var xScale = d3.scale.linear()
     .domain([minYear, maxYear])
-    .range([50, tWidth-100]);
+    .range([50, wPublication-100]);
 
     var newX = xScale(d.year);
     if (newX<d.source.x)
