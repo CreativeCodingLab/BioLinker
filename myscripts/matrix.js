@@ -1,5 +1,4 @@
 
-var mWidth = 800;
 
 // vertex is the input node which contains neighbors information
 var compareList = {};
@@ -25,7 +24,7 @@ function drawMatrix(){
   array2D = []; 
   numCards = tlinks.length;
   console.log("numCards="+numCards);
-  cellSize = Math.min(20,(width/3-cellMarginX-40)/numCards);
+  cellSize = Math.min(20,(wMatrix-cellMarginX-40)/numCards);
   cellSpacing = cellSize/25;
 
   for (var i=0;i<numCards;i++){

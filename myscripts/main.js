@@ -5,9 +5,9 @@
 // Context data
 
 //Constants for the SVG
-var margin = {top: 0, right: 0, bottom: 5, left: 15};
+var margin = {top: 0, right: 0, bottom: 0, left: 0};
 var width = document.body.clientWidth - margin.left - margin.right;
-var height = 700 - margin.top - margin.bottom;
+var height = 800 - margin.top - margin.bottom;
 
 //Append a SVG to the body of the html page. Assign this SVG as an object to svg
 //d3.select("#container").append("svg")
@@ -15,6 +15,7 @@ var height = 700 - margin.top - margin.bottom;
 //    .attr("height", 1);
 
 var www = 370;
+var wMatrix = 300;
 var svgOverview = d3.select('.overviewHolder').append('svg')
     .attr("width", www)
     .attr("height", www)
@@ -26,32 +27,20 @@ var svgContext = d3.select('.contextHolder').append('svg')
 
 
 var svg2 = d3.select("#container").append("svg")
-    .style("background", "#dde")
-    .attr("width", width*2/3)
+    .style("background", "#eed")
+    .attr("width", width)
     .attr("height", height);
-svg2.append("rect")
-    .attr("width", width*2/3)
-    .attr("height", height)
-    .style("stroke","#000")
-    .style("fill-opacity",0); 
 
-
-
-var svg4 = d3.select("#container").append("svg")
-    .style("background", "#eee")
-    .attr("width", width*2/3)
-    .attr("height", height2);
-svg4.append("rect")
-    .attr("width", width*2/3)
-    .attr("height", height2)
-    .style("stroke","#000")
-    .style("fill-opacity",0); 
+var svg4 = d3.select(".publicationHolder").append("svg")
+    //.style("background", "#eee")
+    .attr("width", width-www-wMatrix)
+    .attr("height", wMatrix);
 
 
 var svg3 = d3.select('.matrixHolder').append('svg')
-    .style("background", "#eed")
-    .attr("width", 300)
-    .attr("height", 300)
+    //.style("background", "#eed")
+    .attr("width", wMatrix)
+    .attr("height", wMatrix)
 
 var g3 = svg3.append("g");
       // then, create the zoom behvavior
@@ -100,7 +89,7 @@ var force2 = d3.layout.force()
     .gravity(0.1)
     //.friction(0.5)
   //  .alpha(0.1)
-    .size([width*2/3, width*2/3]);
+    .size([width+www, height]);
 
 
 var forceLabel = d3.layout.force()
@@ -108,7 +97,7 @@ var forceLabel = d3.layout.force()
   .linkDistance(1)
   .linkStrength(5)
   .charge(-50)
-  .size([width, height]);
+  .size([width+www, height]);
 
 /*
 var myPromise = new Promise(function(resolve) {
@@ -247,7 +236,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
       .attr("class", "buttonTitle")
       .attr("font-family", "sans-serif")
       .attr("font-size", "11px")
-      .attr("x", width*2/3-80)
+      .attr("x", width-80)
       .attr("y", 14)
       .text("Conflicting examples:")
       .style("text-anchor", "middle")
@@ -281,7 +270,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
       .attr("class", "buttonText")
       .attr("font-family", "sans-serif")
       .attr("font-size", "10px")
-      .attr("x", width*2/3-buttonWidth/2-2)
+      .attr("x", width-buttonWidth/2-2)
       .attr("y", function(d,i){
         return 31+i*buttonheight;
       })
@@ -293,7 +282,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
     svg2.selectAll(".buttonRect").data(a).enter()
       .append('rect')
       .attr("class", "buttonRect")
-      .attr("x", width*2/3-buttonWidth-2)
+      .attr("x", width-buttonWidth-2)
       .attr("y", function(d,i){
         return 20+i*buttonheight;
       })
