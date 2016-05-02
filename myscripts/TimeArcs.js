@@ -169,7 +169,7 @@ function resetForce3(){
     .charge(-30)
     .gravity(0.05)
     .alpha(0.1)
-    .size([wPublication, www]);
+    .size([wPublication, wMatrix]);
   
   force3.linkDistance(function(l) {
     if (l.year){
@@ -226,7 +226,7 @@ function detactTimeSeries(){
     return 0;
   });  
 
-  var step = Math.min((www-25)/(tnodes.length+1),12);
+  var step = Math.min((wMatrix-16)/(tnodes.length+1),12);
   for (var i=0; i< termArray.length; i++) {
       tnodes[termArray[i].nodeId].y = 12+i*step;
   }
@@ -253,17 +253,17 @@ function detactTimeSeries(){
       maxY = d.y;
   });    
   svg4.selectAll(".timeLegendText").transition().duration(transTime)
-    .attr("y", function(d) {return maxY+15;})
+    .attr("y", function(d) {return maxY+12;})
 
 }
 
 function drawTimeLegend() {
   var xScale = d3.scale.linear()
     .domain([minYear, maxYear])
-    .range([50, wPublication-100]);
+    .range([40, wPublication-40]);
 
   var listX=[];
-  var timeStep = 1+Math.floor((maxYear-minYear)/15);
+  var timeStep = 1+Math.floor((maxYear-minYear)/10);
   for (var i=minYear; i<=maxYear;i+=timeStep){
     var xx = xScale(i);
     var obj = {};
@@ -321,7 +321,7 @@ function update3(){
     }
   }
   minYear--;
-  maxYear++;  
+//  maxYear++;  
   
 
   tnodes.forEach(function(d){
@@ -354,7 +354,7 @@ function sort_tlinks() {
 function linkArcTime(d) {
   var xScale = d3.scale.linear()
     .domain([minYear, maxYear])
-    .range([50, wPublication-100]);
+    .range([40, wPublication-40]);
 
     var newX = xScale(d.year);
     if (newX<d.source.x)
