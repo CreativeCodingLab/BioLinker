@@ -43,7 +43,6 @@ d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/IndexCards/compare')
   .header('Content-Type', 'application/json')
   .post(JSON.stringify(postData))
   .on('load', function(d) { 
-    debugger;
     console.log("Compare:"+d); 
   });
 
@@ -69,6 +68,15 @@ d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/NXML/PMC1174968')
   .header('Content-Type', 'application/json')
   .get()
   .on('load', function(d) { console.log(d); });
+
+//d3.json('http://www.pathwaycommons.org/pcviz/cancer/context/blca_mskcc_solit_2014/mutation/FOXA1')
+d3.json('http://localhost:8080/pcviz/cancer/context/blca_mskcc_solit_2014/mutation/FOXA1')
+  .header('Content-Type', 'application/json')
+  .get()
+  .on('load', function(d) { console.log(d); });
+
+  
+
 </script>
 </body>
 </html>
