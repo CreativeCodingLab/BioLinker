@@ -162,6 +162,7 @@ var data3;
 var isDisplayingPopup;
 
 var pmcData = {}; // Save PMC data to reduce server request 
+var pmcDataAll = {}; // Save PMC data to reduce server request 
 var optArray = [];   // FOR search box
 
 
@@ -525,6 +526,44 @@ function secondLayout(selected){
   drawTimeArcs(); 
   drawMatrix();
   addStacking(); 
+
+  // Query to 3 millions index cards database ********************************
+  /*  console.log("-------");
+        var api_base = 'http://ccrg-data.evl.uic.edu/index-cards/api/';
+        var text = "E2F1";
+        var filter = { "where": { "entity_text": text } };
+        var part_query = api_base + 'Participants?filter=' + JSON.stringify(filter);
+        new Promise(function(resolve) {
+          d3.json(part_query, function(p) { resolve(p); })
+        })
+          .then(function(participants) {
+            var part_id = participants[0].id;
+            var cards_query = api_base + "Participants/" + part_id  + "/indexCards";
+            return new Promise(function(resolve) {
+              d3.json(cards_query, function(d) { 
+                resolve(d);
+                 })
+            });
+          })
+          .then(function(cards) {
+            var promises = cards.map(function(card) {
+              //debugger;
+              //console.log("card.id="+card.id);
+              if (pmcDataAll[card.nxmlId]==undefined){     
+                var nxml_query = api_base + 'IndexCards/' + card.id + '/nxml';
+                return new Promise(function(resolve) {
+                  d3.json(nxml_query, function(d) { 
+                    pmcDataAll[card.nxmlId]=d.articleFront;
+                    resolve(d);
+                  })
+                })
+              }
+            });
+            return Promise.all(promises);
+          })
+          .then(function(d) { 
+            debugger;
+            console.log(d) });*/
 }
   function addNodes() {
     force2
@@ -596,7 +635,7 @@ function secondLayout(selected){
       if (curNode.ref!=undefined){
           curNode = curNode.ref;
       }
-      // Compute direct links ********************************
+      // Compute direct links ******************************************************************
       if (curNode.directLinks==undefined){
         curNode.directLinks = [];
         for (var i=0; i<links.length;i++){
@@ -608,6 +647,8 @@ function secondLayout(selected){
       }
     });
 
+
+
    svg2.selectAll(".node").remove();
    svg2.selectAll(".node")
     .data(nodes2)
@@ -618,7 +659,10 @@ function secondLayout(selected){
         if (curNode.ref!=undefined){
             curNode = curNode.ref;
         }
-        return 3+Math.pow(curNode.directLinks.length, 0.3);    
+        if (curNode.directLinks)
+          return 3+Math.pow(curNode.directLinks.length, 0.3);    
+        else
+          return 3;
       })
       .style("fill", "#888")
       .style("stroke", "#000")
@@ -716,8 +760,7 @@ function secondLayout(selected){
                 labelLink.target = labelAnchors[labelAnchors.length-1];
                 labelLink.weight = 1;
                 labelAnchorLinks.push(labelLink);
-                // Labels **********************************************
-                
+                // Labels **********************************************      
                 nameToNode2[neighbor.fields.entity_text] = neighborNode;
               }
               else{

@@ -75,6 +75,20 @@ d3.json('http://localhost:8080/pcviz/cancer/context/blca_mskcc_solit_2014/mutati
   .get()
   .on('load', function(d) { console.log(d); });
 
+
+
+var filter = { "where": { "entity_text": "E2F1" } };
+var query2 = 'http://ccrg-data.evl.uic.edu/index-cards/api/Participants?filter=' + JSON.stringify(filter);
+d3.json(query2, function(d) {
+  console.log("Here2:"+d);
+
+  var id = d[0].id;
+  var query = "http://ccrg-data.evl.uic.edu/index-cards/api/Participants/" + id  + "/indexCards";
+  d3.json(query, function(d) {
+    debugger;
+    console.log("Here:"+d);
+  })
+})
   
 
 </script>
