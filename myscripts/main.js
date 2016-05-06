@@ -18,12 +18,12 @@ var www = 370;
 var wMatrix = 300;
 var svgOverview = d3.select('.overviewHolder').append('svg')
     .attr("width", www)
-    .attr("height", www)
+    .attr("height", www);
 
 var svgContext = d3.select('.contextHolder').append('svg')
     .attr("class", "contextView")
     .attr("width", www)
-    .attr("height", www)
+    .attr("height", www);
 
 
 
@@ -98,14 +98,14 @@ svg2.on('mousemove', function () {
 var force = d3.layout.force()
     .charge(-4)
     .linkDistance(2)
-    .gravity(0.1)
+    .gravity(0.05)
     //.friction(0.5)
   //  .alpha(0.1)
     .size([www, www]);
 
 var force2 = d3.layout.force()
-    .charge(-150)
-    .linkDistance(70)
+    .charge(-120)
+    .linkDistance(60)
     .gravity(0.1)
     //.friction(0.5)
   //  .alpha(0.1)
@@ -117,7 +117,7 @@ var forceLabel = d3.layout.force()
   .linkDistance(1)
   .linkStrength(5)
   .charge(-50)
-  .size([width+www, height-wMatrix]);
+  .size([width+www, height+wMatrix]);
 
 /*
 var myPromise = new Promise(function(resolve) {
@@ -465,25 +465,64 @@ function update1(d) {
     });  
 }
 
+var node_drag = d3.behavior.drag()
+        .on("dragstart", dragstart)
+        .on("drag", dragmove)
+        .on("dragend", dragend);
+    function dragstart(d, i) {
+      force2.stop() // stops the force auto positioning before you start dragging
+      forceLabel.stop();
+    }
+    function dragmove(d, i) {
+      d.px += d3.event.dx;
+      d.py += d3.event.dy;
+      d.x += d3.event.dx;
+      d.y += d3.event.dy;  
+      update2();
+    //  tick();
+    }
+    function dragend(d, i) {
+      d.fixed = true;// of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
+      force2.resume();
+      forceLabel.resume();
+    }
+    function releasenode(d) {
+      
+    }
+
+
 // Second layout *************************************************************************
-function secondLayout(selected){ 
-  svg2.selectAll(".link").remove();
-  svg2.selectAll(".node").remove();
-  svg2.selectAll(".anchorNode").remove();
-  svg2.selectAll(".anchorLink").remove();
-  labelAnchors = [];
-  labelAnchorLinks = [];
-  nodes2 = [];   
-  links2 = [];
-  nodes2 = [];   
-  nameToNode2={}; 
-  isDisplayingPopup = false;  
-    
+function secondLayout(selected, isSource){   // isSource: is the selected node a source node
+  if (isSource== true || isSource==undefined){
+    svg2.selectAll(".link").remove();
+    svg2.selectAll(".node").remove();
+    svg2.selectAll(".anchorNode").remove();
+    svg2.selectAll(".anchorLink").remove();
+    labelAnchors = [];
+    labelAnchorLinks = [];
+    nodes2 = [];   
+    links2 = [];
+    nodes2 = [];   
+    nameToNode2={}; 
+    isDisplayingPopup = false;  
+  }  
   // Add one example node when initialized
   var newNode = new Object();
   newNode.ref = nodes[selected];
   newNode.x = nodes[selected].x;;
   newNode.y = -10;
+
+  if (isSource== true){
+    newNode.x =50;
+    newNode.y =450;
+    newNode.fixed =true;
+  }
+  else if (isSource== false){ // target node
+    newNode.x =width-50;
+    newNode.y =450;
+    newNode.fixed =true;
+  }
+
   nodes2.push(newNode);
   nameToNode2[nodes[selected].fields.entity_text] = newNode; 
 
@@ -509,6 +548,65 @@ function secondLayout(selected){
   drawTimeArcs(); 
   drawMatrix();
   addStacking(); 
+
+
+  //nodes2.forEach(function(d){
+  //    expand2(d);
+  //  });
+  
+
+  // Find path between
+  if (isSource== false){ // target node
+    nodes2.forEach(function(d){
+      expand2(d);
+    });
+   // nodes2.forEach(function(d){
+   //   expand2(d);
+   // });
+    var str ="";
+    nodes2.forEach(function(d){
+      str+=d.ref.fields.entity_text+",";
+    });
+    console.log("nodes2="+str);
+  
+    var cBioPortalData = {"HGF":{"altered":0.015267175572519083},"STAT3":{"altered":0.015267175572519083},"PTK6":{"altered":0.007633587786259542},"IGF1":{"altered":0.007633587786259542},"EGFR":{"altered":0.0916030534351145},"CX3CL1":{"altered":0.05343511450381679},"MMP12":{"altered":0.04580152671755725},"BCR":{"altered":0.05343511450381679},"AR":{"altered":0.007633587786259542},"IL6":{"altered":0.061068702290076333},"CXCL12":{"altered":0.04580152671755725},"PIK3CA":{"altered":0.24427480916030533},"IL8":{"altered":0.05343511450381679},"TRAF6":{"altered":0.030534351145038167}};
+    var arr = [];
+    for (key in cBioPortalData) {
+      var e= new Object;
+      e.text = key;
+      e.altered= Math.sqrt(cBioPortalData[key].altered);
+      arr.push(e);
+    }
+
+    arr.sort(function (a, b) {
+      if (a.altered > b.altered) {
+        return -1;
+      }
+      if (a.altered < b.altered) {
+        return 1;
+      }
+      return 0;
+    });  
+
+    var sc = d3.scale.linear()
+      .domain([0, arr[0].altered])
+      .range([222, 0]);
+
+    svg2.selectAll(".node")
+      .style("fill" , function(d){
+        if (cBioPortalData[d.ref.fields.entity_text]){
+          var altered = Math.sqrt(cBioPortalData[d.ref.fields.entity_text].altered);
+          var sat = Math.floor(sc(altered));
+          console.log("sat="+sat);
+          return "rgb("+222+", "+sat+", "+222+")" ;
+        }  
+        else
+          return "rgb("+222+", "+222+", "+222+")" ;
+      });     
+  }  
+
+
+  //http://www.pathwaycommons.org/pcviz/cancer/context/blca_tcga_pub/mutation,cna,exp/PIK3CA,Akt,p70,TRAF6,Src,ERK,Ras,NFkappaB,IL6,IL1R,IGF1,pioglitazone,PTK6,Acrp30,p110alpha,Insulin,Myostatin,PKC,PI3K,hUCBSC,dasatinib,EGFR,HGF,result,Met,Abl,CskKD,Cox,PI3kinase,CagA,CX3CL1,IRAK,IL8,damage,MMP12,tobacco,SL327,cocaine,sorafenib,FGF,p16INK4A,Rb,TheMEK,p65,NOS,actin,TGFbeta1,pERK,CXCL12,cisplatin,PKCdelta,TNFalpha,bFGF,STAT5,GTP,CD45+,HRas,cRaf,genistein,AID,IKKDN,BCR,IKK,RANKL,prdm1,BCG,MOL294,PMX464,CDK,Tax,curcumin,LPS,SAA3,DR5,undefined,PDTC,SN50,sodium,salicylate,syntenin,Nnat,ANGII,OVA,CyP,IL1beta,EDN,AR,PGN,PAF,GSK3,STAT3,HPs,gp120,Tat,Th1,EGCG,DNFB
 
   // Query to 3 millions index cards database ********************************
   /*  console.log("-------");
@@ -656,7 +754,8 @@ function secondLayout(selected){
         else 
           return 0.1;    
       })
-      .call(force2.drag)
+      //.call(force2.drag)
+      .call(node_drag)
       .on("click", click2)
       .on('mouseover', function(d) {
         showTip(d); 
@@ -690,8 +789,8 @@ function secondLayout(selected){
     isDisplayingPopup = !isDisplayingPopup;
     tip.hide(d);
     expand2(d);
-//    drawTimeArcs(); 
-//    drawMatrix(); 
+    drawTimeArcs(); 
+    drawMatrix(); 
     addStacking(); 
   } 
     // Toggle children on click.

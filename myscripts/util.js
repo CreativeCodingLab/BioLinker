@@ -165,3 +165,17 @@ function searchNode() {
   searchTerm = document.getElementById('search').value;
   secondLayout(nameToNode[searchTerm].id); 
 }
+
+function setSource() {
+  searchTerm = document.getElementById('search').value;
+  var isSource = true;
+  secondLayout(nameToNode[searchTerm].id,isSource); 
+}
+
+function setTarget() {
+  searchTerm = document.getElementById('search').value;
+  var isSource = false;
+  secondLayout(nameToNode[searchTerm].id,isSource); 
+}
+
+
