@@ -366,7 +366,9 @@ function linkArcTime(d) {
     if (newX>d.target.x2)
       d.target.x2 = newX;
     d.timeX = newX;
-
+    if (isNaN(newX)){
+        d.timeX =0;
+    }
     var dx = 0,
         dy = d.target.y - d.source.y,
         dr = Math.sqrt(dx * dx + dy * dy)/2;

@@ -28,7 +28,7 @@ var svgContext = d3.select('.contextHolder').append('svg')
 
 
 var svg2 = d3.select("#container").append("svg")
-    .style("background", "#eed")
+   // .style("background", "#eed")
     .attr("width", width)
     .attr("height", height);
 
@@ -210,7 +210,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
     data3 = data_;
     var linkNames = {};
     data3.forEach(function(d, index){ 
-      if (2000<index && index<5000) {  // Limit to 1000 first index cards ********************************************
+      if (0<index && index<3000) {  // Limit to 1000 first index cards ********************************************
         //var a = d.card.extracted_information.participant_a;
         //var b = d.card.extracted_information.participant_b;
         var a = d.extracted_information.participant_a;
@@ -246,7 +246,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
     });
     
     // Construct conflicting examples ********************
-    var list = {};
+    /*var list = {};
     links.forEach(function(l){
       if (list[l.name]==undefined)
         list[l.name] =[];
@@ -355,25 +355,8 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
 
         secondLayout(list[d2][0].source.id);
 
-        /*
-        nodes2.forEach(function(d){
-          if (d.ref.fields.entity_text==list[d2][0].target.fields.entity_text){
-              expand2(d);
-              drawTimeArcs(); 
-              addStacking(); 
-          }   
-          /*else if (d.ref.fields.entity_text=="A1-I3"){
-              expand2(d);
-              drawTimeArcs(); 
-              addStacking(); 
-          } */   
-
-        //});
-
-       
-
       });         
-
+      */
     for (var i = 0; i < nodes.length; i++) {
       if (nodes[i].fields.entity_text)
         optArray.push(nodes[i].fields.entity_text);
@@ -707,8 +690,8 @@ function secondLayout(selected){
     isDisplayingPopup = !isDisplayingPopup;
     tip.hide(d);
     expand2(d);
-    drawTimeArcs(); 
-    drawMatrix(); 
+//    drawTimeArcs(); 
+//    drawMatrix(); 
     addStacking(); 
   } 
     // Toggle children on click.
@@ -781,6 +764,7 @@ function secondLayout(selected){
               if (pcm_id.indexOf("PMC")<0){
                 pcm_id="PMC"+pcm_id;
               }
+              
               if (pmcData[pcm_id]==undefined){     
                 d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/NXML/'+pcm_id)
                   .header('Content-Type', 'application/json')
