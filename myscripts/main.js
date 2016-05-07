@@ -104,8 +104,8 @@ var force = d3.layout.force()
     .size([www, www]);
 
 var force2 = d3.layout.force()
-    .charge(-120)
-    .linkDistance(60)
+    .charge(-140)
+    .linkDistance(80)
     .gravity(0.1)
     //.friction(0.5)
   //  .alpha(0.1)
@@ -246,7 +246,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
     });
     
     // Construct conflicting examples ********************
-    /*var list = {};
+    var list = {};
     links.forEach(function(l){
       if (list[l.name]==undefined)
         list[l.name] =[];
@@ -356,7 +356,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
         secondLayout(list[d2][0].source.id);
 
       });         
-      */
+    
     for (var i = 0; i < nodes.length; i++) {
       if (nodes[i].fields.entity_text)
         optArray.push(nodes[i].fields.entity_text);
@@ -790,7 +790,7 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
     tip.hide(d);
     expand2(d);
     drawTimeArcs(); 
-    drawMatrix(); 
+  // /  drawMatrix(); 
     addStacking(); 
   } 
     // Toggle children on click.

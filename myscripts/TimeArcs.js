@@ -226,7 +226,7 @@ function detactTimeSeries(){
     return 0;
   });  
 
-  var step = Math.min((wMatrix-16)/(tnodes.length+1),12);
+  var step = Math.min((wMatrix-26)/(tnodes.length+1),12);
   for (var i=0; i< termArray.length; i++) {
       tnodes[termArray[i].nodeId].y = 12+i*step;
   }
@@ -321,7 +321,7 @@ function update3(){
     }
   }
   minYear--;
-//  maxYear++;  
+  maxYear++;  
   
 
   tnodes.forEach(function(d){
