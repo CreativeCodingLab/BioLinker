@@ -2,12 +2,11 @@
 Please click to watch the overview video.
 [![ScreenShot](https://github.com/CreativeCodingLab/BioLinker/blob/master/figures/TeaserVideo.png)](http://www2.cs.uic.edu/~tdang/BioLinker/BioLinker.mp4)
 
-BioLinker visualization contains multiple views: the overview, context view, main view, conflict matrix, and publication view. 
-Edges in the networks are encoded by interaction types such as green for add modification, red for remove modification.
+BioLinker is an interactive visualization system that helps users to perform bottom-up exploration of complex protein interaction networks. Five interconnected views provide the user with a range of ways to explore pathway data: Overview/ protein selector, context view, main view, publication view, and conflict matrix.  
 ![ScreenShot](https://github.com/CreativeCodingLab/BioLinker/blob/master/figures/Figure1.png)
 
 
-A force-directed layout shows an overview of over 5,000 Fires index cards in BioLinker.
+A force-directed layout shows an overview of over 5,000 Fires index cards in BioLinker. Edges in the networks are encoded by interaction types such as green for add modification, red for remove modification.
 
 ![ScreenShot](http://www.cs.uic.edu/~tdang/BioLinker/images/BioLinkerOverview.png)
 
