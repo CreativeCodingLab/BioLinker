@@ -19,7 +19,7 @@ Systems biologists and cancer researchers are frequently interested in understan
 ![ScreenShot](https://github.com/CreativeCodingLab/BioLinker/blob/master/figures/Figure5.png)
 
 ### 4) Publication View:
-We use TimeArcs visualization~\cite{Dang2016TimeArcs} to show the discoveries of these index cards by publication year. A request to load relevant publications for new index cards is sent to the PMC publication database on our server every time the protein network is expanded.
+We use [TimeArcs visualization](https://github.com/CreativeCodingLab/BioLinker/blob/master/figures/Dang2016BioLinker.pdf)T~\cite{Dang2016TimeArcs} to show the discoveries of these index cards by publication year. A request to load relevant publications for new index cards is sent to the PMC publication database on our server every time the protein network is expanded.
 Fig.~\ref{fig:Figure6}(b) shows an example of publication view of the graph in Fig.~\ref{fig:Figure6}(a). In particular, time axis goes from left (2004) to right (2012). An arc connects two proteins/complexes at a particular time (based on when the interaction was discovered/ publication year). The colors encode interaction types, such as green for *increase_activity*, red for *decrease_activity*, orange for *translocation*, and blue for *binds*. 
 ![ScreenShot](https://github.com/CreativeCodingLab/BioLinker/blob/master/figures/Figure6.png)
 
