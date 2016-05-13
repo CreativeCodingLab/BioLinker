@@ -18,6 +18,11 @@ A subnetwork encircling the selected protein is initially shown in the main view
 Systems biologists and cancer researchers are frequently interested in understanding the contexts of biochemical reactions and comparing protein interaction sub-networks by context. The top left panel in the next figure shows the context view for the network in the main view (top right panel). In particular, we show a 2-degree separation network of a selected protein *antigen* which is located in the center of the main view. The lower panel depicts brushing and linking of two views. We have selected *mouse* in the *species* category. Other context categories are updated accordingly. In the main view (on the bottom right), we notice that all protein interactions in *mouse* are between *antigen* and its immediate neighbors, but not the second degree separated neighbors.  
 ![ScreenShot](https://github.com/CreativeCodingLab/BioLinker/blob/master/figures/Figure5.png)
 
+### 4) Publication View:
+We use TimeArcs visualization~\cite{Dang2016TimeArcs} to show the discoveries of these index cards by publication year. A request to load relevant publications for new index cards is sent to the PMC publication database on our server every time the protein network is expanded.
+Fig.~\ref{fig:Figure6}(b) shows an example of publication view of the graph in Fig.~\ref{fig:Figure6}(a). In particular, time axis goes from left (2004) to right (2012). An arc connects two proteins/complexes at a particular time (based on when the interaction was discovered/ publication year). The colors encode interaction types, such as green for *increase_activity*, red for *decrease_activity*, orange for *translocation*, and blue for *binds*. 
+![ScreenShot](https://github.com/CreativeCodingLab/BioLinker/blob/master/figures/Figure6.png)
+
 ### Acknowledgments
 This work was funded by the DARPA Big Mechanism Program under ARO contract WF911NF-14-1-0395.
 
