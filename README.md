@@ -15,7 +15,7 @@ A subnetwork encircling the selected protein is initially shown in the main view
 ![ScreenShot](https://github.com/CreativeCodingLab/BioLinker/blob/master/figures/Figure4.png)
 
 ### 3) Context View:
-
+Systems biologists and cancer researchers are frequently interested in understanding the contexts of biochemical reactions and comparing protein interaction sub-networks by context. The top left panel in the next figure shows the context view for the network in the main view (top right panel). In particular, we show a 2-degree separation network of a selected protein *antigen* which is located in the center of the main view. The lower panel depicts brushing and linking of two views. We have selected *mouse* in the *species* category. Other context categories are updated accordingly. In the main view (on the bottom right), we notice that all protein interactions in *mouse* are between *antigen* and its immediate neighbors, but not the second degree separated neighbors.  
 ![ScreenShot](https://github.com/CreativeCodingLab/BioLinker/blob/master/figures/Figure5.png)
 
 ### Acknowledgments
