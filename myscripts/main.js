@@ -552,14 +552,16 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
   nameToNode2[newNode.ref.fields.entity_text] = newNode;
 
   expand2(newNode);
+  
   drawTimeArcs(); 
   drawMatrix();
   addStacking(); 
 
-
-  nodes2.forEach(function(d){
+  nodes2.forEach(function(d){   // Expand the second level *******************
       expand2(d);
     });
+  
+
   
   // Download Genomics data from cBioPortal ************************************
   getGenomics();
@@ -717,7 +719,10 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
       })
       //.call(force2.drag)
       .call(node_drag)
-      .on("click", click2)
+      .on("click", function(d) {
+        if (d.isExpanded!=true)
+          click2(d); 
+      })
       .on('mouseover', function(d) {
         showTip(d); 
       })
