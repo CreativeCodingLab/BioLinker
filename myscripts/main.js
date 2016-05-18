@@ -104,8 +104,8 @@ var force = d3.layout.force()
     .size([www, www]);
 
 var force2 = d3.layout.force()
-    .charge(-140)
-    .linkDistance(80)
+    .charge(-120)
+    .linkDistance(70)
     .gravity(0.1)
     //.friction(0.5)
   //  .alpha(0.1)
@@ -478,8 +478,14 @@ var node_drag = d3.behavior.drag()
       d.py += d3.event.dy;
       d.x += d3.event.dx;
       d.y += d3.event.dy;  
-      update2();
-    //  tick();
+    
+      link2.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });     
+      node2.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+      update2();  
     }
     function dragend(d, i) {
       d.fixed = true;// of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
@@ -495,6 +501,7 @@ var node_drag = d3.behavior.drag()
 function secondLayout(selected, isSource){   // isSource: is the selected node a source node
   if (isSource== true || isSource==undefined){
     svg2.selectAll(".link").remove();
+    svg2.selectAll(".link2").remove();
     svg2.selectAll(".node").remove();
     svg2.selectAll(".anchorNode").remove();
     svg2.selectAll(".anchorLink").remove();
@@ -554,12 +561,10 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
       expand2(d);
     });
   
-
-  // Find path between
-  //if (isSource== false){ // target node
-    getGenomics();
-  //}  
-
+  // Download Genomics data from cBioPortal ************************************
+  getGenomics();
+ 
+  
 
   //http://www.pathwaycommons.org/pcviz/cancer/context/blca_tcga_pub/mutation,cna,exp/PIK3CA,Akt,p70,TRAF6,Src,ERK,Ras,NFkappaB,IL6,IL1R,IGF1,pioglitazone,PTK6,Acrp30,p110alpha,Insulin,Myostatin,PKC,PI3K,hUCBSC,dasatinib,EGFR,HGF,result,Met,Abl,CskKD,Cox,PI3kinase,CagA,CX3CL1,IRAK,IL8,damage,MMP12,tobacco,SL327,cocaine,sorafenib,FGF,p16INK4A,Rb,TheMEK,p65,NOS,actin,TGFbeta1,pERK,CXCL12,cisplatin,PKCdelta,TNFalpha,bFGF,STAT5,GTP,CD45+,HRas,cRaf,genistein,AID,IKKDN,BCR,IKK,RANKL,prdm1,BCG,MOL294,PMX464,CDK,Tax,curcumin,LPS,SAA3,DR5,undefined,PDTC,SN50,sodium,salicylate,syntenin,Nnat,ANGII,OVA,CyP,IL1beta,EDN,AR,PGN,PAF,GSK3,STAT3,HPs,gp120,Tat,Th1,EGCG,DNFB
 
@@ -706,7 +711,7 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
       .style("stroke-opacity", 1)
       .style("stroke-width", function(d) {
         if (d.isExpanded)
-            return 2;
+            return 1;
         else 
           return 0.1;    
       })
@@ -748,6 +753,9 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
     drawTimeArcs(); 
   // /  drawMatrix(); 
     addStacking(); 
+    // Download Genomics data from cBioPortal ************************************
+    getGenomics();
+ 
   } 
     // Toggle children on click.
     function expand2(d) {

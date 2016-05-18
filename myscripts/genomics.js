@@ -1,17 +1,19 @@
 var cBioPortalData = {};
 
 function getGenomics(){
-	// nodes2.forEach(function(d){
-    //   expand2(d);
-    // });
-    var str ="";
+	var str ="";
     nodes2.forEach(function(d,i){
-    	if (i<nodes2.length-1)
-      		str+=d.ref.fields.entity_text+",";
-      	else 
-      		str+=d.ref.fields.entity_text;
+    	var text = d.ref.fields.entity_text;
+    	if (cBioPortalData[text]==undefined){
+    		cBioPortalData[text] = {};
+    		cBioPortalData[text].altered=0;
+	    	if (str=="")
+	      		str+=text;
+	      	else 
+	      		str+=","+text;
+      	}
     });
-    console.log("nodes2 names= "+str);
+    console.log("cBioPortal names= "+str);
   
     //var cBioPortalData = {"HGF":{"altered":0.015267175572519083},"STAT3":{"altered":0.015267175572519083},"PTK6":{"altered":0.007633587786259542},"IGF1":{"altered":0.007633587786259542},"EGFR":{"altered":0.0916030534351145},"CX3CL1":{"altered":0.05343511450381679},"MMP12":{"altered":0.04580152671755725},"BCR":{"altered":0.05343511450381679},"AR":{"altered":0.007633587786259542},"IL6":{"altered":0.061068702290076333},"CXCL12":{"altered":0.04580152671755725},"PIK3CA":{"altered":0.24427480916030533},"IL8":{"altered":0.05343511450381679},"TRAF6":{"altered":0.030534351145038167}};
     var request = '/pcviz/cancer/context/blca_tcga_pub/mutation,cna,exp/'+str;   //PIK3CA,Akt,p70,TRAF6,Src,ERK,Ras,NFkappaB,IL6,IL1R,IGF1,pioglitazone,PTK6,Acrp30,p110alpha,Insulin,Myostatin,PKC,PI3K,hUCBSC,dasatinib,EGFR,HGF,result,Met,Abl,CskKD,Cox,PI3kinase,CagA,CX3CL1,IRAK,IL8,damage,MMP12,tobacco,SL327,cocaine,sorafenib,FGF,p16INK4A,Rb,TheMEK,p65,NOS,actin,TGFbeta1,pERK,CXCL12,cisplatin,PKCdelta,TNFalpha,bFGF,STAT5,GTP,CD45+,HRas,cRaf,genistein,AID,IKKDN,BCR,IKK,RANKL,prdm1,BCG,MOL294,PMX464,CDK,Tax,curcumin,LPS,SAA3,DR5,undefined,PDTC,SN50,sodium,salicylate,syntenin,Nnat,ANGII,OVA,CyP,IL1beta,EDN,AR,PGN,PAF,GSK3,STAT3,HPs,gp120,Tat,Th1,EGCG,DNFB'
@@ -20,7 +22,10 @@ function getGenomics(){
 	 .on('load', function(d) { 
 	 	console.log(d); 
 
-	 	cBioPortalData = d;
+	 	for (key in d) {
+	 		cBioPortalData[key] = d[key];
+	 	}	
+	    
 	 	var arr = [];
 	    for (key in cBioPortalData) {
 	      var e= new Object;
