@@ -16,27 +16,59 @@ function getGenomics(){
 	      		str+=","+text;
       	}
     });
+    //str="PIK3CA";
+    str="NFE2L2";
     console.log("cBioPortal names= "+str);
   	
   	if (str=="")  
 		updateNodeColors(); 
   	else{
-	    var request = '/pcviz/cancer/context/blca_tcga_pub/mutation,cna,exp/'+str;   //PIK3CA,Akt,p70,TRAF6,Src,ERK,Ras,NFkappaB,IL6,IL1R,IGF1,pioglitazone,PTK6,Acrp30,p110alpha,Insulin,Myostatin,PKC,PI3K,hUCBSC,dasatinib,EGFR,HGF,result,Met,Abl,CskKD,Cox,PI3kinase,CagA,CX3CL1,IRAK,IL8,damage,MMP12,tobacco,SL327,cocaine,sorafenib,FGF,p16INK4A,Rb,TheMEK,p65,NOS,actin,TGFbeta1,pERK,CXCL12,cisplatin,PKCdelta,TNFalpha,bFGF,STAT5,GTP,CD45+,HRas,cRaf,genistein,AID,IKKDN,BCR,IKK,RANKL,prdm1,BCG,MOL294,PMX464,CDK,Tax,curcumin,LPS,SAA3,DR5,undefined,PDTC,SN50,sodium,salicylate,syntenin,Nnat,ANGII,OVA,CyP,IL1beta,EDN,AR,PGN,PAF,GSK3,STAT3,HPs,gp120,Tat,Th1,EGCG,DNFB'
-		d3.json('http://localhost:8777' + request, function(error, json) {
-			if (error) {
-				console.warn("warn: "+error);
-				updateNodeColors();
-				return;
-			}	
-		})
-		 .get()
-		 .on('load', function(d) { 
-		 	console.log(d); 
-		 	for (key in d) {
-		 		cBioPortalData[key] = d[key];
-		 	}	
-		    updateNodeColors();	 		
-		});   
+  		for (var i=0;i<studyIds.length;i++){  
+		    var request = '/pcviz/cancer/context/'+studyIds[i]+'/mutation,cna,exp/'+str;   //PIK3CA,Akt,p70,TRAF6,Src,ERK,Ras,NFkappaB,IL6,IL1R,IGF1,pioglitazone,PTK6,Acrp30,p110alpha,Insulin,Myostatin,PKC,PI3K,hUCBSC,dasatinib,EGFR,HGF,result,Met,Abl,CskKD,Cox,PI3kinase,CagA,CX3CL1,IRAK,IL8,damage,MMP12,tobacco,SL327,cocaine,sorafenib,FGF,p16INK4A,Rb,TheMEK,p65,NOS,actin,TGFbeta1,pERK,CXCL12,cisplatin,PKCdelta,TNFalpha,bFGF,STAT5,GTP,CD45+,HRas,cRaf,genistein,AID,IKKDN,BCR,IKK,RANKL,prdm1,BCG,MOL294,PMX464,CDK,Tax,curcumin,LPS,SAA3,DR5,undefined,PDTC,SN50,sodium,salicylate,syntenin,Nnat,ANGII,OVA,CyP,IL1beta,EDN,AR,PGN,PAF,GSK3,STAT3,HPs,gp120,Tat,Th1,EGCG,DNFB'
+			(function(request,i) {
+       			//console.log("request:"+request); 
+				 	
+				d3.json('http://localhost:7777' + request, function(error, json) {
+				 	if (error) {
+					//	console.warn("warn: "+error);
+						updateNodeColors();
+						return;
+					}	
+				})
+				 .get()
+				 .on('load', function(d) { 
+				 	console.log(i+" "+studyIds[i]); 
+					console.log(d); 
+				 	for (key in d) {
+				 		if (!cBioPortalData[key])
+				 			cBioPortalData[key] = new Object();
+				 		cBioPortalData[key][studyIds[i]] = d[key];
+				 	}	
+				    updateNodeColors();	 		
+				});  
+			 })(request,i);
+			/*
+			var request = '/pcviz/cancer/context/'+studyIds[i]+'/mutation,cna,exp/'+str;   //PIK3CA,Akt,p70,TRAF6,Src,ERK,Ras,NFkappaB,IL6,IL1R,IGF1,pioglitazone,PTK6,Acrp30,p110alpha,Insulin,Myostatin,PKC,PI3K,hUCBSC,dasatinib,EGFR,HGF,result,Met,Abl,CskKD,Cox,PI3kinase,CagA,CX3CL1,IRAK,IL8,damage,MMP12,tobacco,SL327,cocaine,sorafenib,FGF,p16INK4A,Rb,TheMEK,p65,NOS,actin,TGFbeta1,pERK,CXCL12,cisplatin,PKCdelta,TNFalpha,bFGF,STAT5,GTP,CD45+,HRas,cRaf,genistein,AID,IKKDN,BCR,IKK,RANKL,prdm1,BCG,MOL294,PMX464,CDK,Tax,curcumin,LPS,SAA3,DR5,undefined,PDTC,SN50,sodium,salicylate,syntenin,Nnat,ANGII,OVA,CyP,IL1beta,EDN,AR,PGN,PAF,GSK3,STAT3,HPs,gp120,Tat,Th1,EGCG,DNFB'
+			new Promise(function(resolve) {
+	        	d3.json('http://localhost:8777' + request, function(error, json) {
+				 	if (error) {
+						console.warn("warn: "+error);
+						updateNodeColors();
+						return;
+					}	
+				})
+				 .get()
+				 .on('load', function(d) { 
+				 	resolve(d); 		
+				});
+	        })
+	          .then(function(d) {
+	          	console.log("request="+request);
+	           	
+	          	console.log(studyIds[i]);
+	           	debugger;	
+	          }); */
+		} 
 	} 
 }
 

@@ -557,9 +557,9 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
   drawMatrix();
   addStacking(); 
 
-  nodes2.forEach(function(d){   // Expand the second level *******************
-      expand2(d);
-    });
+  //nodes2.forEach(function(d){   // Expand the second level *******************
+  //    expand2(d);
+  //  });
   
 
   
