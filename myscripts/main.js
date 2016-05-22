@@ -564,7 +564,7 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
 
   
   // Download Genomics data from cBioPortal ************************************
-  getGenomics();
+  getGenomics(nodes[selected].fields.entity_text);
  
   
 
@@ -759,7 +759,7 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
   // /  drawMatrix(); 
     addStacking(); 
     // Download Genomics data from cBioPortal ************************************
-    getGenomics();
+    getGenomics(d.ref.fields.entity_text);
  
   } 
     // Toggle children on click.
