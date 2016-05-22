@@ -16,22 +16,23 @@ function getGenomics(){
 	      		str+=","+text;
       	}
     });
-    //str="PIK3CA";
-    str="NFE2L2";
+    str="PIK3CA";
+    //str="NFE2L2";
     console.log("cBioPortal names= "+str);
   	
   	if (str=="")  
 		updateNodeColors(); 
   	else{
   		for (var i=0;i<studyIds.length;i++){  
-		    //var request = '/pcviz/cancer/context/'+studyIds[i]+'/mutation,cna,exp/'+str;   //PIK3CA,Akt,p70,TRAF6,Src,ERK,Ras,NFkappaB,IL6,IL1R,IGF1,pioglitazone,PTK6,Acrp30,p110alpha,Insulin,Myostatin,PKC,PI3K,hUCBSC,dasatinib,EGFR,HGF,result,Met,Abl,CskKD,Cox,PI3kinase,CagA,CX3CL1,IRAK,IL8,damage,MMP12,tobacco,SL327,cocaine,sorafenib,FGF,p16INK4A,Rb,TheMEK,p65,NOS,actin,TGFbeta1,pERK,CXCL12,cisplatin,PKCdelta,TNFalpha,bFGF,STAT5,GTP,CD45+,HRas,cRaf,genistein,AID,IKKDN,BCR,IKK,RANKL,prdm1,BCG,MOL294,PMX464,CDK,Tax,curcumin,LPS,SAA3,DR5,undefined,PDTC,SN50,sodium,salicylate,syntenin,Nnat,ANGII,OVA,CyP,IL1beta,EDN,AR,PGN,PAF,GSK3,STAT3,HPs,gp120,Tat,Th1,EGCG,DNFB'
-			
-			var request = "/cmd=getProfileData&case_set_id=blca_tcga_pub_rna_seq_v2_mrna&genetic_profile_id=blca_tcga_pub_mutations&gene_list="+str;
-			
-			(function(request,i) {
-       			//console.log("request:"+request); 
-				 	
-				d3.csv('http://localhost:7777' + request, function(error, json) {
+			var strServer = "http://www.cbioportal.org/webservice.do?";	
+			// Profile blca_tcga_pub_gistic  blca_tcga_pub_mutations
+
+			var study = studyIds[i];
+			var request = "cmd=getProfileData&case_set_id="+study+"_all&genetic_profile_id="+study+"_mutations&gene_list="+str;
+			var str2 = strServer+request;
+			(function(request,i) { 	
+				console.log("str="+str);
+				d3.csv(str2, function(error, json) {
 				 	if (error) {
 					//	console.warn("warn: "+error);
 						updateNodeColors();
@@ -40,15 +41,24 @@ function getGenomics(){
 				})
 				 .get()
 				 .on('load', function(d) { 
-				 	console.log(i+" "+studyIds[i]); 
+				 	//console.log(i+" "+studyIds[i]); 
 					console.log(d); 
 				 	for (key in d) {
 				 		if (!cBioPortalData[key])
 				 			cBioPortalData[key] = new Object();
 				 		cBioPortalData[key][studyIds[i]] = d[key];
-				 	}	
-				 	debugger;
+				 	}
+				 //	debugger;	
 				 //	var str2 = d3.tsv.parseRows(d[2]);
+				 	var arr = d3.tsv.parseRows(d[2]["# DATA_TYPE	 Mutations"])[0];
+				 	var count=0;
+				 	for (var j=0;j<arr.length;j++){
+				 		if (arr[j]!="NaN")
+				 			count++;
+				 	//	console.log("	j="+j+ " "+arr[j]); 
+				 	} 
+					console.log(i+" count="+count+ " /"+arr.length); 
+				 	
 				    updateNodeColors();	 		
 				});  
 			 })(request,i);
