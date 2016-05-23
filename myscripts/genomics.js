@@ -6,27 +6,15 @@ var profileDefaultProperty = ["# DATA_TYPE	 Mutations","# DATA_TYPE	Putative cop
 var studyNames = ["Acinar Cell Carcinoma of the Pancreas (Johns Hopkins, J Pathol 2014)","Acute Myeloid Leukemia (TCGA, NEJM 2013)","Acute Myeloid Leukemia (TCGA, Provisional)","Adenoid Cystic Carcinoma (MSKCC, Nat Genet 2013)","Adrenocortical Carcinoma (TCGA, Provisional)","Bladder Cancer (MSKCC, Eur Urol 2014)","Bladder Cancer (MSKCC, J Clin Oncol 2013)","Bladder Cancer, Plasmacytoid Variant (MSKCC, Nat Genet 2016)","Bladder Cancer, Plasmacytoid Variant (MSKCC, Nat Genet 2016)","Bladder Urothelial Carcinoma (BGI, Nat Genet 2013)","Bladder Urothelial Carcinoma (Dana Farber & MSKCC, Cancer Discovery 2014)","Bladder Urothelial Carcinoma (TCGA, Nature 2014)","Bladder Urothelial Carcinoma (TCGA, Provisional)","Brain Lower Grade Glioma (TCGA, Provisional)","Breast Invasive Carcinoma (British Columbia, Nature 2012)","Breast Invasive Carcinoma (Broad, Nature 2012)","Breast Invasive Carcinoma (Sanger, Nature 2012)","Breast Invasive Carcinoma (TCGA, Cell 2015)","Breast Invasive Carcinoma (TCGA, Nature 2012)","Breast Invasive Carcinoma (TCGA, Provisional)","Breast cancer patient xenografts (British Columbia, Nature 2014)","Cancer Cell Line Encyclopedia (Novartis/Broad, Nature 2012)","Cervical Squamous Cell Carcinoma and Endocervical Adenocarcinoma (TCGA, Provisional)","Cholangiocarcinoma (National Cancer Centre of Singapore, Nat Genet 2013)","Cholangiocarcinoma (National University of Singapore, Nat Genet 2012)","Cholangiocarcinoma (TCGA, Provisional)","Clear Cell Renal Cell Carcinoma (U Tokyo, Nat Genet 2013)","Colorectal Adenocarcinoma (Genentech, Nature 2012)","Colorectal Adenocarcinoma (TCGA, Nature 2012)","Colorectal Adenocarcinoma (TCGA, Provisional)","Colorectal Adenocarcinoma Triplets (MSKCC, Genome Biology 2014)","Cutaneous squamous cell carcinoma (DFCI, Clin Cancer Res 2015)","Desmoplastic Melanoma (Broad Institute, Nat Genet 2015)","Esophageal Adenocarcinoma (Broad, Nat Genet 2013)","Esophageal Carcinoma (TCGA, Provisional)","Esophageal Squamous Cell Carcinoma (ICGC, Nature 2014)","Esophageal Squamous Cell Carcinoma (UCLA, Nat Genet 2014)","Ewing Sarcoma (Institut Cuire, Cancer Discov 2014)","Gallbladder Carcinoma (Shanghai, Nat Genet 2014)","Gastric Adenocarcinoma (TMUCIH, PNAS 2015)","Glioblastoma (TCGA, Cell 2013)","Glioblastoma (TCGA, Nature 2008)","Glioblastoma Multiforme (TCGA, Provisional)","Head and Neck Squamous Cell Carcinoma (Broad, Science 2011)","Head and Neck Squamous Cell Carcinoma (Johns Hopkins, Science 2011)","Head and Neck Squamous Cell Carcinoma (TCGA, Nature 2015)","Head and Neck Squamous Cell Carcinoma (TCGA, Provisional)","Infant MLL-Rearranged Acute Lymphoblastic Leukemia (St Jude, Nat Genet 2015)","Intrahepatic Cholangiocarcinoma (Johns Hopkins University, Nat Genet 2013)","Kidney Chromophobe (TCGA, Cancer Cell 2014)","Kidney Chromophobe (TCGA, Provisional)","Kidney Renal Clear Cell Carcinoma (BGI, Nat Genet 2012)","Kidney Renal Clear Cell Carcinoma (TCGA, Nature 2013)","Kidney Renal Clear Cell Carcinoma (TCGA, Provisional)","Kidney Renal Papillary Cell Carcinoma (TCGA, Provisional)","Liver Hepatocellular Carcinoma (AMC, Hepatology 2014)","Liver Hepatocellular Carcinoma (RIKEN, Nat Genet 2012)","Liver Hepatocellular Carcinoma (TCGA, Provisional)","Low-Grade Gliomas (UCSF, Science 2014)","Lung Adenocarcinoma (Broad, Cell 2012)","Lung Adenocarcinoma (MSKCC 2015)","Lung Adenocarcinoma (TCGA, Nature 2014)","Lung Adenocarcinoma (TCGA, Provisional)","Lung Adenocarcinoma (TSP, Nature 2008)","Lung Squamous Cell Carcinoma (TCGA, Nature 2012)","Lung Squamous Cell Carcinoma (TCGA, Provisional)","Lymphoid Neoplasm Diffuse Large B-cell Lymphoma (TCGA, Provisional)","Malignant Peripheral Nerve Sheath Tumor (MSKCC, Nat Genet 2014)","Medulloblastoma (Broad, Nature 2012)","Medulloblastoma (ICGC, Nature 2012)","Medulloblastoma (PCGP, Nature 2012)","Melanoma (Broad/Dana Farber, Nature 2012)","Merged Cohort of LGG and GBM (TCGA, 2016)","Mesothelioma (TCGA, Provisional)","Metastatic Prostate Cancer, SU2C/PCF Dream Team (Robinson et al., Cell 2015)","Multiple Myeloma (Broad, Cancer Cell 2014)","Multiregion Sequencing of Clear Cell Renal Cell Carcinoma (IRC, Nat Genet 2014)","NCI-60 Cell Lines (NCI, Cancer Res. 2012)","Nasopharyngeal Carcinoma (Singapore, Nat Genet 2014)","Neuroblastoma (AMC Amsterdam, Nature 2012)","Neuroendocrine Prostate Cancer (Trento/Cornell/Broad 2016)","Ovarian Serous Cystadenocarcinoma (TCGA, Nature 2011)","Ovarian Serous Cystadenocarcinoma (TCGA, Provisional)","Pancreatic Adenocarcinoma (ICGC, Nature 2012)","Pancreatic Adenocarcinoma (TCGA, Provisional)","Pancreatic Cancer (UTSW, Nat Commun 2015)","Pancreatic Neuroendocrine Tumors (Johns Hopkins University, Science 2011)","Papillary Thyroid Carcinoma (TCGA, Cell 2014)","Pediatric Ewing Sarcoma (DFCI, Cancer Discov 2014)","Pheochromocytoma and Paraganglioma (TCGA, Provisional)","Poorly-Differentiated and Anaplastic Thyroid Cancers (MSKCC, JCI 2016)","Primary Central Nervous System Lymphoma (Mayo Clinic, Clin Cancer Res 2015)","Prostate Adenocarcinoma (Broad/Cornell, Cell 2013)","Prostate Adenocarcinoma (Broad/Cornell, Nat Genet 2012)","Prostate Adenocarcinoma (MSKCC, Cancer Cell 2010)","Prostate Adenocarcinoma (Nelson Lab, Fred Hutchinson CRC)","Prostate Adenocarcinoma (TCGA, Cell 2015)","Prostate Adenocarcinoma (TCGA, Provisional)","Prostate Adenocarcinoma CNA study (MSKCC, PNAS 2014)","Prostate Adenocarcinoma Organoids (MSKCC, Cell 2014)","Prostate Adenocarcinoma, Metastatic (Michigan, Nature 2012)","Renal Non-Clear Cell Carcinoma (Genentech, Nat Genet 2014)","Rhabdomyosarcoma (NIH, Cancer Discov 2014)","Sarcoma (MSKCC/Broad, Nat Genet 2010)","Sarcoma (TCGA, Provisional)","Skin Cutaneous Melanoma (Broad, Cell 2012)","Skin Cutaneous Melanoma (TCGA, Provisional)","Skin Cutaneous Melanoma (Yale, Nat Genet 2012)","Small Cell Carcinoma of the Ovary (MSKCC, Nat Genet 2014)","Small Cell Lung Cancer (CLCGP, Nat Genet 2012)","Small Cell Lung Cancer (Johns Hopkins, Nat Genet 2012)","Small Cell Lung Cancer (U Cologne, Nature 2015)","Stomach Adenocarcinoma (Pfizer and UHK, Nat Genet 2014)","Stomach Adenocarcinoma (TCGA, Nature 2014)","Stomach Adenocarcinoma (TCGA, Provisional)","Stomach Adenocarcinoma (U Tokyo, Nat Genet 2014)","Stomach Adenocarcinoma (UHK, Nat Genet 2011)","Testicular Germ Cell Cancer (TCGA, Provisional)","Thymic Epithelial Tumors (NCI, Nat Genet 2014)","Thymoma (TCGA, Provisional)","Thyroid Carcinoma (TCGA, Provisional)","Uterine Carcinosarcoma (Johns Hopkins University, Nat Commun 2014)","Uterine Carcinosarcoma (TCGA, Provisional)","Uterine Corpus Endometrial Carcinoma (TCGA, Provisional)","Uterine Corpus Endometrioid Carcinoma (TCGA, Nature 2013)","Uveal Melanoma (TCGA, Provisional)"];
 
 function getGenomics(geneName){
-	/*var str ="";
-    nodes2.forEach(function(d,i){
-    	var text = d.ref.fields.entity_text;
-    	if (cBioPortalData[text]==undefined){
-    		cBioPortalData[text] = {};
-    		cBioPortalData[text].altered=-1;
-	    	if (str=="")
-	      		str+=text;
-	      	else 
-	      		str+=","+text;
-      	}
-    });
-    str="PIK3CA";
-    //str="NFE2L2"; */
-
-    console.log("geneName= "+geneName);
+    console.log("getGenomics geneName= "+geneName);
+  	
+  	cBioPortalData[geneName] = new Object();
   	
   	if (geneName=="")  
 		updateNodeColors(); 
   	else{
   		for (var p=0;p<profileIds.length;p++){  
+  			cBioPortalData[geneName][p] = new Object();		 		
 			for (var i=0;i<studyIds.length;i++){  
 				var strServer = "http://www.cbioportal.org/webservice.do?";	
 				// Profile blca_tcga_pub_gistic  blca_tcga_pub_mutations
@@ -37,20 +25,19 @@ function getGenomics(geneName){
 				(function(request,i,p) { 	
 					d3.csv(str2, function(error, json) {
 					 	if (error) {
-						//	console.warn("warn: "+error);
-							updateNodeColors();
+							console.warn("warn: "+error);
+						//	updateNodeColors();
 							return;
 						}	
 					})
-					 .get()
-					 .on('load', function(d) { 
-					 	//console.log(i+" "+studyIds[i]); 
-						console.log(d); 
-					 	for (key in d) {
+					.get()
+					.on('load', function(d) { 
+					 	console.log(d); 
+					 	/*for (key in d) {
 					 		if (!cBioPortalData[key])
 					 			cBioPortalData[key] = new Object();
 					 		cBioPortalData[key][studyIds[i]] = d[key];
-					 	}
+					 	}*/
 					 	var count=0;
 					 	if (d.length>0){
 					 		var propertyName = profileDefaultProperty[p];
@@ -73,12 +60,16 @@ function getGenomics(geneName){
 							 		if (arr[j]!="NaN" && arr[j]!="0")
 							 			count++;
 							 	} 
-							 	console.log(profileIds[p]+" "+i+" count="+count+ " /"+arr.length); 
+							 	console.log(profileIds[p]+" "+i+" study="+studyIds[i]+" count="+count+ " /"+arr.length); 
+						 		cBioPortalData[geneName][p][i] = new Object();	
+						 		cBioPortalData[geneName][p][i]["count"] = count;
+						 		cBioPortalData[geneName][p][i]["array"] = arr;		 		
 						 	}
 						}
 						else
-							console.log(profileIds[p]+" "+i+" Empty result"); 	
-					    updateNodeColors();	 		
+							console.log(profileIds[p]+" "+i+" study="+studyIds[i]+"  Empty result"); 	
+					    
+					    //updateNodeColors();	 		
 					});  
 				 })(request,i,p);
 			} 
