@@ -436,6 +436,7 @@ function addDotplots(d,fieldName,label, map){
 }
 
 function addScatterplot(d){
+  var sSize = 200;
   var arrayX = [];
   var arrayY = [];
   for (var i=0;i<studyIds.length;i++) {
@@ -446,97 +447,90 @@ function addScatterplot(d){
   var geneName = d.ref.fields.entity_text;
   for (key in cBioPortalData[geneName][0]) {
      var index =  parseFloat(key);
-     arrayX[index] = cBioPortalData[geneName][0][key]["count"];
+     arrayX[index] = cBioPortalData[geneName][0][key]["count"]/
+                      cBioPortalData[geneName][0][key]["array"].length;
   }  
-  debugger;  
-  /*
-
+  for (key in cBioPortalData[geneName][1]) {
+     var index =  parseFloat(key);
+     arrayY[index] = cBioPortalData[geneName][1][key]["count"]/
+                      cBioPortalData[geneName][1][key]["array"].length;
+  }  
+  
+  
+  var data =[];
+  for (var i=0;i<studyIds.length;i++) {
+    var obj = {};
+    obj.x=arrayX[i];
+    obj.y=arrayY[i];
+    data.push(obj);
+  }  
+  
   // setup x 
-  var xValue = function(d) { return d.Calories;}, // data -> value
-      xScale = d3.scale.linear().range([0, tipWidth]), // value -> display
-      xMap = function(d) { return xScale(xValue(d));}, // data -> display
+  var xScale = d3.scale.linear().range([0, tipWidth]), // value -> display
+      xMap = function(d) { return xScale(arrayX(d));}, // data -> display
       xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
   // setup y
-  var yValue = function(d) { return d["Protein (g)"];}, // data -> value
-      yScale = d3.scale.linear().range([height, 0]), // value -> display
+  var yScale = d3.scale.linear().range([height, 0]), // value -> display
       yMap = function(d) { return yScale(yValue(d));}, // data -> display
       yAxis = d3.svg.axis().scale(yScale).orient("left");
 
   // setup fill color
-  var cValue = function(d) { return d.Manufacturer;},
+  var cValue = function(d) { return 0;},
       color = d3.scale.category10();
 
-  // add the graph canvas to the body of the webpage
-  var svg = d3.select("body").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-  // add the tooltip area to the webpage
-  var tooltip = d3.select("body").append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
-
-  // change string (from CSV) into number format
-  data.forEach(function(d) {
-    d.Calories = +d.Calories;
-    d["Protein (g)"] = +d["Protein (g)"];
-//    console.log(d);
-  });
-
+ 
   // don't want dots overlapping axis, so add in buffer to data domain
-  xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
-  yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+  xScale.domain([d3.min(arrayX), d3.max(arrayX)]);
+  yScale.domain([d3.min(arrayY), d3.max(arrayY)]);
 
   // x-axis
-  svg.append("g")
+  tip_svg.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
+      .attr("transform", "translate(0," + sSize + ")")
       .call(xAxis)
     .append("text")
       .attr("class", "label")
-      .attr("x", width)
-      .attr("y", -6)
+      .attr("x", tipSVGheight-10)
+      .attr("y", -10)
       .style("text-anchor", "end")
       .text("Calories");
 
   // y-axis
-  svg.append("g")
+  tip_svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
     .append("text")
       .attr("class", "label")
       .attr("transform", "rotate(-90)")
-      .attr("y", 6)
+      .attr("y", 10)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("Protein (g)");
 
   // draw dots
-  svg.selectAll(".dot")
+  tip_svg.selectAll(".dot")
       .data(data)
     .enter().append("circle")
       .attr("class", "dot")
-      .attr("r", 3.5)
-      .attr("cx", xMap)
-      .attr("cy", yMap)
+      .attr("r", 3)
+      .attr("cx", function(d){ return d.x*sSize+5;})
+      .attr("cy", function(d){ return tipSVGheight-d.y*sSize-5;})
       .style("fill", function(d) { return color(cValue(d));}) 
       .on("mouseover", function(d) {
-          tooltip.transition()
+          /*tooltip.transition()
                .duration(200)
                .style("opacity", .9);
           tooltip.html(d["Cereal Name"] + "<br/> (" + xValue(d) 
           + ", " + yValue(d) + ")")
                .style("left", (d3.event.pageX + 5) + "px")
-               .style("top", (d3.event.pageY - 28) + "px");
+               .style("top", (d3.event.pageY - 28) + "px");*/
       })
       .on("mouseout", function(d) {
-          tooltip.transition()
+          /*tooltip.transition()
                .duration(500)
-               .style("opacity", 0);
-      });*/
+               .style("opacity", 0);*/
+      });
 }  
 
 
