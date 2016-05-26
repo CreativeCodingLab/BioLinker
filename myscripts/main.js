@@ -764,6 +764,33 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
   } 
     // Toggle children on click.
     function expand2(d) {
+
+      var api_base = 'http://localhost:9999/api/';
+      var filter = { "where": { "entity_text": d.ref.fields.entity_text } };
+      //debugger;
+      var part_query = api_base + 'Participants?filter=' + JSON.stringify(filter);
+      new Promise(function(resolve) {
+        d3.json(part_query, function(p) { resolve(p); })
+      })
+        .then(function(participants) {
+          var part_id = participants[0].id;
+          var cards_query = api_base + "Participants/" + part_id  + "/indexCards";
+          return new Promise(function(resolve) {
+            d3.json(cards_query, function(d) { resolve(d) })
+          });
+        })
+        // .then(function(cards) {
+        //   var promises = cards.map(function(card) {
+        //     var nxml_query = api_base + 'IndexCards/' + card.id + '/nxml';
+        //     return new Promise(function(resolve) {
+        //       d3.json(nxml_query, function(d) { resolve(d); })
+        //     })
+        //   });
+        //   return Promise.all(promises);
+        // })
+        .then(function(d) { console.log(d) });
+
+
       //if (!d3.event.defaultPrevented) {
         var curNode = d;
         if (curNode.ref!=undefined){
@@ -833,12 +860,15 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
                 pcm_id="PMC"+pcm_id;
               }
               
-              if (pmcData[pcm_id]==undefined){     
-                d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/NXML/'+pcm_id)
+              if (pmcData[pcm_id]==undefined){   
+              //  console.log("loading: "+pcm_id);
+                    
+              //  d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/NXML/'+pcm_id)
+                d3.json('http://localhost:9999/api/NXML/'+pcm_id)
                   .header('Content-Type', 'application/json')
                   .get()
                   .on('load', function(d2) { 
-                    //console.log("loaded: "+d2.id);
+                    console.log("loaded: "+d2.id);
                     pmcData[d2.id] = d2.articleFront;
                   });
               }

@@ -1,5 +1,5 @@
 var tipWidth = 250;
-var tipSVGheight = 340;
+var tipSVGheight = 320;
 var tip_svg;
 var y_svg;
 
@@ -466,12 +466,12 @@ function addScatterplot(d){
   }  
   
   // setup x 
-  var xScale = d3.scale.linear().range([0, tipWidth]), // value -> display
+  var xScale = d3.scale.linear().range([0, sSize]), // value -> display
       xMap = function(d) { return xScale(arrayX(d));}, // data -> display
       xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
   // setup y
-  var yScale = d3.scale.linear().range([height, 0]), // value -> display
+  var yScale = d3.scale.linear().range([sSize, 0]), // value -> display
       yMap = function(d) { return yScale(yValue(d));}, // data -> display
       yAxis = d3.svg.axis().scale(yScale).orient("left");
 
@@ -491,10 +491,10 @@ function addScatterplot(d){
       .call(xAxis)
     .append("text")
       .attr("class", "label")
-      .attr("x", tipSVGheight-10)
+      .attr("x", sSize-10)
       .attr("y", -10)
       .style("text-anchor", "end")
-      .text("Calories");
+      .text(profileIds[0]);
 
   // y-axis
   tip_svg.append("g")
@@ -506,7 +506,7 @@ function addScatterplot(d){
       .attr("y", 10)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Protein (g)");
+      .text(profileIds[1]);
 
   // draw dots
   tip_svg.selectAll(".dot")
