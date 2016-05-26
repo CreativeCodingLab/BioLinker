@@ -1,5 +1,13 @@
-var tipWidth = 250;
-var tipSVGheight = 320;
+/* 2016 
+ * Tuan Dang (on the BioLinker project, as Postdoc for EVL, UIC)
+ *
+ * THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+ * WARRANTY.  IN PARTICULAR, THE AUTHORS MAKE NO REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
+ * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+ */
+
+ var tipWidth = 250;
+var tipSVGheight = 220;
 var tip_svg;
 var y_svg;
 
@@ -44,7 +52,7 @@ function showTip(d) {
     //addDotplots(d,"Context_Organ", "Context-Organ", organMap);
     //addDotplots(d,"Context_CellType", "Context-CellType",celltypeMap);
 
-    addScatterplot(d);
+   // addScatterplot(d);
   }
   else if (d.source && d.target){
     tip.offset([-10,-0])

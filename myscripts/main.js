@@ -1,8 +1,12 @@
-
-// Same protein for source and target
-// Change stoke for expanded nodes
-// Display all index cards for a link
-// Context data
+/* 2016 
+ * Tuan Dang (on the BioLinker project, as Postdoc for EVL, UIC)
+ *
+ * THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+ * WARRANTY.  IN PARTICULAR, THE AUTHORS MAKE NO REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
+ * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+ */
+ 
+// This is the MAIN class javasrcipt
 
 //Constants for the SVG
 var margin = {top: 0, right: 0, bottom: 0, left: 0};
@@ -210,7 +214,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
     data3 = data_;
     var linkNames = {};
     data3.forEach(function(d, index){ 
-      if (0<index && index<3000) {  // Limit to 1000 first index cards ********************************************
+      if (2000<index && index<5000) {  // Limit to 1000 first index cards ********************************************
         //var a = d.card.extracted_information.participant_a;
         //var b = d.card.extracted_information.participant_b;
         var a = d.extracted_information.participant_a;
@@ -564,7 +568,7 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
 
   
   // Download Genomics data from cBioPortal ************************************
-  getGenomics(nodes[selected].fields.entity_text);
+  //getGenomics(nodes[selected].fields.entity_text);
  
   
 
@@ -756,15 +760,15 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
     tip.hide(d);
     expand2(d);
     drawTimeArcs(); 
-  // /  drawMatrix(); 
+    drawMatrix(); 
     addStacking(); 
     // Download Genomics data from cBioPortal ************************************
-    getGenomics(d.ref.fields.entity_text);
+    //getGenomics(d.ref.fields.entity_text);
  
   } 
     // Toggle children on click.
     function expand2(d) {
-
+      /*
       var api_base = 'http://localhost:9999/api/';
       var filter = { "where": { "entity_text": d.ref.fields.entity_text } };
       //debugger;
@@ -789,7 +793,7 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
         //   return Promise.all(promises);
         // })
         .then(function(d) { console.log(d) });
-
+*/
 
       //if (!d3.event.defaultPrevented) {
         var curNode = d;
