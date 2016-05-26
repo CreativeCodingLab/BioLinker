@@ -7,7 +7,7 @@
  */
 
  var tipWidth = 250;
-var tipSVGheight = 220;
+var tipSVGheight = 180;
 var tip_svg;
 var y_svg;
 

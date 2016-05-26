@@ -5,13 +5,14 @@
  * WARRANTY.  IN PARTICULAR, THE AUTHORS MAKE NO REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
- 
-// This is the MAIN class javasrcipt
 
-//Constants for the SVG
+// This is the MAIN class javasrcipt
 var margin = {top: 0, right: 0, bottom: 0, left: 0};
 var width = document.body.clientWidth - margin.left - margin.right;
 var height = 800 - margin.top - margin.bottom;
+
+//var serverUrl = "http://ccrg-data.evl.uic.edu/index-cards/api";
+var serverUrl = "http://localhost:9999/api";
 
 //Append a SVG to the body of the html page. Assign this SVG as an object to svg
 //d3.select("#container").append("svg")
@@ -123,35 +124,6 @@ var forceLabel = d3.layout.force()
   .charge(-50)
   .size([width+www, height+wMatrix]);
 
-/*
-var myPromise = new Promise(function(resolve) {
-    d3.tsv("data/imdb1.tsv", function(error, data_) {
-        data_.map(function(d){
-            console.log(d);
-        });
-        resolve(data_);
-    })
-})
-
-myPromise.then(function(data) {
-    console.log("This is tuan**************");
-    console.log(data.length)
-})
-
-var myPromise = new Promise(function(resolve) {
-        func1;
-       resolve(data_);
-    })
-})
-  
-myPromise.then(function(data) {
-    func2()
-    return 123123
-}).then(function(dat) {
-    func3()
-})*/
-
-
 svg2.call(tip);  
 var nodes = [];
 var links = [];
@@ -165,14 +137,9 @@ var nameToNode2;
 var data3;
 var isDisplayingPopup;
 
-var pmcData = {}; // Save PMC data to reduce server request 
-var pmcDataAll = {}; // Save PMC data to reduce server request 
 var optArray = [];   // FOR search box
 
-
-drawColorLegend();
-
-
+drawColorLegend(); // Draw color legend*************************************
 
 var speciesMap = {};
 d3.tsv("data/Species_exhaustive.tsv", function(error, data_) {
@@ -445,7 +412,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
     node.attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
   });
- secondLayout(0);
+  secondLayout(35);
   // secondLayout(18);
 });
 
@@ -557,60 +524,12 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
 
   expand2(newNode);
   
-  drawTimeArcs(); 
-  drawMatrix();
-  addStacking(); 
-
   //nodes2.forEach(function(d){   // Expand the second level *******************
   //    expand2(d);
   //  });
   
-
-  
   // Download Genomics data from cBioPortal ************************************
   //getGenomics(nodes[selected].fields.entity_text);
- 
-  
-
-  //http://www.pathwaycommons.org/pcviz/cancer/context/blca_tcga_pub/mutation,cna,exp/PIK3CA,Akt,p70,TRAF6,Src,ERK,Ras,NFkappaB,IL6,IL1R,IGF1,pioglitazone,PTK6,Acrp30,p110alpha,Insulin,Myostatin,PKC,PI3K,hUCBSC,dasatinib,EGFR,HGF,result,Met,Abl,CskKD,Cox,PI3kinase,CagA,CX3CL1,IRAK,IL8,damage,MMP12,tobacco,SL327,cocaine,sorafenib,FGF,p16INK4A,Rb,TheMEK,p65,NOS,actin,TGFbeta1,pERK,CXCL12,cisplatin,PKCdelta,TNFalpha,bFGF,STAT5,GTP,CD45+,HRas,cRaf,genistein,AID,IKKDN,BCR,IKK,RANKL,prdm1,BCG,MOL294,PMX464,CDK,Tax,curcumin,LPS,SAA3,DR5,undefined,PDTC,SN50,sodium,salicylate,syntenin,Nnat,ANGII,OVA,CyP,IL1beta,EDN,AR,PGN,PAF,GSK3,STAT3,HPs,gp120,Tat,Th1,EGCG,DNFB
-
-  // Query to 3 millions index cards database ********************************
-  /*  console.log("-------");
-        var api_base = 'http://ccrg-data.evl.uic.edu/index-cards/api/';
-        var text = "E2F1";
-        var filter = { "where": { "entity_text": text } };
-        var part_query = api_base + 'Participants?filter=' + JSON.stringify(filter);
-        new Promise(function(resolve) {
-          d3.json(part_query, function(p) { resolve(p); })
-        })
-          .then(function(participants) {
-            var part_id = participants[0].id;
-            var cards_query = api_base + "Participants/" + part_id  + "/indexCards";
-            return new Promise(function(resolve) {
-              d3.json(cards_query, function(d) { 
-                resolve(d);
-                 })
-            });
-          })
-          .then(function(cards) {
-            var promises = cards.map(function(card) {
-              //debugger;
-              //console.log("card.id="+card.id);
-              if (pmcDataAll[card.nxmlId]==undefined){     
-                var nxml_query = api_base + 'IndexCards/' + card.id + '/nxml';
-                return new Promise(function(resolve) {
-                  d3.json(nxml_query, function(d) { 
-                    pmcDataAll[card.nxmlId]=d.articleFront;
-                    resolve(d);
-                  })
-                })
-              }
-            });
-            return Promise.all(promises);
-          })
-          .then(function(d) { 
-            debugger;
-            console.log(d) });*/
 }
 
   function addNodes() {
@@ -759,26 +678,22 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
     isDisplayingPopup = !isDisplayingPopup;
     tip.hide(d);
     expand2(d);
-    drawTimeArcs(); 
-    drawMatrix(); 
-    addStacking(); 
     // Download Genomics data from cBioPortal ************************************
     //getGenomics(d.ref.fields.entity_text);
- 
   } 
     // Toggle children on click.
     function expand2(d) {
-      /*
-      var api_base = 'http://localhost:9999/api/';
+      // Query to 3 millions index cards database ********************************
+      /*var api_base = 'http://localhost:9999/api/';
       var filter = { "where": { "entity_text": d.ref.fields.entity_text } };
       //debugger;
-      var part_query = api_base + 'Participants?filter=' + JSON.stringify(filter);
+      var part_query = serverUrl + '/Participants?filter=' + JSON.stringify(filter);
       new Promise(function(resolve) {
         d3.json(part_query, function(p) { resolve(p); })
       })
         .then(function(participants) {
           var part_id = participants[0].id;
-          var cards_query = api_base + "Participants/" + part_id  + "/indexCards";
+          var cards_query = serverUrl + "/Participants/" + part_id  + "/indexCards";
           return new Promise(function(resolve) {
             d3.json(cards_query, function(d) { resolve(d) })
           });
@@ -793,9 +708,8 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
         //   return Promise.all(promises);
         // })
         .then(function(d) { console.log(d) });
-*/
+      */
 
-      //if (!d3.event.defaultPrevented) {
         var curNode = d;
         if (curNode.ref!=undefined){
             curNode = curNode.ref;
@@ -848,7 +762,6 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
               else{
                 neighborNode = nameToNode2[neighbor.fields.entity_text];
               }
-
               var newLink = new Object();
               newLink.source = d;
               newLink.target = neighborNode;
@@ -857,27 +770,7 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
               newLink.Context_Species = getContextFromID(l["Context_Species"][0],speciesMap);
               newLink.Context_Organ = getContextFromID(l["Context_Organ"][0],organMap);
               newLink.Context_CellType = getContextFromID(l["Context_CellType"][0],celltypeMap);
-              
-              
-              var pcm_id = l.pmc_id;
-              if (pcm_id.indexOf("PMC")<0){
-                pcm_id="PMC"+pcm_id;
-              }
-              
-              if (pmcData[pcm_id]==undefined){   
-              //  console.log("loading: "+pcm_id);
-                    
-              //  d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/NXML/'+pcm_id)
-                d3.json('http://localhost:9999/api/NXML/'+pcm_id)
-                  .header('Content-Type', 'application/json')
-                  .get()
-                  .on('load', function(d2) { 
-                    console.log("loaded: "+d2.id);
-                    pmcData[d2.id] = d2.articleFront;
-                  });
-              }
-
-
+                        
               newLink.list =[];
               newLink.list.push(l);
               links2.push(newLink);
@@ -889,6 +782,9 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
             } 
           }
         }
+        // Load Publication data ********************************************************
+        loadPMC(curNode);
+        
         d.ref.isExpanded = true;
         d.isExpanded = true;
         addNodes();   

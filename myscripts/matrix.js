@@ -173,7 +173,9 @@ function drawMatrix(){
       resetLinks();  
     });         
   
-  // Download potential conflicts data  
+  // Download potential conflicts data 
+  var count=0; 
+  var maxRequests=100;
   for (var i=0;i<numCards;i++){
     for (var j=0;j<i;j++){
       var cardI = tlinks[i].ref.ref;
@@ -185,8 +187,28 @@ function drawMatrix(){
           cardA: cardI,
           cardB: cardJ
         }
+        count++;
+        // Set the upper limit for running comparator requests*************************
+        if (count>maxRequests) {
+          svg3.selectAll(".progressingText").remove();
+          svg3.append("text")
+            .attr("class", "progressingText")
+            .style("text-anchor","start")
+            .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
+            .attr("x", wMatrix-130)
+            .attr("y", 20)
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "12px")
+            .text("Limiting "+maxRequests+" requests");
 
-        d3.json('http://ccrg-data.evl.uic.edu/index-cards/api/IndexCards/compare')
+          svg3.select(".progressingText")
+            .style("opacity", 1)
+            .style("fill", "#00d");
+          svg3.select(".progressingText").transition().duration(5000)
+            .style("opacity", 0);
+          break;
+        }  
+        d3.json(serverUrl+'/IndexCards/compare')
         .header('Content-Type', 'application/json')
         .post(JSON.stringify(postData))
         .on('load', function(d) { 

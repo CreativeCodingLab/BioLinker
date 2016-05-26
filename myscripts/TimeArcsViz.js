@@ -34,108 +34,9 @@ function drawTimeArcs(){
   }
   sort_tlinks();
   resetForce3();
-  
-  // Horizontal lines
-  svg4.selectAll(".nodeLine4").remove();
-  svg4.selectAll(".nodeLine4").data(tnodes).enter()
-    .append("line")
-    .attr("class", "nodeLine4")
-    .attr("x1", function(d) {return 0;})
-    .attr("y1", function(d) {return 100;})
-    .attr("x2", function(d) {return 0;})
-    .attr("y2", function(d) {return 100;})
-    .style("stroke-width",0.2)
-    .style("stroke-opacity",1)
-    .style("stroke", "#000"); 
+  draw();
 
-
-  svg4.selectAll(".linkArc").remove();
-  svg4.selectAll(".linkArc")
-    .data(tlinks).enter().append("path")
-    .attr("class", "linkArc")
-    .style("stroke", function (l) {
-        return getColor(l.ref.type);
-    })
-    .style("stroke-width", function (d) {
-        return  1;
-    })     
-    .style("stroke-width",1)
-    .style("stroke-opacity", 1)
-  ;    
-
-  svg4.selectAll(".linkArc2").remove();
-  svg4.selectAll(".linkArc2")
-    .data(tlinks).enter().append("path")
-    .attr("class", "linkArc2")
-    .style("stroke", function (l) {
-        return getColor(l.ref.type);
-    })
-    .style("stroke-width", function (d) {
-        return  1;
-    })     
-    .style("stroke-width",5)
-    .style("stroke-opacity", 0)
-    .on("mouseover", function(d){
-      for (var i=0;i<tlinks.length;i++){
-        if (tlinks[i]==d)
-          tlinks[i].mouseover = true;
-        else
-          tlinks[i].mouseover = false;
-      }  
-      updateLinks();
-      showTip(d); 
-    })
-    .on("mouseout", function(d){
-      resetLinks();  
-      tip.hide(d); 
-    })
-    .on("click",function(d){
-      var id = "PMC"+d.ref.pmc_id;
-      if (pmcData[id].url)
-        window.open(pmcData[id].url);  
-        
-    });         
-
-  /*svg4.selectAll(".node4").remove();
-  svg4.selectAll(".node4").data(tnodes).enter()
-    .append("circle")
-    .attr("class", "node4")
-    .attr("r", 2)
-    .style("fill", "#444")
-    .style("stroke", "#eee")
-    .style("stroke-opacity", 0.5)
-    .style("stroke-width", 0.3)
-    .call(force.drag);*/
-
-  svg4.selectAll(".nodeText4").remove();
-  svg4.selectAll(".nodeText4").data(tnodes).enter()
-    .append("text")
-    .attr("class", "nodeText4")
-    .text(function(d) { return d.ref.fields.entity_text})
-    .attr("x", function(d) { return d.x; })
-    .attr("y", function(d) { return d.y; })          
-    .style("fill","#000")
-    .style("fill-opacity",1)
-    .style("text-anchor","end")
-    .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
-    .style("font-weight", function(d) { return d.isSearchTerm ? "bold" : ""; })
-    .attr("dy", ".21em")
-    .attr("font-family", "sans-serif")
-    .attr("font-size", "10px")
-    .on("mouseover", function(d){
-      for (var i=0;i<tlinks.length;i++){
-        if (tlinks[i].source==d || tlinks[i].target==d)
-          tlinks[i].mouseover = true;
-        else
-          tlinks[i].mouseover = false;
-      }  
-      updateLinks();
-    })
-    .on("mouseout", function(d){
-      resetLinks();  
-    });
-
-
+ 
 }      
 function getNode(d){
   if (nodesList[d.fields.entity_text]==undefined){
@@ -147,7 +48,6 @@ function getNode(d){
   }
   else
     return nodesList[d.fields.entity_text];
-
 }  
 
 function resetForce3(){
@@ -211,6 +111,96 @@ function resetForce3(){
   });  
 }  
 
+function draw(){
+  // Horizontal lines
+  svg4.selectAll(".nodeLine4").remove();
+  svg4.selectAll(".nodeLine4").data(tnodes).enter()
+    .append("line")
+    .attr("class", "nodeLine4")
+    .attr("x1", function(d) {return 0;})
+    .attr("y1", function(d) {return 100;})
+    .attr("x2", function(d) {return 0;})
+    .attr("y2", function(d) {return 100;})
+    .style("stroke-width",0.2)
+    .style("stroke-opacity",1)
+    .style("stroke", "#000"); 
+
+
+  svg4.selectAll(".linkArc").remove();
+  svg4.selectAll(".linkArc")
+    .data(tlinks).enter().append("path")
+    .attr("class", "linkArc")
+    .style("stroke", function (l) {
+        return getColor(l.ref.type);
+    })
+    .style("stroke-width", function (d) {
+        return  1;
+    })     
+    .style("stroke-width",1)
+    .style("stroke-opacity", 1)
+  ;    
+
+  svg4.selectAll(".linkArc2").remove();
+  svg4.selectAll(".linkArc2")
+    .data(tlinks).enter().append("path")
+    .attr("class", "linkArc2")
+    .style("stroke", function (l) {
+        return getColor(l.ref.type);
+    })
+    .style("stroke-width", function (d) {
+        return  1;
+    })     
+    .style("stroke-width",5)
+    .style("stroke-opacity", 0)
+    .on("mouseover", function(d){
+      for (var i=0;i<tlinks.length;i++){
+        if (tlinks[i]==d)
+          tlinks[i].mouseover = true;
+        else
+          tlinks[i].mouseover = false;
+      }  
+      updateLinks();
+      showTip(d); 
+    })
+    .on("mouseout", function(d){
+      resetLinks();  
+      tip.hide(d); 
+    })
+    .on("click",function(d){
+      var id = "PMC"+d.ref.pmc_id;
+      if (pmcData[id].url)
+        window.open(pmcData[id].url);  
+        
+    });         
+
+  svg4.selectAll(".nodeText4").remove();
+  svg4.selectAll(".nodeText4").data(tnodes).enter()
+    .append("text")
+    .attr("class", "nodeText4")
+    .text(function(d) { return d.ref.fields.entity_text})
+    .attr("x", function(d) { return d.x; })
+    .attr("y", function(d) { return d.y; })          
+    .style("fill","#000")
+    .style("fill-opacity",1)
+    .style("text-anchor","end")
+    .style("text-shadow", "1px 1px 0 rgba(255, 255, 255, 0.6")
+    .style("font-weight", function(d) { return d.isSearchTerm ? "bold" : ""; })
+    .attr("dy", ".21em")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "10px")
+    .on("mouseover", function(d){
+      for (var i=0;i<tlinks.length;i++){
+        if (tlinks[i].source==d || tlinks[i].target==d)
+          tlinks[i].mouseover = true;
+        else
+          tlinks[i].mouseover = false;
+      }  
+      updateLinks();
+    })
+    .on("mouseout", function(d){
+      resetLinks();  
+    });
+}
 function detactTimeSeries(){
   // Compute y position *************************
   var termArray = [];
@@ -341,7 +331,6 @@ function update3(){
   svg4.selectAll(".linkArc2").attr("d", linkArc);   
 
   drawTimeLegend();
-   
 }
 
 function sort_tlinks() {
