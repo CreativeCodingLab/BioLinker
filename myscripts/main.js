@@ -538,7 +538,6 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
         .links(links2)
         .start();
 
-
     svg2.selectAll(".link")
       .data(links2)
       .enter().append("line")
@@ -576,21 +575,24 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
          return 5+l.list.length;
       })
       .on('mouseover', function(d) {
-        var a = {};
-        for (var i=0;i<d.list.length;i++){
-          a[d.list[i].name] = d.list[i];
-        }  
-        
-        for (var i=0;i<tlinks.length;i++){
-          if (a[tlinks[i].ref.name])
-            tlinks[i].mouseover = true;
-          else
-            tlinks[i].mouseover = false;
-        } 
-        
-        showTip(d); 
-        updateLinks();  
-        
+        if (force2.alpha()<=0.06){
+          var a = {};
+          for (var i=0;i<d.list.length;i++){
+            a[d.list[i].name] = d.list[i];
+          }  
+          
+          for (var i=0;i<tlinks.length;i++){
+            if (a[tlinks[i].ref.name])
+              tlinks[i].mouseover = true;
+            else
+              tlinks[i].mouseover = false;
+          } 
+
+          showTip(d); 
+          updateLinks(); 
+           
+          force2.stop()
+        }
       })
       .on('mouseout', function(d) {
         tip.hide(d); 
@@ -613,8 +615,6 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
         }
       }
     });
-
-
 
    svg2.selectAll(".node").remove();
    svg2.selectAll(".node")
@@ -647,7 +647,10 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
           click2(d); 
       })
       .on('mouseover', function(d) {
-        showTip(d); 
+        if (force2.alpha()<=0.06){
+          showTip(d); 
+          force2.stop()
+        }
       })
       .on('mouseout', function(d) {
         tip.hide(); 
@@ -715,7 +718,7 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
             curNode = curNode.ref;
         }
         var count=0;
-        for (var i=0;i<curNode.directLinks.length;i++){
+        for (var i=0;i<curNode.directLinks.length;i++){ // Expand maximum 25 neighbors
           var l = curNode.directLinks[i];
           var index;
           for (var j=0; d["tip_type"] && j<d["tip_type"].length;j++){

@@ -14,6 +14,8 @@ var focusName ="";
 var minYear = 40000;
 var maxYear = 0;
 var transTime = 1000;
+
+var positions ={}; // Save positions of nodes for the new TimeArcs
 // vertex is the input node which contains neighbors information
 function drawTimeArcs(){
   tnodes = [];
@@ -35,8 +37,6 @@ function drawTimeArcs(){
   sort_tlinks();
   resetForce3();
   draw();
-
- 
 }      
 function getNode(d){
   if (nodesList[d.fields.entity_text]==undefined){
@@ -97,6 +97,15 @@ function resetForce3(){
       return 1;      
   });
   
+
+  // Save positions
+  for (var i=0; i< tnodes.length; i++) {
+    var nod = tnodes[i];
+    if (positions[nod.ref.fields.entity_text]!=undefined){
+      nod.x = positions[nod.ref.fields.entity_text].x;
+      nod.y = positions[nod.ref.fields.entity_text].y;   
+    }
+  }
 
   force3
     .nodes(tnodes)
@@ -250,6 +259,14 @@ function detactTimeSeries(){
   svg4.selectAll(".timeLegendText").transition().duration(transTime)
     .attr("y", function(d) {return maxY+12;})
 
+  // Save positions
+  for (var i=0; i< tnodes.length; i++) {
+    var nod = tnodes[i];
+    if (positions[nod.ref.fields.entity_text]==undefined)
+      positions[nod.ref.fields.entity_text] = {};
+    positions[nod.ref.fields.entity_text].x = nod.x;
+    positions[nod.ref.fields.entity_text].y = nod.y;   
+  }
 }
 
 function drawTimeLegend() {
@@ -298,6 +315,7 @@ function drawTimeLegend() {
 
 
 function update3(){   
+  //console.log("force3="+force3.alpha());
   // Compute TIME position *************************
   minYear = 40000;
   maxYear = 0;

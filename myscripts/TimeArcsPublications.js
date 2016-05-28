@@ -45,7 +45,7 @@ function loadPMC(curNode){
         .header('Content-Type', 'application/json')
         .get()
         .on('load', function(d2) { 
-          //console.log("loaded: "+d2.id);
+         // console.log("loaded: "+d2.id);
           svg4.select(".progressingText")
            .text("Loading: "+d2.id); 
           
@@ -57,7 +57,9 @@ function loadPMC(curNode){
 
   Promise.all(promises).then(function(d) { 
     drawTimeArcs();
-    drawMatrix(); 
+    
+    if (nodes2.length<40)
+      drawMatrix(); 
     addStacking();  
     svg4.select(".progressingText")
       .text("Finish loading PMC data"); 
