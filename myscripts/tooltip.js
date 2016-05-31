@@ -7,7 +7,7 @@
  */
 
  var tipWidth = 250;
-var tipSVGheight = 180;
+var tipSVGheight = 280;
 var tip_svg;
 var y_svg;
 
@@ -52,7 +52,7 @@ function showTip(d) {
     //addDotplots(d,"Context_Organ", "Context-Organ", organMap);
     //addDotplots(d,"Context_CellType", "Context-CellType",celltypeMap);
 
-   // addScatterplot(d);
+    //addScatterplot(d);
   }
   else if (d.source && d.target){
     tip.offset([-10,-0])

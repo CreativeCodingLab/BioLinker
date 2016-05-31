@@ -167,8 +167,6 @@ function childCount2(level, n) {
 d3.select(self.frameElement).style("height", diameter + "px");
 
 
-
-
 function searchNode() {
   searchTerm = document.getElementById('search').value;
   secondLayout(nameToNode[searchTerm].id); 

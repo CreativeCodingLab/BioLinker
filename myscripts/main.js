@@ -176,158 +176,63 @@ d3.tsv("data/uniprot-proteins.tsv", function(error, data_) {
 });   
 
 
+var linkNames = {};    
+function processCard(d){
+  var a = d.extracted_information.participant_a;
+  var b = d.extracted_information.participant_b;
+  var e = "";
+  if (d.evidence){
+      for (var i=0;i<1;i++){
+          e+= " "+d.evidence[i];
+      }   
+  }
+  var type = d.extracted_information.interaction_type;
+
+  var node1 = processNode(a);
+  var node2 = processNode(b);
+  var l = new Object();
+  l.pmc_id = d.pmc_id;
+  l.name = node1.fields.entity_text+"__"+node2.fields.entity_text;
+  if (linkNames[l.name+"_"+l.pmc_id]==undefined){
+    l.source = node1;
+    l.target = node2;
+    l.type = type;
+    l.evidence = e;
+    l["Context_Species"] = d.extracted_information.context.Species;
+    l["Context_Organ"] = d.extracted_information.context.Organ;
+    l["Context_CellType"] = d.extracted_information.context.CellType;
+    l.ref = d;
+    links.push(l);
+    linkNames[l.name+"_"+l.pmc_id] = l;
+  }
+}
+function processNode(fields){
+  if (nameToNode[fields.entity_text]==undefined){
+      var newNode = {};
+      newNode.fields = fields;
+      newNode.id = nodes.length;
+      nodes.push(newNode);
+      nameToNode[fields.entity_text] = newNode;
+      return newNode;
+  }
+  else{
+      return nameToNode[fields.entity_text];
+  }
+}
+
 //d3.json("data/cards-for-time-arcs.json", function(error, data_) {
 d3.json("data/cardsWithContextData.json", function(error, data_) {
     data3 = data_;
-    var linkNames = {};
     data3.forEach(function(d, index){ 
       if (2000<index && index<5000) {  // Limit to 1000 first index cards ********************************************
-        //var a = d.card.extracted_information.participant_a;
-        //var b = d.card.extracted_information.participant_b;
-        var a = d.extracted_information.participant_a;
-        var b = d.extracted_information.participant_b;
-        var e = "";
-        if (d.evidence){
-            for (var i=0;i<1;i++){
-                e+= " "+d.evidence[i];
-            }   
-        }
-        
-        var type = d.extracted_information.interaction_type;
-   
-        var node1 = processNode(a);
-        var node2 = processNode(b);
-        var l = new Object();
-        l.source = node1;
-        l.target = node2;
-        l.type = type;
-        l.evidence = e;
-        l["Context_Species"] = d.extracted_information.context.Species;
-        l["Context_Organ"] = d.extracted_information.context.Organ;
-        l["Context_CellType"] = d.extracted_information.context.CellType;
-        l.pmc_id = d.pmc_id;
-        l.name = node1.fields.entity_text+"__"+node2.fields.entity_text;
-        l.ref = d;
-        if (linkNames[l.name+"_"+l.pmc_id]==undefined){
-          links.push(l);
-          linkNames[l.name+"_"+l.pmc_id] = l;
-        }
+        processCard(d);
         
       }     
     });
     
-    // Construct conflicting examples ********************
-    var list = {};
-    links.forEach(function(l){
-      if (list[l.name]==undefined)
-        list[l.name] =[];
-      list[l.name].push(l) 
-    });
-
-    svg2.append('text')
-      .attr("class", "buttonTitle")
-      .attr("font-family", "sans-serif")
-      .attr("font-size", "11px")
-      .attr("x", width-80)
-      .attr("y", 14)
-      .text("Conflicting examples:")
-      .style("text-anchor", "middle")
-      .style("fill", "#000");
-     
-    var a = [];
-    for (var key in list) {
-      if (list[key].length>1){
-        var isIncrease = false;
-        var isDecrease = false;
-        for (var i=0; i<list[key].length;i++){
-          if (list[key][i].type=="increases_activity")
-            isIncrease = true;
-          if (list[key][i].type=="decreases_activity")
-            isDecrease = true;
-        }
-        if (isIncrease && isDecrease){
-          console.log("key=" + key + "= " + list[key]);
-          a.push(key);
-        }
-      }
-    }
-    var buttonWidth =130;
-    var buttonheight =15;
-    var roundConner = 4;
-    var colorHighlight = "#f80";
-    var buttonColor = "#ddd";
-
-    svg2.selectAll(".buttonText").data(a).enter()
-      .append('text')
-      .attr("class", "buttonText")
-      .attr("font-family", "sans-serif")
-      .attr("font-size", "10px")
-      .attr("x", width-buttonWidth/2-2)
-      .attr("y", function(d,i){
-        return 31+i*buttonheight;
-      })
-      .text(function(d){
-        return d;
-      })
-      .style("text-anchor", "middle")
-      .style("fill", "#000");
-    svg2.selectAll(".buttonRect").data(a).enter()
-      .append('rect')
-      .attr("class", "buttonRect")
-      .attr("x", width-buttonWidth-2)
-      .attr("y", function(d,i){
-        return 20+i*buttonheight;
-      })
-      .attr("rx", roundConner)
-      .attr("ry", roundConner)
-      .attr("width", buttonWidth)
-      .attr("height", buttonheight)
-      .style("stroke", "#000")
-      .style("stroke-width", 0.1)
-      .style("fill", function(d){
-        if (d=="TGF-beta__IL-17" || d=="EGCG__MMP-13")
-          return "#f88";
-        else if (list[d].length>2)
-          return "#888";
-        else 
-          return buttonColor;
-      })
-      .style("fill-opacity", 0.3)
-      .on('mouseover', function(d2){
-        svg2.selectAll(".buttonRect")
-            .style("fill", function(d4){
-              if (d4==d2)
-                return colorHighlight;
-              else if (list[d4].length>2)
-                return "#888";
-              else  
-                return buttonColor;
-            });
-      })
-      .on('mouseout', function(d2){
-        svg2.selectAll(".buttonRect")
-            .style("fill", function(d4){
-                if (d4=="TGF-beta__IL-17" || d4=="EGCG__MMP-13")
-                  return "#f88";
-                else if (list[d4].length>2)
-                  return "#888";
-                else 
-                  return buttonColor;
-            });
-      })
-      .on('click', function(d2){
-         svg2.selectAll(".buttonRect")
-          .style("stroke-width", function(d4){
-            if (d4==d2)
-              return 1;
-            else  
-              return 0.1;
-         });
-
-        secondLayout(list[d2][0].source.id);
-
-      });         
-    
+     // Construct conflicting examples in util2.js********************
+    conflitExamples();
+        
     for (var i = 0; i < nodes.length; i++) {
       if (nodes[i].fields.entity_text)
         optArray.push(nodes[i].fields.entity_text);
@@ -338,19 +243,8 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
             source: optArray
         });
     });
-    function processNode(fields){
-        if (nameToNode[fields.entity_text]==undefined){
-            var newNode = {};
-            newNode.fields = fields;
-            newNode.id = nodes.length;
-            nodes.push(newNode);
-            nameToNode[fields.entity_text] = newNode;
-            return newNode;
-        }
-        else{
-            return nameToNode[fields.entity_text];
-        }
-    }
+
+    
     console.log("Number of nodes: "+nodes.length);
     console.log("Number of links: "+links.length);
 
@@ -413,7 +307,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
         .attr("cy", function(d) { return d.y; });
   });
   secondLayout(35);
-  // secondLayout(18);
+ //  secondLayout(18);
 });
 
 
@@ -687,9 +581,7 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
     // Toggle children on click.
     function expand2(d) {
       // Query to 3 millions index cards database ********************************
-      /*var api_base = 'http://localhost:9999/api/';
       var filter = { "where": { "entity_text": d.ref.fields.entity_text } };
-      //debugger;
       var part_query = serverUrl + '/Participants?filter=' + JSON.stringify(filter);
       new Promise(function(resolve) {
         d3.json(part_query, function(p) { resolve(p); })
@@ -711,7 +603,7 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
         //   return Promise.all(promises);
         // })
         .then(function(d) { console.log(d) });
-      */
+      
 
         var curNode = d;
         if (curNode.ref!=undefined){
