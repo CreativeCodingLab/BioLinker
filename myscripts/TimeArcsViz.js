@@ -24,11 +24,11 @@ function drawTimeArcs(){
  
   for (var i=0; i<links2.length;i++){
     for (var j=0; j<links2[i].list.length;j++){
-      var card = links2[i].list[j];
-      var node1 = getNode(card.extracted_information.participant_a.entity_text);
-      var node2 = getNode(card.extracted_information.participant_b.entity_text);
+      var link = links2[i].list[j];
+      var node1 = getNode(link.source);
+      var node2 = getNode(link.target);
       var newlink = {};
-      newlink.ref = card;
+      newlink.ref = link;
       newlink.source=node1;
       newlink.target=node2;
       tlinks.push(newlink);
@@ -38,16 +38,16 @@ function drawTimeArcs(){
   resetForce3();
   draw();
 }      
-function getNode(entity_text){
-  if (nodesList[entity_text]==undefined){
+function getNode(d){
+  if (nodesList[d.fields.entity_text]==undefined){
     var node = {};
-    node.entity_text = entity_text;
+    node.ref = d;
     tnodes.push(node);
-    nodesList[entity_text] = node;
+    nodesList[d.fields.entity_text] = node;
     return node;
   }
   else
-    return nodesList[entity_text];
+    return nodesList[d.fields.entity_text];
 }  
 
 function resetForce3(){
@@ -101,9 +101,9 @@ function resetForce3(){
   // Save positions
   for (var i=0; i< tnodes.length; i++) {
     var nod = tnodes[i];
-    if (positions[nod.entity_text]!=undefined){
-      nod.x = positions[nod.entity_text].x;
-      nod.y = positions[nod.entity_text].y;   
+    if (positions[nod.ref.fields.entity_text]!=undefined){
+      nod.x = positions[nod.ref.fields.entity_text].x;
+      nod.y = positions[nod.ref.fields.entity_text].y;   
     }
   }
 
@@ -186,7 +186,7 @@ function draw(){
   svg4.selectAll(".nodeText4").data(tnodes).enter()
     .append("text")
     .attr("class", "nodeText4")
-    .text(function(d) { return d.entity_text})
+    .text(function(d) { return d.ref.fields.entity_text})
     .attr("x", function(d) { return d.x; })
     .attr("y", function(d) { return d.y; })          
     .style("fill","#000")
@@ -262,10 +262,10 @@ function detactTimeSeries(){
   // Save positions
   for (var i=0; i< tnodes.length; i++) {
     var nod = tnodes[i];
-    if (positions[nod.entity_text]==undefined)
-      positions[nod.entity_text] = {};
-    positions[nod.entity_text].x = nod.x;
-    positions[nod.entity_text].y = nod.y;   
+    if (positions[nod.ref.fields.entity_text]==undefined)
+      positions[nod.ref.fields.entity_text] = {};
+    positions[nod.ref.fields.entity_text].x = nod.x;
+    positions[nod.ref.fields.entity_text].y = nod.y;   
   }
 }
 

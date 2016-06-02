@@ -33,23 +33,23 @@ function processCard2(d){
   var l = new Object();
   l.pmc_id = d.pmc_id;
   l.name = node1.fields.entity_text+"__"+node2.fields.entity_text;
+  l.source = node1;
+  l.target = node2;
+  l.type = type;
+  l.evidence = e;
+  if (d.extracted_information.context){
+    l["Context_Species"] = d.extracted_information.context.Species;
+    l["Context_Organ"] = d.extracted_information.context.Organ;
+    l["Context_CellType"] = d.extracted_information.context.CellType;
+  }
   if (nameToLink2[l.name+"_"+l.pmc_id]==undefined){
-    l.source = node1;
-    l.target = node2;
-    l.type = type;
-    l.evidence = e;
-    if (d.extracted_information.context){
-      l["Context_Species"] = d.extracted_information.context.Species;
-      l["Context_Organ"] = d.extracted_information.context.Organ;
-      l["Context_CellType"] = d.extracted_information.context.CellType;
-    }
     l.list=[];
-    l.list.push(d);     
+    l.list.push(l);     
     links2.push(l);
     nameToLink2[l.name+"_"+l.pmc_id] = l;
   }
   else{
-    nameToLink2[l.name+"_"+l.pmc_id].list.push(d);     
+    nameToLink2[l.name+"_"+l.pmc_id].list.push(l);     
   }
 }
 function processNode2(fields){
