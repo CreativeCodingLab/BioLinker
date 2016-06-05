@@ -63,15 +63,15 @@ function showTip(d) {
         str+="<table border='0.5px'  style='width:100%'>"
         for (key in d) {
           if (key== "source" || key== "target")
-            str+=  "<tr><td>"+key+"</td> <td>  <span style='color:black'>" + d[key].ref.fields.entity_text + "</span> </td></tr>";
+            str+=  "<tr><td>"+key+"</td> <td>  <span style='color:black'>" + d[key].fields.entity_text + "</span> </td></tr>";
           else if (key== "list"){
             var list = "";
             for (var i=0; i< d[key].length; i++){
               var l = d[key][i];
               if (i==d[key].length-1)
-                list+="PMC"+l.ref.pmc_id;
+                list+="PMC"+l.pmc_id;
               else
-                list+="PMC"+l.ref.pmc_id+", ";
+                list+="PMC"+l.pmc_id+", ";
             }  
             str+=  "<tr><td>Paper id</td> <td>  <span style='color:black'>" + list + "</span> </td></tr>"; 
           }
@@ -150,7 +150,7 @@ function showTip(d) {
             }
           }
         }
-        str+=  "<tr><td>Year</td> <td> <span style='color:black'>"+d.year + "</span> </td></tr>";
+        str+=  "<tr><td>Year</td> <td> <span style='color:black'>"+d.ref.year + "</span> </td></tr>";
         str+=  "<tr><td>Evidence</td> <td> <span style='color:"+getColor(d.ref.type)+"'>"+d.ref.evidence + "</span></td></tr>";
         
 
@@ -223,10 +223,7 @@ function addText(d){
     .style("fill", "#000");
   
 
-   var curNode = d;
-  if (curNode.ref!=undefined){
-      curNode = curNode.ref;
-  }
+  var curNode = d;
 
   var list =[];
   for (key in curNode.fields) {
@@ -256,10 +253,9 @@ function addText(d){
 function addDotplots(d,fieldName,label, map){
   y_svg += 20; // inital y position     
   var curNode = d;
-  if (curNode.ref!=undefined){
-      curNode = curNode.ref;
-  }
   
+  
+  /*
   curNode.directLinks.sort(function (a, b) {
       if (a.type > b.type) {
           return 1;
@@ -268,10 +264,11 @@ function addDotplots(d,fieldName,label, map){
           return -1;
       }
       return 0;
-  }); 
+  }); */
 
      // Compute statistics for neighbors ***************************************
-    var types = new Object();
+  var types = new Object();
+  if (curNode.directLinks){
     for (var i=0; i<curNode.directLinks.length;i++){
       var l = curNode.directLinks[i];
       if (types[l[fieldName]]==undefined){
@@ -302,16 +299,17 @@ function addDotplots(d,fieldName,label, map){
         d["tip_"+fieldName][e[fieldName]] =e; // hash from type to the actual element
       }
     }
+
     // Label ********************************************************
-  tip_svg.append('text')
-    .attr("class", "tiplabel_"+fieldName)
-    .attr("x", 0)
-    .attr("y", d["ylabel_"+fieldName])
-    .style("font-family", "sans-serif")
-    .style("font-size", "12px")
-    .style("font-weight", "bold")
-    .style("text-anchor", "start")
-    .text(label)
+    tip_svg.append('text')
+      .attr("class", "tiplabel_"+fieldName)
+      .attr("x", 0)
+      .attr("y", d["ylabel_"+fieldName])
+      .style("font-family", "sans-serif")
+      .style("font-size", "12px")
+      .style("font-weight", "bold")
+      .style("text-anchor", "start")
+      .text(label)
     .style("fill", "#000");
   
     
@@ -361,6 +359,8 @@ function addDotplots(d,fieldName,label, map){
       .on('mouseover', mouseoverType)
       .on('mouseout', mouseoutType)
       .on('click', clickType);
+  }  
+    
 
     function mouseoverType(d){
       tip_svg.selectAll(".tipTypeRect_"+fieldName)

@@ -36,7 +36,7 @@ function addStacking2(fieldName,label, map){
 
     var name = getContextFromID(""+l.ref[fieldName],map);
     if (name==undefined)
-      name="?";
+      name="undefined";
     l[fieldName+"_name"] = name;
     if (types[name]==undefined){
         types[name] = new Object();
@@ -156,8 +156,9 @@ function addStacking2(fieldName,label, map){
       } 
 
       for (var i=0; i<d.list.length;i++){
-         d.list[i].mouseover = true;
-      }   
+        d.list[i].mouseover = true;
+      }  
+      
       updateLinks();
     } 
 

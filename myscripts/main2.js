@@ -12,37 +12,41 @@
 var nameToNode2={}; 
 var nameToLink2={}; 
 
-function processCard2(d){
-  var a = d.extracted_information.participant_a;
-  var b = d.extracted_information.participant_b;
+function processCard2(d, indexCard){
+  var a = indexCard.extracted_information.participant_a;
+  var b = indexCard.extracted_information.participant_b;
   if (a==undefined || b==undefined)
     return -1;
   a.entity_text = a.entity_text.toUpperCase();
   b.entity_text = b.entity_text.toUpperCase();
 
   var e = "";
-  if (d.evidence){
+  if (indexCard.evidence){
       for (var i=0;i<1;i++){
-          e+= " "+d.evidence[i];
+          e+= " "+indexCard.evidence[i];
       }   
   }
-  var type = d.extracted_information.interaction_type;
+  var type = indexCard.extracted_information.interaction_type;
   
   var node1 = processNode2(a);
   var node2 = processNode2(b);
   var l = new Object();
-  l.pmc_id = d.pmc_id;
+  l.pmc_id = indexCard.pmc_id;
   l.name = node1.fields.entity_text+"__"+node2.fields.entity_text;
   l.source = node1;
   l.target = node2;
   l.type = type;
   l.evidence = e;
-  if (d.extracted_information.context){
-    l["Context_Species"] = d.extracted_information.context.Species;
-    l["Context_Organ"] = d.extracted_information.context.Organ;
-    l["Context_CellType"] = d.extracted_information.context.CellType;
+  if (indexCard.extracted_information.context){
+    l["Context_Species"] = indexCard.extracted_information.context.Species;
+    l["Context_Organ"] = indexCard.extracted_information.context.Organ;
+    l["Context_CellType"] = indexCard.extracted_information.context.CellType;
   }
   if (nameToLink2[l.name+"_"+l.pmc_id]==undefined){
+    if (d.directLinks==undefined)
+      d.directLinks=[];
+    d.directLinks.push(l);
+  
     l.list=[];
     l.list.push(l);     
     links2.push(l);
@@ -134,13 +138,6 @@ function secondLayout(selected, isSource){   // isSource: is the selected node a
   labelAnchorLinks.push(labelLink);
   
   expand2(newNode);
-  
-  //nodes2.forEach(function(d){   // Expand the second level *******************
-  //    expand2(d);
-  //  });
-  
-  // Download Genomics data from cBioPortal ************************************
-  //getGenomics(nodes[selected].fields.entity_text);
 }
 
 function addNodes() {
@@ -191,7 +188,6 @@ function addNodes() {
         for (var i=0;i<d.list.length;i++){
           a[d.list[i].name] = d.list[i];
         }  
-        
         for (var i=0;i<tlinks.length;i++){
           if (a[tlinks[i].name])
             tlinks[i].mouseover = true;
@@ -200,8 +196,7 @@ function addNodes() {
         } 
 
         showTip(d); 
-        updateLinks(); 
-         
+        updateLinks();  
         force2.stop()
       }
     })
@@ -271,8 +266,6 @@ function click2(d) {
   isDisplayingPopup = !isDisplayingPopup;
   tip.hide(d);
   expand2(d);
-  // Download Genomics data from cBioPortal ************************************
-  //getGenomics(d.ref.fields.entity_text);
 } 
 
 // Toggle children on click.
@@ -290,18 +283,9 @@ function expand2(d) {
         d3.json(cards_query, function(d) { resolve(d) })
       });
     })
-    // .then(function(cards) {
-    //   var promises = cards.map(function(card) {
-    //     var nxml_query = api_base + 'IndexCards/' + card.id + '/nxml';
-    //     return new Promise(function(resolve) {
-    //       d3.json(nxml_query, function(d) { resolve(d); })
-    //     })
-    //   });
-    //   return Promise.all(promises);
-    // })
     .then(function(aLinks) { 
-      aLinks.forEach(function(d){
-        processCard2(d.mitreCard);
+      aLinks.forEach(function(card){
+        processCard2(d, card.mitreCard);
       });
 
       d.isExpanded = true;
@@ -310,98 +294,8 @@ function expand2(d) {
       update1(); 
 
       drawTimeArcs(); 
-      // drawMatrix();
       addStacking(); 
     }); 
-
-
-    // Load Publication data ********************************************************
-    //loadPMC(curNode);
-    
-    
-
-    
-    /*var curNode = d;
-    if (curNode.ref!=undefined){
-        curNode = curNode.ref;
-    }
-    var count=0;
-    for (var i=0;i<curNode.directLinks.length;i++){ // Expand maximum 25 neighbors
-      var l = curNode.directLinks[i];
-      var index;
-      for (var j=0; d["tip_type"] && j<d["tip_type"].length;j++){
-          if (d["tip_type"][l.type]!=undefined)
-            index = j; 
-      }
-      var tipdata;
-      var fieldName="type";
-      for (var i2=0; d["tip_"+fieldName] && i2<d["tip_"+fieldName].length;i2++){
-         if (d["tip_"+fieldName][i2][fieldName]==l[fieldName]) 
-            tipdata = d["tip_"+fieldName][i2];
-      }           
-      if (!d["tip_"+fieldName] || tipdata.isEnable){  // If this type is enable
-        if (links2[l.name]==undefined){
-          var neighbor;
-          if (curNode==l.source){
-              neighbor = l.target;
-          }
-          else if (curNode==l.target){
-              neighbor = l.source;
-          }   
-          var neighborNode;
-          if (nameToNode2[neighbor.fields.entity_text]==undefined){
-            var neighborNode = new Object();
-            neighborNode.ref = neighbor;
-            nodes2.push(neighborNode);
-            
-            // Labels **********************************************
-            labelAnchors.push({
-              node : neighborNode
-            });
-            labelAnchors.push({
-              node : neighborNode
-            });
-            var labelLink = {};
-            labelLink.source = labelAnchors[labelAnchors.length-2];
-            labelLink.target = labelAnchors[labelAnchors.length-1];
-            labelLink.weight = 1;
-            labelAnchorLinks.push(labelLink);
-            // Labels **********************************************      
-            nameToNode2[neighbor.fields.entity_text] = neighborNode;
-          }
-          else{
-            neighborNode = nameToNode2[neighbor.fields.entity_text];
-          }
-          var newLink = new Object();
-          newLink.source = d;
-          newLink.target = neighborNode;
-          newLink.type = l.type;
-          newLink.evidence = l.evidence;
-          newLink.Context_Species = getContextFromID(l["Context_Species"][0],speciesMap);
-          newLink.Context_Organ = getContextFromID(l["Context_Organ"][0],organMap);
-          newLink.Context_CellType = getContextFromID(l["Context_CellType"][0],celltypeMap);
-                    
-          newLink.list =[];
-          newLink.list.push(l);
-          links2.push(newLink);
-          links2[l.name] = newLink;
-          count++;
-        } 
-        else{
-          links2[l.name].list.push(l);
-        } 
-      }
-    }    
-  
-    // Load Publication data ********************************************************
-    loadPMC(curNode);
-    
-    d.ref.isExpanded = true;
-    d.isExpanded = true;
-    addNodes();   
-    update2();
-    update1(); // Update the overview graph  
-    */
 }  
 function update2() {
     node2 = svg2.selectAll(".node")

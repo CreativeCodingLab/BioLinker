@@ -60,8 +60,7 @@ var force3 = d3.layout.force()
       return 50;
   });
 
-
-
+/*
 var svg3 = d3.select('.matrixHolder').append('svg')
     //.style("background", "#eed")
     .attr("width", wMatrix)
@@ -92,7 +91,7 @@ var g3 = svg3.append("g");
           ].join(" "));
         });
     svg3.call(zoom);
-
+*/
 
 var mouseCoordinate;
 svg2.on('mousemove', function () {
@@ -224,8 +223,7 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
   data3 = data_;
   data3.forEach(function(d, index){ 
     if (2000<index && index<5000) {  // Limit to 1000 first index cards ********************************************
-      processCard(d);
-      
+      processCard(d);  
     }     
   });
   
