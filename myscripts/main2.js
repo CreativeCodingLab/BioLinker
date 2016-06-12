@@ -296,6 +296,7 @@ function expand2(d) {
       drawTimeArcs(); 
       addStacking(); 
     }); 
+  getGenomics(d.fields.entity_text);  
 }  
 function update2() {
     node2 = svg2.selectAll(".node")

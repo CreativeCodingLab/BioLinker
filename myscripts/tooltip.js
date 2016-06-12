@@ -6,8 +6,8 @@
  * OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
  */
 
- var tipWidth = 250;
-var tipSVGheight = 280;
+ var tipWidth = 270;
+var tipSVGheight = 390;
 var tip_svg;
 var y_svg;
 
@@ -52,7 +52,7 @@ function showTip(d) {
     //addDotplots(d,"Context_Organ", "Context-Organ", organMap);
     //addDotplots(d,"Context_CellType", "Context-CellType",celltypeMap);
 
-    //addScatterplot(d);
+    addScatterplot(d);
   }
   else if (d.source && d.target){
     tip.offset([-10,-0])
@@ -417,34 +417,36 @@ function addDotplots(d,fieldName,label, map){
         })   
     }
 
-  tip_svg.selectAll(".tipTypeArc_"+fieldName).data(curNode.directLinks)
-    .enter().append('path')
-    .attr("class", "tipTypeArc__"+fieldName)
-    .style("fill-opacity", 0)
-    .style("stroke", function (l) {
-        return getColor(l.type);
-    })
-    .style("stroke-width", 1.5)
-    .attr("d", function(l){
-      if (types[l[fieldName]].currentIndex==undefined){
-          types[l[fieldName]].currentIndex=0;
-      }
-      else{
-        types[l[fieldName]].currentIndex++;
-      }
-      var xx = 130+types[l[fieldName]].currentIndex*3;
-      var yy = d["tip_"+fieldName][l[fieldName]].y+2;
-      var rr = 5;
-      return "M" + xx + "," + yy + "A" + rr + "," + rr*1.2 + " 0 0,1 " + xx + "," + (yy+rr*2);
-    });  
-
+  //debugger;  
+  if (curNode.directLinks){
+    tip_svg.selectAll(".tipTypeArc_"+fieldName).data(curNode.directLinks)
+      .enter().append('path')
+      .attr("class", "tipTypeArc__"+fieldName)
+      .style("fill-opacity", 0)
+      .style("stroke", function (l) {
+          return getColor(l.type);
+      })
+      .style("stroke-width", 1.5)
+      .attr("d", function(l){
+        if (types[l[fieldName]].currentIndex==undefined){
+            types[l[fieldName]].currentIndex=0;
+        }
+        else{
+          types[l[fieldName]].currentIndex++;
+        }
+        var xx = 130+types[l[fieldName]].currentIndex*3;
+        var yy = d["tip_"+fieldName][l[fieldName]].y+2;
+        var rr = 5;
+        return "M" + xx + "," + yy + "A" + rr + "," + rr*1.2 + " 0 0,1 " + xx + "," + (yy+rr*2);
+      });  
+  }  
   d["tip_"+fieldName].forEach(function(d2){   // make sure disable types are greyout on the second mouse over
     mouseoutType(d2);
   });   
 }
 
 function addScatterplot(d){
-  var sSize = 200;
+  var sSize = tipWidth-40;
   var arrayX = [];
   var arrayY = [];
   for (var i=0;i<studyIds.length;i++) {
@@ -452,7 +454,7 @@ function addScatterplot(d){
     arrayY.push(0);   
   }  
   
-  var geneName = d.ref.fields.entity_text;
+  var geneName = d.fields.entity_text;
   for (key in cBioPortalData[geneName][0]) {
      var index =  parseFloat(key);
      arrayX[index] = cBioPortalData[geneName][0][key]["count"]/
@@ -492,26 +494,40 @@ function addScatterplot(d){
   xScale.domain([d3.min(arrayX), d3.max(arrayX)]);
   yScale.domain([d3.min(arrayY), d3.max(arrayY)]);
 
+  
+  var yy2 = tipSVGheight-20;
+  var yy3 = tipSVGheight-sSize-20;
+  
+  tip_svg.append("rect")
+    .attr("fill","#fff")
+    .attr("x",30)
+    .attr("y",yy3)
+    .attr("width", sSize)
+    .attr("height", sSize)
+    
+
+    
   // x-axis
   tip_svg.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + sSize + ")")
+      .attr("transform", "translate(30," + yy2 + ")")
       .call(xAxis)
     .append("text")
       .attr("class", "label")
-      .attr("x", sSize-10)
-      .attr("y", -10)
+      .attr("x", sSize)
+      .attr("y", -5)
       .style("text-anchor", "end")
       .text(profileIds[0]);
 
   // y-axis
   tip_svg.append("g")
       .attr("class", "y axis")
+      .attr("transform", "translate(30," + yy3 + ")")
       .call(yAxis)
     .append("text")
       .attr("class", "label")
       .attr("transform", "rotate(-90)")
-      .attr("y", 10)
+      .attr("y", 5)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text(profileIds[1]);
@@ -522,8 +538,8 @@ function addScatterplot(d){
     .enter().append("circle")
       .attr("class", "dot")
       .attr("r", 3)
-      .attr("cx", function(d){ return d.x*sSize+5;})
-      .attr("cy", function(d){ return tipSVGheight-d.y*sSize-5;})
+      .attr("cx", function(d){ return d.x*sSize+45;})
+      .attr("cy", function(d){ return tipSVGheight-d.y*sSize-35;})
       .style("fill", function(d) { return color(cValue(d));}) 
       .on("mouseover", function(d) {
           /*tooltip.transition()

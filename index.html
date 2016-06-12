@@ -27,12 +27,6 @@
 }
 
 <!-- For the slider -->
-.axis {
-  font: 5 sans-serif;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
 
 .axis .domain {
   fill: none;
@@ -145,6 +139,23 @@ table, th, td {
   left: 900px;
   border: 1px solid rgba(0,0,0, 1);
   background-color: rgba(220,220,240, 1);
+}
+
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: #000;
+}
+.label {
+  font-size: 14px;
+  font-family: "sans-serif";
+  color: #000;
 }
 
 </style>
