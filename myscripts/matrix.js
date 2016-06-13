@@ -258,60 +258,22 @@ function cellArc2(d) {
 function updateLinks() {
   numCards = tlinks.length;
   var mouseoverNames = {};
-  for (var i=0;i<tnodes.length;i++){
-    tnodes[i].timeX = -100;   // Reset TimeArcs position for tnodes
-  }  
   for (var i=0;i<numCards;i++){
     if (tlinks[i].mouseover){
       var name1 = tlinks[i].source.ref.fields.entity_text;
       var name2 = tlinks[i].target.ref.fields.entity_text;
-      if (mouseoverNames[name1]==undefined)
+      
+      if (mouseoverNames[name1]==undefined){
         mouseoverNames[name1] = tlinks[i].source;
-      if (mouseoverNames[name2]==undefined)
+      }
+     
+      if (mouseoverNames[name2]==undefined){
         mouseoverNames[name2] = tlinks[i].target;
-    
-      if (mouseoverNames[name1].timeX!=undefined)
-        mouseoverNames[name1].timeX = Math.min(tlinks[i].timeX,mouseoverNames[name1].timeX);
-      else 
-        mouseoverNames[name1].timeX = tlinks[i].timeX;
-
-      if (mouseoverNames[name2].timeX!=undefined)
-        mouseoverNames[name2].timeX = Math.min(tlinks[i].timeX,mouseoverNames[name2].timeX);
-      else
-        mouseoverNames[name2].timeX = tlinks[i].timeX;
+      }
     } 
   } 
- 
   var fadeOpacity = 0.05;
   
-  // Update matrix *****************************************
-  /*for (var i=0;i<numCards;i++){
-    for (var j=0;j<i;j++){
-      g3.selectAll(".arcs1"+i+"__"+j)
-        .style("stroke-opacity", function (d) {
-          if (d.column.mouseover== true)
-            return 1;    
-          else
-            return fadeOpacity;  
-        })   
-      g3.selectAll(".arcs2"+i+"__"+j)
-        .style("stroke-opacity", function (d) {
-          if (d.row.mouseover== true)
-            return 1;    
-          else
-            return fadeOpacity;  
-        })     
-    }
-  }
-  g3.selectAll(".cardTexts")
-    .style("fill-opacity", function (d) {
-      if (d.mouseover== true)
-        return 1;    
-      else
-        return fadeOpacity;  
-    });   
-    */
-
   // TimeArcs ********************************
   svg4.selectAll(".linkArc")
     .style("stroke-opacity", function (d) {
@@ -328,17 +290,6 @@ function updateLinks() {
       else
         return fadeOpacity;  
     });
-  svg4.selectAll(".nodeText4").transition().duration(1000)
-    .attr("x", function (d) {
-      if (mouseoverNames[d.ref.fields.entity_text]!= undefined && d.timeX!=undefined){
-        return d.timeX;
-      }
-      else
-        return d.x;  
-    })
-    .attr("y", function (d) {
-      return d.y;  
-    }); 
   svg4.selectAll(".nodeLine4")  
     .style("stroke-opacity", function (d) {
       if (mouseoverNames[d.ref.fields.entity_text]!= undefined){
@@ -414,17 +365,23 @@ function updateLinks() {
     });   
   // Set mouseover for links in the main view  
   for (var i=0;i<tlinks.length;i++){
-   // if (tlinks[i].name.indexOf("__EC")>-1)
-   //   debugger;
+    if (tlinks[i].name.indexOf("HDI")>-1)
+      //debugger;
+      console.log("tlinks id:" +i);
     tlinks[i].ref.mouseover = tlinks[i].mouseover;
   }
+
   for (var i=0;i<links2.length;i++){
-    links2[i].mouseover = false;
+    var temp = false;
     for (var j=0;j<links2[i].list.length;j++){
       if (links2[i].list[j].mouseover==true){
-        links2[i].mouseover = true;
-      }  
+        temp = true;
+      }
     }
+    links2[i].mouseover = temp;
+
+    //if (links2[i].name.indexOf("HDI")>-1)
+    //    console.log("links2 id:" +i);
   }
 
   svg2.selectAll(".link")
