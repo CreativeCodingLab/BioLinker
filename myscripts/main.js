@@ -309,8 +309,8 @@ d3.json("data/cardsWithContextData.json", function(error, data_) {
 function update1(d) {  
   svgOverview.selectAll(".link")
     .style("stroke-opacity", function(l){
-      var lName = l.source.fields.entity_text+"__"+l.target.fields.entity_text;
-      if (links2[lName]!=undefined)
+      if (nameToNode2[l.source.fields.entity_text]
+        && nameToNode2[l.target.fields.entity_text])
         return 0.8;
       else
         return 0.1;
@@ -322,6 +322,7 @@ function update1(d) {
       else
         return 0.1;
     });  
+
 }
 
 var node_drag = d3.behavior.drag()

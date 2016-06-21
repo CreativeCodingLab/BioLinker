@@ -365,9 +365,6 @@ function updateLinks() {
     });   
   // Set mouseover for links in the main view  
   for (var i=0;i<tlinks.length;i++){
-    if (tlinks[i].name.indexOf("HDI")>-1)
-      //debugger;
-      console.log("tlinks id:" +i);
     tlinks[i].ref.mouseover = tlinks[i].mouseover;
   }
 

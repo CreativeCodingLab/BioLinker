@@ -16,6 +16,7 @@ var maxYear = 0;
 var transTime = 1000;
 
 var positions ={}; // Save positions of nodes for the new TimeArcs
+var pmcData = {};
 // vertex is the input node which contains neighbors information
 function drawTimeArcs(){
   tnodes = [];

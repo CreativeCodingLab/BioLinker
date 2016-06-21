@@ -17,14 +17,14 @@ function processCard2(d, indexCard){
   var b = indexCard.extracted_information.participant_b;
   if (a==undefined || b==undefined)
     return -1;
-  a.entity_text = a.entity_text.toUpperCase();
-  b.entity_text = b.entity_text.toUpperCase();
+  ///a.entity_text = a.entity_text.toUpperCase();
+  //b.entity_text = b.entity_text.toUpperCase();
 
   var e = "";
   if (indexCard.evidence){
-      for (var i=0;i<1;i++){
-          e+= " "+indexCard.evidence[i];
-      }   
+    for (var i=0;i<1;i++){
+        e+= " "+indexCard.evidence[i];
+    }   
   }
   var type = indexCard.extracted_information.interaction_type;
   
@@ -277,24 +277,28 @@ function expand2(d) {
     d3.json(part_query, function(p) { resolve(p); })
   })
     .then(function(participants) {
-      var part_id = participants[0].id;
-      var cards_query = serverUrl + "/Participants/" + part_id  + "/indexCards";
-      return new Promise(function(resolve) {
-        d3.json(cards_query, function(d) { resolve(d) })
-      });
+      if (participants[0]){
+        var part_id = participants[0].id;
+        var cards_query = serverUrl + "/Participants/" + part_id  + "/indexCards";
+        return new Promise(function(resolve) {
+          d3.json(cards_query, function(d) { resolve(d) })
+        });
+      }
     })
     .then(function(aLinks) { 
-      aLinks.forEach(function(card){
-        processCard2(d, card.mitreCard);
-      });
+      if (aLinks){
+        aLinks.forEach(function(card){
+          processCard2(d, card.mitreCard);
+        });
 
-      d.isExpanded = true;
-      addNodes();   
-      update2();
-      update1(); 
+        d.isExpanded = true;
+        addNodes();   
+        update2();
+        update1(); 
 
-      drawTimeArcs(); 
-      addStacking(); 
+        drawTimeArcs(); 
+        addStacking(); 
+      }
     }); 
   getGenomics(d.fields.entity_text);  
 }  
