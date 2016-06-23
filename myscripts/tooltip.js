@@ -478,12 +478,12 @@ function addScatterplot(d){
   }  
   
   // setup x 
-  var xScale = d3.scale.linear().range([0, sSize-20]), // value -> display
+  var xScale = d3.scale.linear().range([0, sSize]), // value -> display
       xMap = function(d) { return xScale(arrayX(d));}, // data -> display
       xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
   // setup y
-  var yScale = d3.scale.linear().range([sSize-20, 0]), // value -> display
+  var yScale = d3.scale.linear().range([sSize, 0]), // value -> display
       yMap = function(d) { return yScale(yValue(d));}, // data -> display
       yAxis = d3.svg.axis().scale(yScale).orient("left");
 
@@ -539,9 +539,11 @@ function addScatterplot(d){
     .enter().append("circle")
       .attr("class", "dot")
       .attr("r", 3)
-      .attr("cx", function(d){ return xScale(d.x)+40;})
-      .attr("cy", function(d){ return yy3+10+yScale(d.y);})
+      .attr("cx", function(d){ return xScale(d.x)*0.95+35;})
+      .attr("cy", function(d){ return yy3+5+yScale(d.y)*0.95;})
       .style("fill", function(d) { return color(cValue(d));}) 
+      .style("fill-opacity", 0.5) 
+      .style("stroke-width", 0.3) 
       .on("mouseover", function(d) {
           /*tooltip.transition()
                .duration(200)

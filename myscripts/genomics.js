@@ -21,6 +21,7 @@ function getGenomics(geneName){
 				var study = studyIds[i];
 				var profile = profileIds[p];
 				var request = "cmd=getProfileData&case_set_id="+study+"_all&genetic_profile_id="+study+profile+"&gene_list="+geneName;
+				console.log(request); 
 				var str2 = strServer+request;
 				(function(request,i,p) { 	
 					d3.csv(str2, function(error, json) {
@@ -33,11 +34,6 @@ function getGenomics(geneName){
 					.get()
 					.on('load', function(d) { 
 					 	console.log(d); 
-					 	/*for (key in d) {
-					 		if (!cBioPortalData[key])
-					 			cBioPortalData[key] = new Object();
-					 		cBioPortalData[key][studyIds[i]] = d[key];
-					 	}*/
 					 	var count=0;
 					 	if (d.length>0){
 					 		var propertyName = profileDefaultProperty[p];

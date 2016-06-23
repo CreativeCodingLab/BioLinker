@@ -307,7 +307,9 @@ function detactTimeSeries(){
   svg4.selectAll(".linkArc2").transition().duration(transTime).attr("d", linkArcTime);  
   //svg4.selectAll(".node4").attr("cx", function(d) { return d.x; })
   //    .attr("cy", function(d) { return d.y; });
-  svg4.selectAll(".nodeText4").transition().duration(transTime).attr("x", function(d) { return d.x; })
+  svg4.selectAll(".nodeText4").transition().duration(transTime)
+      .attr("font-size", step+"px")
+      .attr("x", function(d) { return d.x; })
       .attr("y", function(d) { return d.y; });
    svg4.selectAll(".nodeLine4").transition().duration(transTime)
       .attr("x1", function(d) {return d.x;})

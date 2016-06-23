@@ -12,6 +12,16 @@
 var nameToNode2={}; 
 var nameToLink2={}; 
 
+var cancerStudies = {};
+d3.tsv("data/cancerStudies.tsv", function(error, data_) {
+    if (error) throw error;
+    //data_.forEach(function(d) {
+    //  if (uniprotMap[d["id"]]==undefined || uniprotMap[d["id"]].length>=d["name"].length) // to get the readable name
+    //  uniprotMap[d["id"]] = d["name"];
+    //});    
+  debugger;
+}); 
+
 function processCard2(d, indexCard){
   var a = indexCard.extracted_information.participant_a;
   var b = indexCard.extracted_information.participant_b;
