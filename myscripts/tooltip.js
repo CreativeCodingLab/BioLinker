@@ -7,7 +7,7 @@
  */
 
  var tipWidth = 270;
-var tipSVGheight = 390;
+var tipSVGheight = 370;
 var tip_svg;
 var y_svg;
 
@@ -440,13 +440,15 @@ function addDotplots(d,fieldName,label, map){
         return "M" + xx + "," + yy + "A" + rr + "," + rr*1.2 + " 0 0,1 " + xx + "," + (yy+rr*2);
       });  
   }  
-  d["tip_"+fieldName].forEach(function(d2){   // make sure disable types are greyout on the second mouse over
-    mouseoutType(d2);
-  });   
+  if (d["tip_"+fieldName]){
+    d["tip_"+fieldName].forEach(function(d2){   // make sure disable types are greyout on the second mouse over
+      mouseoutType(d2);
+    }); 
+  }  
 }
 
 function addScatterplot(d){
-  var sSize = tipWidth-40;
+  var sSize = tipWidth-60;
   var arrayX = [];
   var arrayY = [];
   for (var i=0;i<studyIds.length;i++) {
@@ -476,12 +478,12 @@ function addScatterplot(d){
   }  
   
   // setup x 
-  var xScale = d3.scale.linear().range([0, sSize]), // value -> display
+  var xScale = d3.scale.linear().range([0, sSize-20]), // value -> display
       xMap = function(d) { return xScale(arrayX(d));}, // data -> display
       xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
   // setup y
-  var yScale = d3.scale.linear().range([sSize, 0]), // value -> display
+  var yScale = d3.scale.linear().range([sSize-20, 0]), // value -> display
       yMap = function(d) { return yScale(yValue(d));}, // data -> display
       yAxis = d3.svg.axis().scale(yScale).orient("left");
 
@@ -494,7 +496,6 @@ function addScatterplot(d){
   xScale.domain([d3.min(arrayX), d3.max(arrayX)]);
   yScale.domain([d3.min(arrayY), d3.max(arrayY)]);
 
-  
   var yy2 = tipSVGheight-20;
   var yy3 = tipSVGheight-sSize-20;
   
@@ -538,8 +539,8 @@ function addScatterplot(d){
     .enter().append("circle")
       .attr("class", "dot")
       .attr("r", 3)
-      .attr("cx", function(d){ return d.x*sSize+45;})
-      .attr("cy", function(d){ return tipSVGheight-d.y*sSize-35;})
+      .attr("cx", function(d){ return xScale(d.x)+40;})
+      .attr("cy", function(d){ return yy3+10+yScale(d.y);})
       .style("fill", function(d) { return color(cValue(d));}) 
       .on("mouseover", function(d) {
           /*tooltip.transition()
